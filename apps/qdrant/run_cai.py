@@ -4,6 +4,7 @@ import os
 import platform
 import shutil
 import stat
+import subprocess
 import tarfile
 import tempfile
 import urllib.request
@@ -77,6 +78,38 @@ def download_binary(version: str) -> Path:
     return target
 
 
+def validate_binary(binary: Path) -> str:
+    try:
+        result = subprocess.run(
+            [str(binary), "--version"],
+            check=False,
+            capture_output=True,
+            text=True,
+            timeout=15,
+        )
+    except OSError as exc:
+        raise RuntimeError(
+            f"Qdrant binary cannot execute on {platform.machine()}: {binary}: {exc}"
+        ) from exc
+    except subprocess.TimeoutExpired as exc:
+        raise RuntimeError(f"Qdrant binary version probe timed out: {binary}") from exc
+    output = (result.stdout or result.stderr).strip()
+    if result.returncode != 0:
+        raise RuntimeError(
+            f"Qdrant binary probe failed with status {result.returncode}: {output or binary}"
+        )
+    return output
+
+
+def run_qdrant(binary: Path) -> None:
+    try:
+        result = subprocess.run([str(binary)], check=False)
+    except OSError as exc:
+        raise RuntimeError(f"Qdrant failed to start: {binary}: {exc}") from exc
+    if result.returncode != 0:
+        raise RuntimeError(f"Qdrant exited with status {result.returncode}")
+
+
 def main():
     p = argparse.ArgumentParser()
     p.add_argument("--local-port", type=int, default=LOCAL_QDRANT_PORT)
@@ -92,7 +125,18 @@ def main():
     os.environ["QDRANT__STORAGE__STORAGE_PATH"] = str(storage_path)
     if os.getenv("QDRANT_API_KEY"):
         os.environ["QDRANT__SERVICE__API_KEY"] = os.getenv("QDRANT_API_KEY")
-    os.execv(str(binary), [str(binary)])
+    binary_version = validate_binary(binary)
+    print(
+        "Starting Qdrant",
+        f"binary={binary}",
+        f"version={binary_version}",
+        f"architecture={platform.machine()}",
+        f"host={os.environ['QDRANT__SERVICE__HOST']}",
+        f"port={port}",
+        f"storage={storage_path}",
+        flush=True,
+    )
+    run_qdrant(binary)
 
 
 if __name__ == "__main__":

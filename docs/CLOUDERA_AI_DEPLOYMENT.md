@@ -57,6 +57,8 @@ Environment variables:
 - `QDRANT_STORAGE_PATH=<persistent project path>`
 
 The launcher downloads the official Qdrant binary if it is not already cached. If egress is restricted, upload the binary into `apps/qdrant/bin/qdrant` and the launcher will use it.
+It probes the binary before startup and launches it as a child process so the CAI Python engine
+remains alive and binary failures are visible in Application Logs.
 
 The Qdrant Application is shared. Configure the same three collection variables for the backend
 and NiFi integration, keep all values unique, then run

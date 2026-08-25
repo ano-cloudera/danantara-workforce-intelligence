@@ -112,6 +112,9 @@ def test_local_inter_app_url_fallbacks_still_work(monkeypatch):
 def test_qdrant_launcher_maps_resolved_port_to_http_api():
     source = (ROOT / "apps/qdrant/run_cai.py").read_text()
     assert 'os.environ["QDRANT__SERVICE__HTTP_PORT"] = str(port)' in source
+    assert "validate_binary(binary)" in source
+    assert "run_qdrant(binary)" in source
+    assert "os.execv" not in source
 
 
 def test_inter_app_url_variables_are_declared_and_consumed():

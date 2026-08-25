@@ -339,8 +339,8 @@
     },
     {
       "path": "apps/backend/tests/test_cai_runtime.py",
-      "bytes": 4294,
-      "sha256": "6bd1a55256f1dcf03e80a0a50a62ba21fa0dd62eb6eac748f34426721e3c1aa5"
+      "bytes": 4419,
+      "sha256": "5a1e4bcb983394ea35d4a1f6cb79e71a62ba2cc31b96e2e6215d5d0704c4bc8f"
     },
     {
       "path": "apps/backend/tests/test_guardrails.py",
@@ -424,13 +424,13 @@
     },
     {
       "path": "apps/qdrant/README.md",
-      "bytes": 1808,
-      "sha256": "06ebc58da9885bb8d16dce28bb05ae977e6f8353031008697dc7c8b158f8c9a2"
+      "bytes": 2167,
+      "sha256": "e1216a419ccc4f161b3be7f3e2c21091f58cb0545e2a19b38d354ecadc41d407"
     },
     {
       "path": "apps/qdrant/run_cai.py",
-      "bytes": 3399,
-      "sha256": "d08e1ed78197565ae84b880764f0179afc950ab29f4e515c0fa1dff0221909c1"
+      "bytes": 4825,
+      "sha256": "ad25bf3b81ce1725b0f0bbea6a1e630d2d62f6c94273fc150ea13a814b37e1d3"
     },
     {
       "path": "artifacts/README.md",
@@ -544,8 +544,8 @@
     },
     {
       "path": "docs/CLOUDERA_AI_DEPLOYMENT.md",
-      "bytes": 3766,
-      "sha256": "dc3032bb1791944605e24003ec7de73b6df85082b5ca7f37e3b4ea5b832a78f1"
+      "bytes": 3929,
+      "sha256": "53208304e260e38c72e6f3ed76612902f3712fb1deea581da5b3f24dbadbedc0"
     },
     {
       "path": "docs/DEMO_RUNBOOK.md",
@@ -594,8 +594,8 @@
     },
     {
       "path": "skills/cai-application-deployment/SKILL.md",
-      "bytes": 1052,
-      "sha256": "0132f7a39eb3fb2eeeb2bf947d9f739e3389333a504b8f321290276948ca4974"
+      "bytes": 1237,
+      "sha256": "0350f1c7e27b09b8966cc0f332c454217aa6a51d1357793c0837b77717947ee4"
     },
     {
       "path": "skills/crewai-flow/SKILL.md",

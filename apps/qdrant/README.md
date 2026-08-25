@@ -30,3 +30,8 @@ The launcher also supports CAI interpreter execution where `__file__` is unavail
 source as interpreter code without either location, the launcher bootstraps from the interpreter
 working directory instead of failing path discovery. Validate the deployed
 service through `/healthz` and `/readyz`.
+
+The launcher keeps the CAI Python engine as the parent process and runs Qdrant as a child process.
+Startup logs include the resolved binary version, CPU architecture, bind address, port and storage
+path, but never print the API key. An incompatible binary or early Qdrant exit is reported with a
+specific error instead of only `Engine exited with status 1`.
