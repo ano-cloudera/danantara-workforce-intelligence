@@ -339,8 +339,8 @@
     },
     {
       "path": "apps/backend/tests/test_cai_runtime.py",
-      "bytes": 3807,
-      "sha256": "832a71fae6cf8aec6f1f2e6abcc79642a85fcbc659e9fcde1e468ba8d890b945"
+      "bytes": 4294,
+      "sha256": "6bd1a55256f1dcf03e80a0a50a62ba21fa0dd62eb6eac748f34426721e3c1aa5"
     },
     {
       "path": "apps/backend/tests/test_guardrails.py",
@@ -424,13 +424,13 @@
     },
     {
       "path": "apps/qdrant/README.md",
-      "bytes": 1632,
-      "sha256": "2a19ac5584bf00f8a18abeea7565f8477f2aa93422ceb64309aa74a46f2011d2"
+      "bytes": 1808,
+      "sha256": "06ebc58da9885bb8d16dce28bb05ae977e6f8353031008697dc7c8b158f8c9a2"
     },
     {
       "path": "apps/qdrant/run_cai.py",
-      "bytes": 3047,
-      "sha256": "28f7fa7761ca81b021c9b4f197977f002116888bf9cdba0b65873f532f216164"
+      "bytes": 3399,
+      "sha256": "d08e1ed78197565ae84b880764f0179afc950ab29f4e515c0fa1dff0221909c1"
     },
     {
       "path": "artifacts/README.md",
@@ -544,8 +544,8 @@
     },
     {
       "path": "docs/CLOUDERA_AI_DEPLOYMENT.md",
-      "bytes": 3578,
-      "sha256": "3f5991882d5158ffa97d364b116992b0fde9c3f7c01cf1e72982ceac96727517"
+      "bytes": 3766,
+      "sha256": "dc3032bb1791944605e24003ec7de73b6df85082b5ca7f37e3b4ea5b832a78f1"
     },
     {
       "path": "docs/DEMO_RUNBOOK.md",
@@ -579,8 +579,8 @@
     },
     {
       "path": "scripts/preflight.py",
-      "bytes": 3369,
-      "sha256": "e84816384135a6eac161d3810c2cef573cde52ea765308d8e7489fdcf1628f50"
+      "bytes": 3442,
+      "sha256": "c4b6ed102a8065f127ab116ce0cd51d767faa3fef666b05cae4a3f143947f7be"
     },
     {
       "path": "scripts/project_tree.py",
@@ -594,8 +594,8 @@
     },
     {
       "path": "skills/cai-application-deployment/SKILL.md",
-      "bytes": 854,
-      "sha256": "ae4b9e04eb55bc189acfc8702f1c7149d98461b8fceca9f14eba06f25fd32e31"
+      "bytes": 1052,
+      "sha256": "0132f7a39eb3fb2eeeb2bf947d9f739e3389333a504b8f321290276948ca4974"
     },
     {
       "path": "skills/crewai-flow/SKILL.md",

@@ -26,5 +26,7 @@ strictly the local-development fallback. Backend clients use `QDRANT_BASE_URL` s
 Application URL and never infer this listener port.
 
 The launcher also supports CAI interpreter execution where `__file__` is unavailable by resolving
-`apps/qdrant` from `CDSW_PROJECT_DIR` or the current project directory. Validate the deployed
+`apps/qdrant` from `CDSW_PROJECT_DIR` or the current project directory. If Workbench executes the
+source as interpreter code without either location, the launcher bootstraps from the interpreter
+working directory instead of failing path discovery. Validate the deployed
 service through `/healthz` and `/readyz`.

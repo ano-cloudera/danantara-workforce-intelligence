@@ -4,7 +4,6 @@ import os
 import platform
 import shutil
 import stat
-import sys
 import tarfile
 import tempfile
 import urllib.request
@@ -22,23 +21,31 @@ def resolve_application_dir(app_name: str) -> Path:
         for candidate in (base / "apps" / app_name, base):
             if (candidate / "run_cai.py").is_file():
                 return candidate
-    raise RuntimeError(
-        f"Unable to locate apps/{app_name}; start the CAI Application from project root"
-    )
+    # CAI may execute this source as notebook/interpreter code without __file__,
+    # CDSW_PROJECT_DIR, or a repository working directory. Qdrant's launcher is
+    # intentionally able to bootstrap its binary and storage from that cwd.
+    return cwd
 
 
 HERE = resolve_application_dir("qdrant")
-ROOT = HERE.parents[1]
+ROOT = (
+    HERE.parents[1]
+    if HERE.name == "qdrant" and HERE.parent.name == "apps"
+    else Path(os.getenv("CDSW_PROJECT_DIR", str(HERE))).resolve()
+)
 RUNTIME = HERE / ".runtime"
 BIN_DIR = HERE / "bin"
 
-sys.path.insert(0, str(ROOT))
+LOCAL_QDRANT_PORT = 6333
+CAI_BIND_HOST = "127.0.0.1"
 
-from config.cai_runtime import (  # noqa: E402
-    LOCAL_QDRANT_PORT,
-    resolve_app_port,
-    resolve_bind_host,
-)
+
+def resolve_app_port(local_default: int) -> int:
+    return int(os.getenv("CDSW_APP_PORT") or os.getenv("PORT") or local_default)
+
+
+def resolve_bind_host() -> str:
+    return CAI_BIND_HOST
 
 
 def download_binary(version: str) -> Path:

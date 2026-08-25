@@ -17,6 +17,8 @@ outside Cloudera AI. `CML_APP_PORT` is not part of this project standard.
 CAI may execute the selected Application script through its interpreter rather than as a normal
 Python file, so `__file__` is not guaranteed. All four launchers resolve their directory from
 `__file__` when available, otherwise from `CDSW_PROJECT_DIR` or the project working directory.
+The Qdrant launcher additionally supports CAI interpreter execution where none of those identify
+the checkout: it uses the interpreter cwd for its downloaded binary and storage bootstrap.
 Select the repository `apps/<application>/run_cai.py` entrypoint and keep the complete repository
 tree available to the Application. In interpreter mode, launchers also tolerate runner arguments
 that are not part of the project launcher CLI.

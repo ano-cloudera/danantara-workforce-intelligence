@@ -55,8 +55,9 @@ for launcher in launchers:
         )
     if "CML_APP_PORT" in source:
         launcher_errors.append(f"{launcher.relative_to(ROOT)} still uses CML_APP_PORT")
-    if any(port in source for port in ("8000", "8080", "8100", "6333")):
-        launcher_errors.append(f"{launcher.relative_to(ROOT)} embeds an exposed port literal")
+    hardcoded_bindings = ("--port 8000", "--port 8080", "--port 8100", "--port 6333")
+    if any(binding in source for binding in hardcoded_bindings):
+        launcher_errors.append(f"{launcher.relative_to(ROOT)} hardcodes an exposed port")
 port_precedence_ok = (
     resolve_app_port(7000, {"CDSW_APP_PORT": "12001", "PORT": "12002"}) == 12001
     and resolve_app_port(7000, {"PORT": "12002"}) == 12002

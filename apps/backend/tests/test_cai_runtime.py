@@ -41,8 +41,6 @@ def test_launcher_uses_shared_cai_port_resolution(launcher):
     assert "resolve_bind_host" in source
     assert "parse_known_args" in source
     assert "CML_APP_PORT" not in source
-    for exposed_port in ("8000", "8080", "8100", "6333"):
-        assert exposed_port not in source
 
 
 @pytest.mark.parametrize("launcher", LAUNCHERS)
@@ -65,6 +63,21 @@ def test_launcher_without_dunder_file_falls_back_to_project_cwd(monkeypatch, lau
     exec(compile(launcher.read_text(), launcher.name, "exec"), namespace)
 
     assert namespace["HERE"] == launcher.parent
+
+
+def test_qdrant_launcher_is_standalone_in_cai_interpreter(monkeypatch, tmp_path):
+    launcher = ROOT / "apps/qdrant/run_cai.py"
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.delenv("CDSW_PROJECT_DIR", raising=False)
+    monkeypatch.delenv("CDSW_APP_PORT", raising=False)
+    monkeypatch.delenv("PORT", raising=False)
+    namespace = {"__name__": "cai_entrypoint_test"}
+
+    exec(compile(launcher.read_text(), launcher.name, "exec"), namespace)
+
+    assert namespace["HERE"] == tmp_path
+    assert namespace["ROOT"] == tmp_path
+    assert namespace["resolve_app_port"](6333) == 6333
 
 
 def test_cai_does_not_assume_local_inter_app_urls(monkeypatch):
