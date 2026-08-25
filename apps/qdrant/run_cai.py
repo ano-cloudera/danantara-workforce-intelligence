@@ -22,6 +22,9 @@ def resolve_application_dir(app_name: str) -> Path:
         for candidate in (base / "apps" / app_name, base):
             if (candidate / "run_cai.py").is_file():
                 return candidate
+        for candidate in base.glob(f"*/apps/{app_name}"):
+            if (candidate / "run_cai.py").is_file():
+                return candidate
     # CAI may execute this source as notebook/interpreter code without __file__,
     # CDSW_PROJECT_DIR, or a repository working directory. Qdrant's launcher is
     # intentionally able to bootstrap its binary and storage from that cwd.

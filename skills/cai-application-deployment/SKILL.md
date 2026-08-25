@@ -5,7 +5,8 @@ Deploy and troubleshoot the four Cloudera AI Applications.
 ## Rules
 - Use the application-specific `run_cai.py`.
 - Do not assume `__file__` exists in a CAI Application entrypoint; resolve the Application path
-  from `CDSW_PROJECT_DIR` or the project working directory when CAI executes it as interpreter code.
+  from `CDSW_PROJECT_DIR`, the project working directory, or a checkout immediately below the
+  working directory when CAI executes it as interpreter code.
 - Keep the Qdrant launcher standalone when CAI interpreter execution exposes neither the checkout
   nor `CDSW_PROJECT_DIR`; its runtime may safely bootstrap under the interpreter working directory.
 - Run native service binaries as child processes of the CAI Python engine, probe compatibility

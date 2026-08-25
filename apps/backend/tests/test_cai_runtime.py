@@ -41,6 +41,7 @@ def test_launcher_uses_shared_cai_port_resolution(launcher):
     assert "resolve_bind_host" in source
     assert "parse_known_args" in source
     assert "CML_APP_PORT" not in source
+    assert "os.execv" not in source
 
 
 @pytest.mark.parametrize("launcher", LAUNCHERS)
@@ -57,6 +58,17 @@ def test_launcher_loads_without_dunder_file(monkeypatch, tmp_path, launcher):
 @pytest.mark.parametrize("launcher", LAUNCHERS)
 def test_launcher_without_dunder_file_falls_back_to_project_cwd(monkeypatch, launcher):
     monkeypatch.chdir(ROOT)
+    monkeypatch.delenv("CDSW_PROJECT_DIR", raising=False)
+    namespace = {"__name__": "cai_entrypoint_test"}
+
+    exec(compile(launcher.read_text(), launcher.name, "exec"), namespace)
+
+    assert namespace["HERE"] == launcher.parent
+
+
+@pytest.mark.parametrize("launcher", LAUNCHERS)
+def test_launcher_finds_checkout_below_cai_working_directory(monkeypatch, launcher):
+    monkeypatch.chdir(ROOT.parent)
     monkeypatch.delenv("CDSW_PROJECT_DIR", raising=False)
     namespace = {"__name__": "cai_entrypoint_test"}
 

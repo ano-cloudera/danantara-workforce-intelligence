@@ -19,6 +19,8 @@ Python file, so `__file__` is not guaranteed. All four launchers resolve their d
 `__file__` when available, otherwise from `CDSW_PROJECT_DIR` or the project working directory.
 The Qdrant launcher additionally supports CAI interpreter execution where none of those identify
 the checkout: it uses the interpreter cwd for its downloaded binary and storage bootstrap.
+All launchers also detect a repository checkout directly below the CAI working directory, matching
+Workbench project layouts such as `danantara-workforce-intelligence/apps/<application>`.
 Select the repository `apps/<application>/run_cai.py` entrypoint and keep the complete repository
 tree available to the Application. In interpreter mode, launchers also tolerate runner arguments
 that are not part of the project launcher CLI.
@@ -79,6 +81,9 @@ When Langfuse is available, add `LANGFUSE_PUBLIC_KEY`, `LANGFUSE_SECRET_KEY`, `L
 The frontend, backend and observability launchers pass the resolved port to Uvicorn. The Qdrant
 launcher sets `QDRANT__SERVICE__HTTP_PORT` to the same resolved value. All four force
 `127.0.0.1` when `CDSW_APP_PORT` is present.
+
+Each service runs as a child of the CAI Python engine. Launchers must not replace the engine with
+`os.execv`, because Workbench can interpret that replacement as an exited Application engine.
 
 Do not put local defaults or CAI-internal port assumptions into Application environment variables.
 Use the HTTPS Application URLs shown by Cloudera AI for all cross-Application communication.

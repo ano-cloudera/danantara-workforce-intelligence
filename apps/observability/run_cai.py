@@ -17,6 +17,9 @@ def resolve_application_dir(app_name: str) -> Path:
         for candidate in (base / "apps" / app_name, base):
             if (candidate / "run_cai.py").is_file():
                 return candidate
+        for candidate in base.glob(f"*/apps/{app_name}"):
+            if (candidate / "run_cai.py").is_file():
+                return candidate
     raise RuntimeError(
         f"Unable to locate apps/{app_name}; start the CAI Application from project root"
     )
@@ -49,6 +52,14 @@ def ensure_venv():
     return py
 
 
+def run_application(py: Path, host: str, port: int) -> None:
+    command = [str(py), "-m", "uvicorn", "app.main:app", "--host", host, "--port", str(port)]
+    print(f"Starting observability host={host} port={port}", flush=True)
+    result = subprocess.run(command, check=False)
+    if result.returncode != 0:
+        raise RuntimeError(f"Observability exited with status {result.returncode}")
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--local-port", type=int, default=LOCAL_OBSERVABILITY_PORT)
@@ -57,10 +68,7 @@ def main():
     port = resolve_app_port(args.local_port)
     host = resolve_bind_host()
     os.chdir(HERE)
-    os.execv(
-        str(py),
-        [str(py), "-m", "uvicorn", "app.main:app", "--host", host, "--port", str(port)],
-    )
+    run_application(py, host, port)
 
 
 if __name__ == "__main__":

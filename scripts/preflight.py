@@ -53,6 +53,10 @@ for launcher in launchers:
         launcher_errors.append(
             f"{launcher.relative_to(ROOT)} cannot tolerate CAI interpreter arguments"
         )
+    if "os.execv" in source:
+        launcher_errors.append(
+            f"{launcher.relative_to(ROOT)} replaces the CAI Python engine with os.execv"
+        )
     if "CML_APP_PORT" in source:
         launcher_errors.append(f"{launcher.relative_to(ROOT)} still uses CML_APP_PORT")
     hardcoded_bindings = ("--port 8000", "--port 8080", "--port 8100", "--port 6333")
