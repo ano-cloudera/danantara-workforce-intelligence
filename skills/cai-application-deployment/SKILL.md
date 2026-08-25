@@ -16,5 +16,7 @@ Deploy and troubleshoot the four Cloudera AI Applications.
 - Configure cross-Application calls with `BACKEND_BASE_URL`, `QDRANT_BASE_URL`, and
   `OBSERVABILITY_BASE_URL`; never infer CAI hostnames or ports.
 - Create project-local venvs rather than relying on system package installation.
+- For venv dependency installation, remove `PIP_USER`/`PYTHONUSERBASE` and use pip `--isolated`
+  with `--no-user`; some CAI runtimes otherwise force an invalid user install inside the venv.
 - Keep secrets in hidden Application environment variables.
 - Verify `/health` before wiring another app.

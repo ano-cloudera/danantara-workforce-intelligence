@@ -15,6 +15,7 @@ LAUNCHERS = (
     ROOT / "apps/qdrant/run_cai.py",
     ROOT / "apps/observability/run_cai.py",
 )
+PYTHON_LAUNCHERS = tuple(launcher for launcher in LAUNCHERS if launcher.parent.name != "qdrant")
 
 
 def test_cdsw_app_port_takes_precedence():
@@ -75,6 +76,15 @@ def test_launcher_finds_checkout_below_cai_working_directory(monkeypatch, launch
     exec(compile(launcher.read_text(), launcher.name, "exec"), namespace)
 
     assert namespace["HERE"] == launcher.parent
+
+
+@pytest.mark.parametrize("launcher", PYTHON_LAUNCHERS)
+def test_python_launcher_disables_cai_user_pip_mode(launcher):
+    source = launcher.read_text()
+    assert 'pip_env.pop("PIP_USER", None)' in source
+    assert 'pip_env.pop("PYTHONUSERBASE", None)' in source
+    assert '"--isolated"' in source
+    assert '"--no-user"' in source
 
 
 def test_qdrant_launcher_is_standalone_in_cai_interpreter(monkeypatch, tmp_path):

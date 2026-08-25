@@ -84,6 +84,9 @@ launcher sets `QDRANT__SERVICE__HTTP_PORT` to the same resolved value. All four 
 
 Each service runs as a child of the CAI Python engine. Launchers must not replace the engine with
 `os.execv`, because Workbench can interpret that replacement as an exited Application engine.
+Python launchers install into their project-local virtual environment with pip isolated mode and
+`--no-user`; this overrides CAI runtime defaults such as `PIP_USER=true` that are invalid inside a
+virtual environment.
 
 Do not put local defaults or CAI-internal port assumptions into Application environment variables.
 Use the HTTPS Application URLs shown by Cloudera AI for all cross-Application communication.

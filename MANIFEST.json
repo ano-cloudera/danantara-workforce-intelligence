@@ -319,8 +319,8 @@
     },
     {
       "path": "apps/backend/run_cai.py",
-      "bytes": 2457,
-      "sha256": "f73fef1d053008feb0b14f47270b99f52b4d08e8b36cf392320c273954bcea8a"
+      "bytes": 2846,
+      "sha256": "8c069c8dc83c3109b1fff46f3859b872dcec2662e2f3e4cd8de81f4f23307a3c"
     },
     {
       "path": "apps/backend/scripts/init_qdrant_collections.py",
@@ -339,8 +339,8 @@
     },
     {
       "path": "apps/backend/tests/test_cai_runtime.py",
-      "bytes": 4859,
-      "sha256": "9485f49fd7cd0e3354fc888651461b4eb2f4a196dd602e72d2d001f0f430a539"
+      "bytes": 5293,
+      "sha256": "1cb48a04c6179b1795c399d14c9bd1d9c070df96118825912ba9fef422294064"
     },
     {
       "path": "apps/backend/tests/test_guardrails.py",
@@ -394,8 +394,8 @@
     },
     {
       "path": "apps/frontend/run_cai.py",
-      "bytes": 2463,
-      "sha256": "9bf0268789d0302ef5eff742df2dbf0a60b8c43d8878bd302c98c7f63852079a"
+      "bytes": 2852,
+      "sha256": "846371dd023d1b6be9e70094fb222911539491085c80f33adfa07c054f10fc0d"
     },
     {
       "path": "apps/observability/README.md",
@@ -419,8 +419,8 @@
     },
     {
       "path": "apps/observability/run_cai.py",
-      "bytes": 2493,
-      "sha256": "e2ab1f9eb70f75c3ac4078de6a91b90f2d60bafa838cc8f7ab2b5b4cbbecd7b4"
+      "bytes": 2882,
+      "sha256": "0decefc929311083efa3b66fd8dbbdacc789e78e9500c6a07883ee2d9330561c"
     },
     {
       "path": "apps/qdrant/README.md",
@@ -544,8 +544,8 @@
     },
     {
       "path": "docs/CLOUDERA_AI_DEPLOYMENT.md",
-      "bytes": 4310,
-      "sha256": "3b3061ac9a8c85986f6fb40c25072812f4dd277bcf98c08d7ef92aea9dba36bc"
+      "bytes": 4527,
+      "sha256": "09511f8613e9a683a82a442b2b1eb2da20f967c9e0ab5c7cbdcdece26e460c0c"
     },
     {
       "path": "docs/DEMO_RUNBOOK.md",
@@ -579,8 +579,8 @@
     },
     {
       "path": "scripts/preflight.py",
-      "bytes": 3602,
-      "sha256": "85218940ce21ca80a2db4d6c91ca0d9bac92a1cc93a408ca9916b91c736408ea"
+      "bytes": 3920,
+      "sha256": "31dafe794ef053bcea8f8512e8faca004f413a9e15c657e66a74c14301baeea6"
     },
     {
       "path": "scripts/project_tree.py",
@@ -594,8 +594,8 @@
     },
     {
       "path": "skills/cai-application-deployment/SKILL.md",
-      "bytes": 1292,
-      "sha256": "3daf01623320dc9185b34bb44802ff2cc3c4c3be3aae605a7f9f2ddeea983b13"
+      "bytes": 1483,
+      "sha256": "6677e55a822df5a5fd60bb6c362712b251a9b2480621312aca2f1e852e9be68a"
     },
     {
       "path": "skills/crewai-flow/SKILL.md",

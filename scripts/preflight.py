@@ -62,6 +62,14 @@ for launcher in launchers:
     hardcoded_bindings = ("--port 8000", "--port 8080", "--port 8100", "--port 6333")
     if any(binding in source for binding in hardcoded_bindings):
         launcher_errors.append(f"{launcher.relative_to(ROOT)} hardcodes an exposed port")
+    if launcher.parent.name != "qdrant" and (
+        'pip_env.pop("PIP_USER", None)' not in source
+        or '"--no-user"' not in source
+        or '"--isolated"' not in source
+    ):
+        launcher_errors.append(
+            f"{launcher.relative_to(ROOT)} does not neutralize CAI pip user-install mode"
+        )
 port_precedence_ok = (
     resolve_app_port(7000, {"CDSW_APP_PORT": "12001", "PORT": "12002"}) == 12001
     and resolve_app_port(7000, {"PORT": "12002"}) == 12002

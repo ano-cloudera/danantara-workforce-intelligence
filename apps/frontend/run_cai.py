@@ -44,9 +44,25 @@ def ensure_venv():
         subprocess.check_call([sys.executable, "-m", "venv", str(VENV)])
     py = VENV / "bin" / "python"
     if not MARKER.exists() or (HERE / "requirements.txt").stat().st_mtime > MARKER.stat().st_mtime:
-        subprocess.check_call([str(py), "-m", "pip", "install", "--upgrade", "pip"])
+        pip_env = os.environ.copy()
+        pip_env.pop("PIP_USER", None)
+        pip_env.pop("PYTHONUSERBASE", None)
         subprocess.check_call(
-            [str(py), "-m", "pip", "install", "-r", str(HERE / "requirements.txt")]
+            [str(py), "-m", "pip", "--isolated", "install", "--no-user", "--upgrade", "pip"],
+            env=pip_env,
+        )
+        subprocess.check_call(
+            [
+                str(py),
+                "-m",
+                "pip",
+                "--isolated",
+                "install",
+                "--no-user",
+                "-r",
+                str(HERE / "requirements.txt"),
+            ],
+            env=pip_env,
         )
         MARKER.touch()
     return py
