@@ -5,7 +5,24 @@ import subprocess
 import sys
 from pathlib import Path
 
-HERE = Path(__file__).resolve().parent
+
+def resolve_application_dir(app_name: str) -> Path:
+    script_path = globals().get("__file__")
+    if script_path:
+        return Path(script_path).resolve().parent
+    cwd = Path.cwd().resolve()
+    project_dir = os.getenv("CDSW_PROJECT_DIR")
+    candidates = ([Path(project_dir).resolve()] if project_dir else []) + [cwd]
+    for base in candidates:
+        for candidate in (base / "apps" / app_name, base):
+            if (candidate / "run_cai.py").is_file():
+                return candidate
+    raise RuntimeError(
+        f"Unable to locate apps/{app_name}; start the CAI Application from project root"
+    )
+
+
+HERE = resolve_application_dir("frontend")
 ROOT = HERE.parents[1]
 VENV = HERE / ".venv-frontend"
 MARKER = VENV / ".requirements-installed"
@@ -35,7 +52,7 @@ def ensure_venv():
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--local-port", type=int, default=LOCAL_FRONTEND_PORT)
-    args = parser.parse_args()
+    args = parser.parse_args() if globals().get("__file__") else parser.parse_known_args()[0]
     py = ensure_venv()
     port = resolve_app_port(args.local_port)
     host = resolve_bind_host()

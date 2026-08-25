@@ -14,6 +14,13 @@ CDSW_APP_PORT -> PORT -> local development default
 `PORT` is a secondary compatibility override. The application-specific default is used only
 outside Cloudera AI. `CML_APP_PORT` is not part of this project standard.
 
+CAI may execute the selected Application script through its interpreter rather than as a normal
+Python file, so `__file__` is not guaranteed. All four launchers resolve their directory from
+`__file__` when available, otherwise from `CDSW_PROJECT_DIR` or the project working directory.
+Select the repository `apps/<application>/run_cai.py` entrypoint and keep the complete repository
+tree available to the Application. In interpreter mode, launchers also tolerate runner arguments
+that are not part of the project launcher CLI.
+
 ## 1. Frontend Application
 
 Script: `apps/frontend/run_cai.py`  
@@ -80,3 +87,6 @@ Use the HTTPS Application URLs shown by Cloudera AI for all cross-Application co
 4. Frontend
 
 After each deployment, validate `/health` before continuing.
+
+For Qdrant, use its built-in `/healthz` and `/readyz` endpoints instead of the FastAPI `/health`
+route used by the other three Applications.

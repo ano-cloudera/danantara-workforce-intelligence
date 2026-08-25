@@ -1,6 +1,6 @@
 {
   "project": "danantara-workforce-intelligence-bmad",
-  "file_count": 127,
+  "file_count": 128,
   "files": [
     {
       "path": ".cursor/rules/project.mdc",
@@ -29,8 +29,8 @@
     },
     {
       "path": "AGENTS.md",
-      "bytes": 975,
-      "sha256": "caae79bf3ad10ea40c1e27bccf23ed7b3c6787bbbbd2cdc285ce029309ab9351"
+      "bytes": 1233,
+      "sha256": "35fcf3d8eae785e470a26f56f2a1122fc937dce2d905291aaeaad7b3e05a8f56"
     },
     {
       "path": "BRD.md",
@@ -69,13 +69,13 @@
     },
     {
       "path": "PROJECT_STATE.md",
-      "bytes": 3331,
-      "sha256": "46cea7a6bea5112bb7ae40befc1d06a4ea9c500d7e9dd1cee90251050e910afa"
+      "bytes": 3569,
+      "sha256": "054e45a721b97c8ff3296416bc2f35472b9ae02da648f518e108168bb595a80b"
     },
     {
       "path": "README.md",
-      "bytes": 5511,
-      "sha256": "8f4682332248fc760c1b1c5f9be65b27dc572fe6f12111e061212ea23a369e26"
+      "bytes": 5732,
+      "sha256": "2046241ca64f8fa5d1b96b6e7fb2400b8c47d4e492b3b3442298406f44b60e0a"
     },
     {
       "path": "RELEASE_CHECKLIST.md",
@@ -94,13 +94,13 @@
     },
     {
       "path": "START_HERE.md",
-      "bytes": 3069,
-      "sha256": "c6b1db818665120eee6ef0a309346b3cc751486a7a18a1857d23f4188df68086"
+      "bytes": 3316,
+      "sha256": "939fffacc13230fffeaab6081d8e276e6c61e5913273246cdd63f4c8e14c0b35"
     },
     {
       "path": "_bmad/README.md",
-      "bytes": 443,
-      "sha256": "466106d3c0bc41874370a8056fbf028e75dd069b62f5a71ac997f3bdf9017132"
+      "bytes": 895,
+      "sha256": "2f3e6e8d13d8d96ed2685fa143fbee30f4750876761f3b968123f62b7efb54af"
     },
     {
       "path": "_bmad/epics/EPIC-01-foundation.md",
@@ -154,8 +154,8 @@
     },
     {
       "path": "_bmad/project-state.yaml",
-      "bytes": 1962,
-      "sha256": "7907a624f8c465c5772c1cf5bcb0703db854b8d4a630e231a402d0a2448e6e9d"
+      "bytes": 2317,
+      "sha256": "2395dd643efdc865da864cbae225be17605877d3ca8b2ca6cf6332e752fb29f7"
     },
     {
       "path": "_bmad/stories/STORY-001-config-and-entrypoints.md",
@@ -219,8 +219,8 @@
     },
     {
       "path": "apps/backend/README.md",
-      "bytes": 1116,
-      "sha256": "86fdb6627f581314dcfa41f573b1c833d6f6a48c02f614242b1c193e40f281e6"
+      "bytes": 1294,
+      "sha256": "9d8728abe7a58af9c8aaa286ea5fdb63878612a42209de604b55fc8bba2a084b"
     },
     {
       "path": "apps/backend/app/__init__.py",
@@ -319,8 +319,8 @@
     },
     {
       "path": "apps/backend/run_cai.py",
-      "bytes": 1325,
-      "sha256": "ad42a6c9c6df0053ce3a66d9c6d87bb0efd66149a8f9d787f6c8c8151f5c73d4"
+      "bytes": 2011,
+      "sha256": "f5f0c2354fe18fe9cb096467ab3978dcadac61e7f7b353d030c684bd6559ca1e"
     },
     {
       "path": "apps/backend/scripts/init_qdrant_collections.py",
@@ -339,8 +339,8 @@
     },
     {
       "path": "apps/backend/tests/test_cai_runtime.py",
-      "bytes": 2977,
-      "sha256": "339ee09e408beb03da6ce7eb60840e2425fa8524b6f6d1fc8f3899ca1f707e40"
+      "bytes": 3807,
+      "sha256": "832a71fae6cf8aec6f1f2e6abcc79642a85fcbc659e9fcde1e468ba8d890b945"
     },
     {
       "path": "apps/backend/tests/test_guardrails.py",
@@ -359,8 +359,8 @@
     },
     {
       "path": "apps/frontend/README.md",
-      "bytes": 591,
-      "sha256": "5a5d020bb5e5de09f288505bb2eb3bafe3307facb39910cb5c5a4c18bbe5e975"
+      "bytes": 769,
+      "sha256": "97d85f1c8b84a50206f3e3813d2255cb75b6345add775fcb228b693e728b6b4a"
     },
     {
       "path": "apps/frontend/app/__init__.py",
@@ -394,13 +394,13 @@
     },
     {
       "path": "apps/frontend/run_cai.py",
-      "bytes": 1337,
-      "sha256": "74d8866a145537266dfc072ab227b53281682e2ccbc69d21c312a59e70358a8d"
+      "bytes": 2024,
+      "sha256": "a86efbd8f414c92a4206f0511ae117821d8a40d160908c63c9ea3ef95831afa3"
     },
     {
       "path": "apps/observability/README.md",
-      "bytes": 622,
-      "sha256": "bf0131d0c8df20df7e1adc8104e0ad6d4552d90222648cbb9e0ed34162f80e6d"
+      "bytes": 800,
+      "sha256": "202eeec7ad015550b86e9de7d40622c16fdd69f069d9988ae85fba2a6ef0b11e"
     },
     {
       "path": "apps/observability/app/__init__.py",
@@ -419,18 +419,18 @@
     },
     {
       "path": "apps/observability/run_cai.py",
-      "bytes": 1352,
-      "sha256": "68ff62f896e78531f1d57575f3caa3447a20767bd720199ddc4b5b3135a87257"
+      "bytes": 2044,
+      "sha256": "c82dec2b15d893b53f7fd9338cbe5cab7bf34e2437264c7bcb80be1b6ecef6c5"
     },
     {
       "path": "apps/qdrant/README.md",
-      "bytes": 1397,
-      "sha256": "fabedbc2f6ecf9a39040b7f6877d4f29366bd8ddc636ee8ff9952b34a7e0b9e0"
+      "bytes": 1632,
+      "sha256": "2a19ac5584bf00f8a18abeea7565f8477f2aa93422ceb64309aa74a46f2011d2"
     },
     {
       "path": "apps/qdrant/run_cai.py",
-      "bytes": 2367,
-      "sha256": "450d2ca3b4e30958d37a95d2fa8b27cd2d99e8f1a06c2e804f32b442b8b39e4f"
+      "bytes": 3047,
+      "sha256": "28f7fa7761ca81b021c9b4f197977f002116888bf9cdba0b65873f532f216164"
     },
     {
       "path": "artifacts/README.md",
@@ -544,8 +544,8 @@
     },
     {
       "path": "docs/CLOUDERA_AI_DEPLOYMENT.md",
-      "bytes": 2908,
-      "sha256": "8653eebdcdcc10a680c47a9d9cd60031e5909318dc11367065710b374d2eb5ad"
+      "bytes": 3578,
+      "sha256": "3f5991882d5158ffa97d364b116992b0fde9c3f7c01cf1e72982ceac96727517"
     },
     {
       "path": "docs/DEMO_RUNBOOK.md",
@@ -579,8 +579,8 @@
     },
     {
       "path": "scripts/preflight.py",
-      "bytes": 2937,
-      "sha256": "05e9398932c7b6339460a3564deb6b457621a379e65f197c2ec94897b430804f"
+      "bytes": 3369,
+      "sha256": "e84816384135a6eac161d3810c2cef573cde52ea765308d8e7489fdcf1628f50"
     },
     {
       "path": "scripts/project_tree.py",
@@ -594,13 +594,18 @@
     },
     {
       "path": "skills/cai-application-deployment/SKILL.md",
-      "bytes": 657,
-      "sha256": "58ddbbad2662a39f56b75a3652475b83ec227fa0f41e214f7a51bb3547b00f36"
+      "bytes": 854,
+      "sha256": "ae4b9e04eb55bc189acfc8702f1c7149d98461b8fceca9f14eba06f25fd32e31"
     },
     {
       "path": "skills/crewai-flow/SKILL.md",
       "bytes": 436,
       "sha256": "a3c5c5303ee662011f70fdbc194a2e97c40db35c18e92a6a6ce6cd9a4e6a9083"
+    },
+    {
+      "path": "skills/delivery-method-selector/SKILL.md",
+      "bytes": 3377,
+      "sha256": "d0050ffed6bc2164c6b61d0df9a24e8b293c174db98a71006d8cf09a6617da65"
     },
     {
       "path": "skills/frontend-ui/SKILL.md",
@@ -634,8 +639,8 @@
     },
     {
       "path": "skills/testing-release/SKILL.md",
-      "bytes": 416,
-      "sha256": "750543beee38537978bca77d7dd1e65e7d7dd5b6a64d70c1239bb1958a5dd474"
+      "bytes": 525,
+      "sha256": "4a52a427932a7d173e0e720761ffe55b43a0fb661f5fcb1d87fca5214d1dc74b"
     }
   ]
 }

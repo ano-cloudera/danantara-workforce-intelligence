@@ -154,3 +154,8 @@ Set these to the URLs assigned by Cloudera AI; never construct them from a fixed
 ## Project state
 
 See `PROJECT_STATE.md` and `_bmad/project-state.yaml` before making changes.
+
+## Development method
+
+Use `skills/delivery-method-selector/SKILL.md` to choose the lightest safe workflow: direct changes,
+lightweight spec-kit planning, or full BMAD. Routine fixes and maintenance do not require BMAD.

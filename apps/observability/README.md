@@ -9,3 +9,6 @@ This keeps observability useful even when third-party monitoring is unavailable 
 In Cloudera AI it binds to `127.0.0.1:${CDSW_APP_PORT}`. Port precedence is
 `CDSW_APP_PORT -> PORT -> 8100` (local only). The backend reaches this service through the
 CAI-assigned URL in `OBSERVABILITY_BASE_URL`.
+
+The launcher supports CAI interpreter execution where `__file__` is unavailable by resolving the
+Application directory from `CDSW_PROJECT_DIR` or the project working directory.

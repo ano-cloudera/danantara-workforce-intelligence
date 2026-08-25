@@ -10,7 +10,24 @@ import tempfile
 import urllib.request
 from pathlib import Path
 
-HERE = Path(__file__).resolve().parent
+
+def resolve_application_dir(app_name: str) -> Path:
+    script_path = globals().get("__file__")
+    if script_path:
+        return Path(script_path).resolve().parent
+    cwd = Path.cwd().resolve()
+    project_dir = os.getenv("CDSW_PROJECT_DIR")
+    candidates = ([Path(project_dir).resolve()] if project_dir else []) + [cwd]
+    for base in candidates:
+        for candidate in (base / "apps" / app_name, base):
+            if (candidate / "run_cai.py").is_file():
+                return candidate
+    raise RuntimeError(
+        f"Unable to locate apps/{app_name}; start the CAI Application from project root"
+    )
+
+
+HERE = resolve_application_dir("qdrant")
 ROOT = HERE.parents[1]
 RUNTIME = HERE / ".runtime"
 BIN_DIR = HERE / "bin"
@@ -56,7 +73,7 @@ def download_binary(version: str) -> Path:
 def main():
     p = argparse.ArgumentParser()
     p.add_argument("--local-port", type=int, default=LOCAL_QDRANT_PORT)
-    a = p.parse_args()
+    a = p.parse_args() if globals().get("__file__") else p.parse_known_args()[0]
     version = os.getenv("QDRANT_VERSION", "1.19.0")
     binary = download_binary(version)
     port = resolve_app_port(a.local_port)

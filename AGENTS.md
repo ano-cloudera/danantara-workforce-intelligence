@@ -7,8 +7,10 @@ Before changing code:
 1. Read `START_HERE.md`.
 2. Read `PROJECT_STATE.md`.
 3. Read `_bmad/project-state.yaml`.
-4. Read the relevant `skills/*/SKILL.md`.
-5. Read the story file under `_bmad/stories/` if the work maps to an existing story.
+4. Read `skills/delivery-method-selector/SKILL.md` and select direct, spec-kit, or BMAD delivery.
+5. Read the other relevant `skills/*/SKILL.md`.
+6. Read a story under `_bmad/stories/` only when BMAD is selected or the task changes that story's
+   acceptance criteria.
 
 Rules:
 
@@ -22,3 +24,5 @@ Rules:
 - Keep guardrails and observability as cross-cutting services, not agent tools.
 - All external services must have timeouts and graceful failure behavior.
 - Update `PROJECT_STATE.md` and `_bmad/project-state.yaml` after significant implementation decisions.
+- Do not use BMAD as the default for every change; use the lightest delivery method that safely
+  covers the scope.

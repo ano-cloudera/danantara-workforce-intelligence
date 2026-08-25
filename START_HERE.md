@@ -41,6 +41,10 @@ filesystem directories.
 4. For a local smoke test, follow `docs/LOCAL_DEVELOPMENT.md`.
 5. For Cloudera AI, follow `docs/CLOUDERA_AI_DEPLOYMENT.md`.
 
+Before development, use `skills/delivery-method-selector/SKILL.md` to choose direct implementation,
+lightweight spec-kit planning, or full BMAD. BMAD is reserved for changes whose business or
+architecture scope justifies the full artifact chain.
+
 For all four CAI Applications, the platform-provided `CDSW_APP_PORT` is authoritative. Launchers
 bind to `127.0.0.1` and resolve ports as `CDSW_APP_PORT -> PORT -> local default`. Cross-Application
 calls use `BACKEND_BASE_URL`, `QDRANT_BASE_URL`, and `OBSERVABILITY_BASE_URL` assigned by CAI.

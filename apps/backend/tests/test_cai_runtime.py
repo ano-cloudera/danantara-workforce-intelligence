@@ -39,9 +39,32 @@ def test_launcher_uses_shared_cai_port_resolution(launcher):
     source = launcher.read_text()
     assert "resolve_app_port" in source
     assert "resolve_bind_host" in source
+    assert "parse_known_args" in source
     assert "CML_APP_PORT" not in source
     for exposed_port in ("8000", "8080", "8100", "6333"):
         assert exposed_port not in source
+
+
+@pytest.mark.parametrize("launcher", LAUNCHERS)
+def test_launcher_loads_without_dunder_file(monkeypatch, tmp_path, launcher):
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.setenv("CDSW_PROJECT_DIR", str(ROOT))
+    namespace = {"__name__": "cai_entrypoint_test"}
+
+    exec(compile(launcher.read_text(), launcher.name, "exec"), namespace)
+
+    assert namespace["HERE"] == launcher.parent
+
+
+@pytest.mark.parametrize("launcher", LAUNCHERS)
+def test_launcher_without_dunder_file_falls_back_to_project_cwd(monkeypatch, launcher):
+    monkeypatch.chdir(ROOT)
+    monkeypatch.delenv("CDSW_PROJECT_DIR", raising=False)
+    namespace = {"__name__": "cai_entrypoint_test"}
+
+    exec(compile(launcher.read_text(), launcher.name, "exec"), namespace)
+
+    assert namespace["HERE"] == launcher.parent
 
 
 def test_cai_does_not_assume_local_inter_app_urls(monkeypatch):

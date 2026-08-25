@@ -28,6 +28,9 @@
 - Cloudera Data Visualization is the management analytics experience.
 - Guardrails run before orchestration and before returning final output.
 - Observability captures request, retrieval, tool, generation and guardrail events.
+- Delivery method is proportional: direct implementation for bounded changes, lightweight
+  spec-kit planning for medium well-defined features, and BMAD for material business/architecture
+  work. BMAD is not the default for every change.
 
 ## Environment-specific tasks still required
 

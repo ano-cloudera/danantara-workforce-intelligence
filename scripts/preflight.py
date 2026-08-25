@@ -13,6 +13,7 @@ required = [
     "apps/backend/run_cai.py",
     "apps/qdrant/run_cai.py",
     "apps/observability/run_cai.py",
+    "skills/delivery-method-selector/SKILL.md",
     "data/nifi-demo",
     "data/workforce-app",
     "PROJECT_STATE.md",
@@ -44,6 +45,14 @@ for launcher in launchers:
     source = launcher.read_text()
     if "resolve_app_port" not in source or "resolve_bind_host" not in source:
         launcher_errors.append(f"{launcher.relative_to(ROOT)} does not use shared CAI resolution")
+    if 'globals().get("__file__")' not in source or "CDSW_PROJECT_DIR" not in source:
+        launcher_errors.append(
+            f"{launcher.relative_to(ROOT)} cannot resolve paths in CAI cell execution"
+        )
+    if "parse_known_args" not in source:
+        launcher_errors.append(
+            f"{launcher.relative_to(ROOT)} cannot tolerate CAI interpreter arguments"
+        )
     if "CML_APP_PORT" in source:
         launcher_errors.append(f"{launcher.relative_to(ROOT)} still uses CML_APP_PORT")
     if any(port in source for port in ("8000", "8080", "8100", "6333")):

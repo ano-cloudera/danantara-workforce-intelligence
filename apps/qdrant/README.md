@@ -24,3 +24,7 @@ In Cloudera AI, the HTTP API listens on `127.0.0.1:${CDSW_APP_PORT}` through
 `QDRANT__SERVICE__HTTP_PORT`. Port precedence is `CDSW_APP_PORT -> PORT -> 6333`, where `6333` is
 strictly the local-development fallback. Backend clients use `QDRANT_BASE_URL` set to the CAI
 Application URL and never infer this listener port.
+
+The launcher also supports CAI interpreter execution where `__file__` is unavailable by resolving
+`apps/qdrant` from `CDSW_PROJECT_DIR` or the current project directory. Validate the deployed
+service through `/healthz` and `/readyz`.
