@@ -1,0 +1,19 @@
+applications:
+  frontend:
+    entrypoint: apps/frontend/run_cai.py
+    depends_on: [backend]
+  backend:
+    entrypoint: apps/backend/run_cai.py
+    depends_on: [qdrant, observability, gemini, cdw]
+  qdrant:
+    entrypoint: apps/qdrant/run_cai.py
+    depends_on: []
+  observability:
+    entrypoint: apps/observability/run_cai.py
+    depends_on: [langfuse_optional]
+platform_services:
+  ingestion: Cloudera DataFlow / NiFi
+  transformation: Cloudera Data Engineering
+  structured_serving: Cloudera Data Warehouse / Impala
+  management_analytics: Cloudera Data Visualization
+  governance: Cloudera SDX / Ranger / Atlas

@@ -1,0 +1,43 @@
+project:
+  name: Danantara Workforce Intelligence PoC
+  phase: implementation-ready
+  readiness_percent: 95
+  runtime: Cloudera AI Workbench Applications
+architecture:
+  applications:
+    - frontend
+    - backend
+    - qdrant
+    - observability
+  orchestrator: crewai-flows
+  llm_provider: gemini
+  llm_sdk: google-genai
+  vector_store: qdrant
+  qdrant_workload_isolation:
+    nifi_demo: QDRANT_NIFI_COLLECTION
+    workforce_candidates: QDRANT_CANDIDATE_COLLECTION
+    workforce_policies: QDRANT_POLICY_COLLECTION
+  local_data_roots:
+    nifi_demo: data/nifi-demo
+    workforce_app: data/workforce-app
+  app_state: sqlite
+  structured_data: cloudera-data-warehouse-impala
+  transformation: cloudera-data-engineering
+  dashboard: cloudera-data-visualization
+  guardrails: builtin-with-guardrails-ai-extension
+  observability: local-gateway-with-optional-langfuse
+locked_decisions:
+  - Agent Studio is showcase-only for this PoC runtime.
+  - No LangChain in baseline.
+  - SQLite is not enterprise system-of-record.
+  - Gemini text and embeddings are configurable.
+  - Guardrails execute before and after AI workflow.
+  - Shared Qdrant workloads use unique environment-configured collections, not folder isolation.
+pending_environment_tasks:
+  - configure Gemini credentials
+  - create CAI application URLs
+  - configure Qdrant URL and API key
+  - configure CDW Impala credentials
+  - configure NiFi ingestion URL
+  - configure optional Langfuse
+  - validate Ranger policies

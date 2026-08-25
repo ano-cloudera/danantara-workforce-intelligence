@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Danantara Workforce Intelligence</title>
+  <link rel="stylesheet" href="/static/styles.css" />
+</head>
+<body>
+<div class="shell">
+  <header><div class="brand"><span class="logo">D</span><b>Danantara</b> <span>Workforce Intelligence</span></div><div class="user">HR Business User</div></header>
+  <aside>
+    <button data-page="overview" class="nav active">Overview</button>
+    <button data-page="talent" class="nav">Talent Intelligence</button>
+    <button data-page="policy" class="nav">Policy Intelligence</button>
+    <button data-page="dashboard" class="nav">Dashboard</button>
+    <button data-page="sources" class="nav">Data Sources</button>
+    <button data-page="settings" class="nav">Settings</button>
+  </aside>
+  <main>
+    <section id="page-overview" class="page active">
+      <h1>Workforce Intelligence</h1><p class="sub">Governed analytics and AI for talent and workforce decisions.</p>
+      <div class="cards"><div class="card"><b>Talent Intelligence</b><p>Rank candidates and explain skill gaps.</p></div><div class="card"><b>Policy Intelligence</b><p>Search and compare policy with source references.</p></div><div class="card"><b>Management Analytics</b><p>Open governed dashboard in Cloudera Data Visualization.</p></div></div>
+      <div id="overview-summary" class="panel">Loading summary...</div>
+    </section>
+
+    <section id="page-talent" class="page">
+      <h1>Talent Intelligence</h1><p class="sub">AI-powered candidate screening with deterministic scoring and human review.</p>
+      <div class="toolbar"><select id="position"></select><input id="skills" placeholder="Additional skills, comma separated"><button id="run-match" class="primary">Run Match</button></div>
+      <div class="notice">AI-generated recommendation. Human review required before employment decisions.</div>
+      <div id="talent-results"></div>
+    </section>
+
+    <section id="page-policy" class="page">
+      <h1>Policy Intelligence</h1><p class="sub">Grounded policy search and comparison across entities.</p>
+      <div class="toolbar"><input id="policy-question" class="grow" value="Compare overtime policy between BNS, ENP and NHS"><button id="run-policy" class="primary">Analyze</button></div>
+      <div id="policy-answer" class="panel muted">Run a query to retrieve grounded policy context.</div>
+      <div id="policy-sources"></div>
+    </section>
+
+    <section id="page-dashboard" class="page">
+      <h1>Management Dashboard</h1><p class="sub">Management analytics is served by Cloudera Data Visualization.</p>
+      <div class="panel"><p>This custom app keeps conversational AI separate from management BI.</p><button id="open-cdv" class="primary">Open Cloudera Data Visualization</button></div>
+    </section>
+
+    <section id="page-sources" class="page">
+      <h1>Data Sources</h1><p class="sub">Upload PDF documents or submit candidate information. NiFi routing is used when configured.</p>
+      <div class="grid2">
+        <form id="upload-form" class="panel"><h3>Document Upload</h3><input name="file" type="file" accept="application/pdf" required><input name="entity" placeholder="Entity (BNS / ENP / NHS)"><input name="doc_type" placeholder="Document type"><button class="primary">Upload PDF</button><pre id="upload-result"></pre></form>
+        <form id="candidate-form" class="panel"><h3>Candidate Registration</h3><input name="full_name" placeholder="Full name" required><input name="company" placeholder="Company / Entity" required><input name="position_applied" placeholder="Position" required><input name="email" type="email" placeholder="Email" required><input name="core_skills" placeholder="Skills, comma separated"><input name="years_experience" type="number" step="0.1" placeholder="Years experience"><button class="primary">Submit Candidate</button><pre id="candidate-result"></pre></form>
+      </div>
+    </section>
+
+    <section id="page-settings" class="page">
+      <h1>Settings</h1><p class="sub">Runtime configuration overview. Secret values are never displayed.</p><div id="runtime-config" class="panel">Loading...</div>
+    </section>
+  </main>
+</div>
+<script src="/config.js"></script><script src="/static/app.js"></script>
+</body></html>

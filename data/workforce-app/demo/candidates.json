@@ -1,0 +1,70 @@
+[
+  {
+    "candidate_id": "C001",
+    "name": "Fahri Ananda",
+    "company": "BNS",
+    "years_experience": 5.2,
+    "skills": [
+      "Python",
+      "Machine Learning",
+      "SQL",
+      "Data Modeling",
+      "Data Visualization"
+    ],
+    "summary": "Data scientist with Python, ML and analytics experience."
+  },
+  {
+    "candidate_id": "C002",
+    "name": "Dewi Lestari",
+    "company": "ENP",
+    "years_experience": 4.1,
+    "skills": [
+      "Python",
+      "SQL",
+      "Machine Learning",
+      "Statistics",
+      "Data Visualization"
+    ],
+    "summary": "Analytics and ML practitioner with strong statistics background."
+  },
+  {
+    "candidate_id": "C003",
+    "name": "Rizky Permana",
+    "company": "NHS",
+    "years_experience": 6.3,
+    "skills": [
+      "SQL",
+      "Python",
+      "Data Modeling",
+      "Statistics"
+    ],
+    "summary": "Senior analytics professional with data modeling experience."
+  },
+  {
+    "candidate_id": "C004",
+    "name": "Siti Nurhaliza",
+    "company": "BNS",
+    "years_experience": 7.4,
+    "skills": [
+      "Python",
+      "Spark",
+      "SQL",
+      "MLOps",
+      "AWS"
+    ],
+    "summary": "Data engineer and ML platform specialist."
+  },
+  {
+    "candidate_id": "C005",
+    "name": "Bagas Prasetyo",
+    "company": "ENP",
+    "years_experience": 3.8,
+    "skills": [
+      "Python",
+      "Data Analytics",
+      "Power BI",
+      "SQL"
+    ],
+    "summary": "Data analyst focused on business intelligence."
+  }
+]

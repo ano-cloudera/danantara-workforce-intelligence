@@ -1,0 +1,47 @@
+[
+  {
+    "position_id": "P001",
+    "title": "Data Scientist",
+    "required_skills": [
+      "Python",
+      "Machine Learning",
+      "SQL",
+      "Statistics",
+      "Data Modeling"
+    ],
+    "preferred_skills": [
+      "MLOps",
+      "Spark"
+    ],
+    "min_years_experience": 4
+  },
+  {
+    "position_id": "P002",
+    "title": "Senior Data Engineer",
+    "required_skills": [
+      "Python",
+      "Spark",
+      "SQL",
+      "Data Modeling"
+    ],
+    "preferred_skills": [
+      "AWS",
+      "MLOps"
+    ],
+    "min_years_experience": 5
+  },
+  {
+    "position_id": "P003",
+    "title": "Data Analyst",
+    "required_skills": [
+      "SQL",
+      "Data Analytics",
+      "Data Visualization"
+    ],
+    "preferred_skills": [
+      "Python",
+      "Power BI"
+    ],
+    "min_years_experience": 2
+  }
+]

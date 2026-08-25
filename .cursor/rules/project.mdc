@@ -1,0 +1,5 @@
+---
+description: Danantara Workforce Intelligence project rules
+alwaysApply: true
+---
+Read AGENTS.md and PROJECT_STATE.md first. Gemini uses google-genai. CrewAI Flows orchestrate. No LangChain baseline. SQLite is app state only. Keep all endpoints and secrets configurable.
