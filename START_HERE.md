@@ -41,6 +41,10 @@ filesystem directories.
 4. For a local smoke test, follow `docs/LOCAL_DEVELOPMENT.md`.
 5. For Cloudera AI, follow `docs/CLOUDERA_AI_DEPLOYMENT.md`.
 
+For all four CAI Applications, the platform-provided `CDSW_APP_PORT` is authoritative. Launchers
+bind to `127.0.0.1` and resolve ports as `CDSW_APP_PORT -> PORT -> local default`. Cross-Application
+calls use `BACKEND_BASE_URL`, `QDRANT_BASE_URL`, and `OBSERVABILITY_BASE_URL` assigned by CAI.
+
 ## Gemini
 
 The backend uses the current Google Gen AI SDK:

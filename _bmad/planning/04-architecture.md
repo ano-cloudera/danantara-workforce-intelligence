@@ -3,6 +3,17 @@
 ## Runtime topology
 Four CAI Applications: frontend, backend, qdrant, observability.
 
+### Cloudera AI Application networking
+
+Each Application binds to `127.0.0.1` and treats the platform-injected `CDSW_APP_PORT` as the
+authoritative listener port. `PORT` is the secondary override and an application-specific default
+is used only for local development outside CAI. No CAI deployment configuration fixes an exposed
+port.
+
+Applications communicate through the URLs assigned by Cloudera AI: `BACKEND_BASE_URL` for the
+frontend proxy, plus `QDRANT_BASE_URL` and `OBSERVABILITY_BASE_URL` for backend integrations.
+Application hostnames and ports are never inferred or embedded in cross-Application code.
+
 ## Backend
 FastAPI + CrewAI Flows + direct Google Gen AI SDK calls. This avoids dependence on Agent Studio provider support while keeping orchestration inside Cloudera AI.
 

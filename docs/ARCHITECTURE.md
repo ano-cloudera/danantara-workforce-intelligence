@@ -9,6 +9,13 @@
 5. Qdrant stores vector representations for semantic retrieval.
 6. Cloudera AI Applications host the custom UX, backend orchestration, vector service and observability service.
 
+## CAI application networking
+
+All application entrypoints bind to loopback (`127.0.0.1`) in Cloudera AI Workbench. Listener
+ports follow `CDSW_APP_PORT -> PORT -> local development default`; only the last option uses the
+documented local ports. Frontend-to-backend, backend-to-Qdrant, and backend-to-observability calls
+use `BACKEND_BASE_URL`, `QDRANT_BASE_URL`, and `OBSERVABILITY_BASE_URL`, respectively.
+
 ## Runtime request flows
 
 ### Talent Intelligence

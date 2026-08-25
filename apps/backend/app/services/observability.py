@@ -15,7 +15,13 @@ class ObservabilityClient:
     def __init__(self, settings: Settings):
         self.settings = settings
 
-    def set_context(self, *, session_id: str | None = None, user_id: str | None = None, request_id: str | None = None):
+    def set_context(
+        self,
+        *,
+        session_id: str | None = None,
+        user_id: str | None = None,
+        request_id: str | None = None,
+    ):
         _context.set({"session_id": session_id, "user_id": user_id, "request_id": request_id})
 
     def emit(self, event_type: str, name: str, metadata: dict | None = None):
@@ -28,12 +34,17 @@ class ObservabilityClient:
             **_context.get(),
         }
         logger.info("OBS %s", payload)
-        if not self.settings.observability_url:
+        if not self.settings.observability_base_url:
             return
         headers = {}
         if self.settings.observability_api_key:
             headers["X-API-Key"] = self.settings.observability_api_key
         try:
-            httpx.post(f"{self.settings.observability_url.rstrip('/')}/events", json=payload, headers=headers, timeout=2.5)
+            httpx.post(
+                f"{self.settings.observability_base_url}/events",
+                json=payload,
+                headers=headers,
+                timeout=2.5,
+            )
         except Exception as exc:
             logger.warning("Observability gateway unavailable: %s", exc)

@@ -1,6 +1,6 @@
 {
   "project": "danantara-workforce-intelligence-bmad",
-  "file_count": 124,
+  "file_count": 127,
   "files": [
     {
       "path": ".cursor/rules/project.mdc",
@@ -9,8 +9,8 @@
     },
     {
       "path": ".env.example",
-      "bytes": 1730,
-      "sha256": "ae79eaa515bf6a75ecd026248587b29718fe338380160204b4cde08ded747436"
+      "bytes": 1832,
+      "sha256": "1645e44c172dfc2d30f0b0ac3542f866c9402a8ab29eff578f0157402b85010a"
     },
     {
       "path": ".github/copilot-instructions.md",
@@ -69,13 +69,13 @@
     },
     {
       "path": "PROJECT_STATE.md",
-      "bytes": 2839,
-      "sha256": "b559d0f3ffbf835a12966c6bef05be8ab5f4d2d9d0d8ec0dc1620bead7d96269"
+      "bytes": 3331,
+      "sha256": "46cea7a6bea5112bb7ae40befc1d06a4ea9c500d7e9dd1cee90251050e910afa"
     },
     {
       "path": "README.md",
-      "bytes": 4754,
-      "sha256": "1141c8752c941c87735b4aa786c191e60a730c7da4f47fa9348f9db88d8c2e7f"
+      "bytes": 5511,
+      "sha256": "8f4682332248fc760c1b1c5f9be65b27dc572fe6f12111e061212ea23a369e26"
     },
     {
       "path": "RELEASE_CHECKLIST.md",
@@ -94,8 +94,8 @@
     },
     {
       "path": "START_HERE.md",
-      "bytes": 2775,
-      "sha256": "fd78e63697a2781765521f75cbe9a49dd34ebeee64bee9aeeb91a619935249e8"
+      "bytes": 3069,
+      "sha256": "c6b1db818665120eee6ef0a309346b3cc751486a7a18a1857d23f4188df68086"
     },
     {
       "path": "_bmad/README.md",
@@ -139,8 +139,8 @@
     },
     {
       "path": "_bmad/planning/04-architecture.md",
-      "bytes": 1521,
-      "sha256": "c49e802b6b67fed2dfb501e735fc240eae290533fc1441da4155a4b311a20ffc"
+      "bytes": 2136,
+      "sha256": "3418a7a0b2c286d610a6367d7666abeaffbea9a45361664e16ad11c57a3e3101"
     },
     {
       "path": "_bmad/planning/05-ux-spec.md",
@@ -154,13 +154,13 @@
     },
     {
       "path": "_bmad/project-state.yaml",
-      "bytes": 1473,
-      "sha256": "624b7c2e3ad6b6105add94ac1836a84bc961e04421165c5141c2cfd5d52c098f"
+      "bytes": 1962,
+      "sha256": "7907a624f8c465c5772c1cf5bcb0703db854b8d4a630e231a402d0a2448e6e9d"
     },
     {
       "path": "_bmad/stories/STORY-001-config-and-entrypoints.md",
-      "bytes": 736,
-      "sha256": "f8ce63b3cc6848bc21e613540f15a88f1eeecd48116bea7fe37f8ba757903acb"
+      "bytes": 930,
+      "sha256": "2e17b8c85089478ab74815f6c2f4cb687893aa87712a35246a7f2165f9987164"
     },
     {
       "path": "_bmad/stories/STORY-002-gemini-provider.md",
@@ -174,8 +174,8 @@
     },
     {
       "path": "_bmad/stories/STORY-004-qdrant-vector-store.md",
-      "bytes": 758,
-      "sha256": "e913ec28eb06501d5ad80e7a03f188943af818fc7fe0f7d021fa8026364ced59"
+      "bytes": 910,
+      "sha256": "ffe6f4ef671873ba06e242a85ad0410b94ec8d54a946f4d86715eb6e877e1943"
     },
     {
       "path": "_bmad/stories/STORY-005-cdw-data-tool.md",
@@ -199,13 +199,13 @@
     },
     {
       "path": "_bmad/stories/STORY-009-observability.md",
-      "bytes": 439,
-      "sha256": "f351d3f6b798f59f7be64c6fea49d0ce28045d3a12ed7c940dad857eebf3af80"
+      "bytes": 565,
+      "sha256": "8f9eef4bd197529c6d40cb7a744d3dc4350fae24e6466f73982e2815ba5ab44f"
     },
     {
       "path": "_bmad/stories/STORY-010-frontend.md",
-      "bytes": 447,
-      "sha256": "a5bf36e1ec863a800ddf6ff1c32f0ad47870b6c356325d2001adf3d3ed9f2dcd"
+      "bytes": 564,
+      "sha256": "8d15d97d8aa8ab6da7c6702ba70012328c67cced22d916d3bfb773359190b41d"
     },
     {
       "path": "_bmad/stories/STORY-011-nifi-ingestion.md",
@@ -214,13 +214,13 @@
     },
     {
       "path": "_bmad/stories/STORY-012-cai-deployment.md",
-      "bytes": 462,
-      "sha256": "7ff0f941641c487fbe1dc28aee4cd9927074613ba3bb673a1cff17a61b213409"
+      "bytes": 696,
+      "sha256": "95aa15fcaaec7c84b2950ef37f30b9882e2def2de9b5eb6bd3a400de15ec231b"
     },
     {
       "path": "apps/backend/README.md",
-      "bytes": 796,
-      "sha256": "2f81c1cacc8ef05d8aabb1ed871d5c27e87cb4e74c22e6804193d157d7693295"
+      "bytes": 1116,
+      "sha256": "86fdb6627f581314dcfa41f573b1c833d6f6a48c02f614242b1c193e40f281e6"
     },
     {
       "path": "apps/backend/app/__init__.py",
@@ -229,13 +229,13 @@
     },
     {
       "path": "apps/backend/app/api.py",
-      "bytes": 5854,
-      "sha256": "e69ca09497428a0a52ce77dbd25d81787b572ff1eb32d8bbf9fbcd2e312c3801"
+      "bytes": 6572,
+      "sha256": "e7776ccfbb0dd4f977a95611e12cc3bfa3113c6baee4a7f93d28acc8637be246"
     },
     {
       "path": "apps/backend/app/config.py",
-      "bytes": 3301,
-      "sha256": "cd1e041639492888760e35d473f112fd242be9e78027af7d4049e1c34a5402c5"
+      "bytes": 4099,
+      "sha256": "7841f842412966fd1d4ce97aeadd0cd251a649c73378f9b5c104b5fc23ea17aa"
     },
     {
       "path": "apps/backend/app/main.py",
@@ -294,8 +294,8 @@
     },
     {
       "path": "apps/backend/app/services/observability.py",
-      "bytes": 1364,
-      "sha256": "be7a452cc9fdcee8c0a23eb689b430ee886eccbad736074d825440aebffb1a95"
+      "bytes": 1488,
+      "sha256": "5833304fec8154bea423be29f71d24ac4f330b507834197f45d424dce3e9bd59"
     },
     {
       "path": "apps/backend/app/services/policy_fallback.py",
@@ -304,8 +304,8 @@
     },
     {
       "path": "apps/backend/app/services/qdrant_service.py",
-      "bytes": 4154,
-      "sha256": "dad81a163b60a11fe7e86115173aa49ed45e0eefbd0d2857ffd55dd9a051fa0b"
+      "bytes": 4420,
+      "sha256": "50f1e5288e2263f994a14cc3e65cf6fe22c2728208baf947a7933f154be64665"
     },
     {
       "path": "apps/backend/app/services/session_store.py",
@@ -319,8 +319,8 @@
     },
     {
       "path": "apps/backend/run_cai.py",
-      "bytes": 1167,
-      "sha256": "ce2b371590a0d4be9139fd7a6e4bf915e9b1b91d292b398e4389f55e16519719"
+      "bytes": 1325,
+      "sha256": "ad42a6c9c6df0053ce3a66d9c6d87bb0efd66149a8f9d787f6c8c8151f5c73d4"
     },
     {
       "path": "apps/backend/scripts/init_qdrant_collections.py",
@@ -338,14 +338,19 @@
       "sha256": "e90ce01206b4d4cec624476da8e314f7fde93dea99c0c6d6045544e7049cc16f"
     },
     {
+      "path": "apps/backend/tests/test_cai_runtime.py",
+      "bytes": 2977,
+      "sha256": "339ee09e408beb03da6ce7eb60840e2425fa8524b6f6d1fc8f3899ca1f707e40"
+    },
+    {
       "path": "apps/backend/tests/test_guardrails.py",
       "bytes": 405,
       "sha256": "99901d044144dccb609f16c558b41e7d14ce93ff8941354e8dbbd45d47e2cc7c"
     },
     {
       "path": "apps/backend/tests/test_qdrant_configuration.py",
-      "bytes": 2760,
-      "sha256": "a0646bb668324c81d68519386382450eb04719ada0a0086037fcd6a57879fae6"
+      "bytes": 3187,
+      "sha256": "443993f1f7bff43ff37d4950d3d72043f376c1f8497d29c0d04ed68dac343fd1"
     },
     {
       "path": "apps/backend/tests/test_scoring_logic.py",
@@ -354,8 +359,8 @@
     },
     {
       "path": "apps/frontend/README.md",
-      "bytes": 340,
-      "sha256": "fb5f71df9d55a30b2d975b4085a40648bfe17fab891f7cf2402879b6d00b978e"
+      "bytes": 591,
+      "sha256": "5a5d020bb5e5de09f288505bb2eb3bafe3307facb39910cb5c5a4c18bbe5e975"
     },
     {
       "path": "apps/frontend/app/__init__.py",
@@ -364,8 +369,8 @@
     },
     {
       "path": "apps/frontend/app/main.py",
-      "bytes": 1817,
-      "sha256": "17b029a4c57bddf113f01d7b30b60c105dab1fc54633116d905ed57cd9c34501"
+      "bytes": 2193,
+      "sha256": "97f1f91cc67c3fdda629a078145132fc6ce19dfc33365790449166968a601d36"
     },
     {
       "path": "apps/frontend/app/static/app.js",
@@ -389,13 +394,13 @@
     },
     {
       "path": "apps/frontend/run_cai.py",
-      "bytes": 1055,
-      "sha256": "e04d56d73674e189434322b23641e7c4ae0c81e3d512fb8c18adafc04ef3717b"
+      "bytes": 1337,
+      "sha256": "74d8866a145537266dfc072ab227b53281682e2ccbc69d21c312a59e70358a8d"
     },
     {
       "path": "apps/observability/README.md",
-      "bytes": 408,
-      "sha256": "53260d8d44459b4edf54503e8f9a9e1bdc8ac12eb6e172d36ec7930b16583706"
+      "bytes": 622,
+      "sha256": "bf0131d0c8df20df7e1adc8104e0ad6d4552d90222648cbb9e0ed34162f80e6d"
     },
     {
       "path": "apps/observability/app/__init__.py",
@@ -414,18 +419,18 @@
     },
     {
       "path": "apps/observability/run_cai.py",
-      "bytes": 1009,
-      "sha256": "91890ac7f8d46dc80651ae2cb2b621e0fbfceba1327e625e6b78a0a535f59182"
+      "bytes": 1352,
+      "sha256": "68ff62f896e78531f1d57575f3caa3447a20767bd720199ddc4b5b3135a87257"
     },
     {
       "path": "apps/qdrant/README.md",
-      "bytes": 1075,
-      "sha256": "ae11ac0eb27bee8beefc5d4dd94186ae14ddbe94b38616130f49b674de159442"
+      "bytes": 1397,
+      "sha256": "fabedbc2f6ecf9a39040b7f6877d4f29366bd8ddc636ee8ff9952b34a7e0b9e0"
     },
     {
       "path": "apps/qdrant/run_cai.py",
-      "bytes": 2260,
-      "sha256": "1535665b06b1fca935d303a4b38b306b415d5f462c8af3116c0488124d5deacf"
+      "bytes": 2367,
+      "sha256": "450d2ca3b4e30958d37a95d2fa8b27cd2d99e8f1a06c2e804f32b442b8b39e4f"
     },
     {
       "path": "artifacts/README.md",
@@ -463,9 +468,19 @@
       "sha256": "016e7fa7aa5274fa2976ab0a21f8064908e4bd3a3c6b4088eb7656973514ec46"
     },
     {
+      "path": "config/__init__.py",
+      "bytes": 61,
+      "sha256": "d84a64fbf552d3a48e2bb96daa0eb15e98e974d28419ff15062bffe6ccc2d257"
+    },
+    {
       "path": "config/application-map.yaml",
-      "bytes": 616,
-      "sha256": "633ad83df1481a4d8da23eaaf49e936f91892fbdecb4bd1da00ce021a9a18cba"
+      "bytes": 850,
+      "sha256": "4284f9101f3a97fe8d4c54b5ce0ff31f351cc609f3d090bcd6223d530f6901d8"
+    },
+    {
+      "path": "config/cai_runtime.py",
+      "bytes": 1184,
+      "sha256": "320ee5d2c99b2e93bae47b97903ea0b0aab04bae1693628a465160a08c3d45ea"
     },
     {
       "path": "config/data-contracts.md",
@@ -524,23 +539,23 @@
     },
     {
       "path": "docs/ARCHITECTURE.md",
-      "bytes": 1337,
-      "sha256": "b27ed5669224f77d85f545a5b23ff10070ba9fdc643e6722bb00f0bb68ab9986"
+      "bytes": 1746,
+      "sha256": "404d294793b86525c30fb50231514b0c41ed0dc6188f9e8e995e3a91015cf579"
     },
     {
       "path": "docs/CLOUDERA_AI_DEPLOYMENT.md",
-      "bytes": 2199,
-      "sha256": "9bb4594c00c3818b318db090ba870b3cfab4c583ee3f8822f35a25afc33a7c13"
+      "bytes": 2908,
+      "sha256": "8653eebdcdcc10a680c47a9d9cd60031e5909318dc11367065710b374d2eb5ad"
     },
     {
       "path": "docs/DEMO_RUNBOOK.md",
-      "bytes": 1470,
-      "sha256": "bfdf24ef3dd227452208e8526265898b899b04790d2766bb0aefee6ff6dd4540"
+      "bytes": 1867,
+      "sha256": "d7028e7c0f6488ad6101469484ee815bc757a50109fc2685c3154b17fe4137b9"
     },
     {
       "path": "docs/LOCAL_DEVELOPMENT.md",
-      "bytes": 986,
-      "sha256": "bf4e98bc2615ce7e5bbadc69345badd9910ac3ec13306760800935b59c36f95e"
+      "bytes": 1413,
+      "sha256": "0b40bc0bbb3a2ddd5046b46a268542a63ad897f0bf717df79ee075e3707d18e9"
     },
     {
       "path": "docs/REFERENCES.md",
@@ -554,8 +569,8 @@
     },
     {
       "path": "scripts/cai_env_checklist.md",
-      "bytes": 307,
-      "sha256": "086adba6013444ec5d661a6e272026ca41db3c71568add795d42fb65eccfdd28"
+      "bytes": 505,
+      "sha256": "93dedc8d1357090585dcad8a89b9191bca2d3d128ca4f977a95aa8d8086d4035"
     },
     {
       "path": "scripts/package_project.py",
@@ -564,8 +579,8 @@
     },
     {
       "path": "scripts/preflight.py",
-      "bytes": 1321,
-      "sha256": "09fba2058632050b1696358f69841e75fa6239ecf07a826dda93120dc0c090bf"
+      "bytes": 2937,
+      "sha256": "05e9398932c7b6339460a3564deb6b457621a379e65f197c2ec94897b430804f"
     },
     {
       "path": "scripts/project_tree.py",
@@ -574,13 +589,13 @@
     },
     {
       "path": "skills/backend-fastapi/SKILL.md",
-      "bytes": 332,
-      "sha256": "e926591d4ebedb8fc20cf1c7a1ed7a6390b1f7578fecff4775adba862e88e513"
+      "bytes": 527,
+      "sha256": "e5ef315a654fd9ba64dc08004992ae76fcc0373b0a28c63cdae2689b61f6023c"
     },
     {
       "path": "skills/cai-application-deployment/SKILL.md",
-      "bytes": 409,
-      "sha256": "c606a80c2ea31ba016f98671fda72c199b86e6ef8fe494a41ca5f650fb4e8d1c"
+      "bytes": 657,
+      "sha256": "58ddbbad2662a39f56b75a3652475b83ec227fa0f41e214f7a51bb3547b00f36"
     },
     {
       "path": "skills/crewai-flow/SKILL.md",
@@ -589,8 +604,8 @@
     },
     {
       "path": "skills/frontend-ui/SKILL.md",
-      "bytes": 344,
-      "sha256": "040ee4605a92a9139b6ef054c006d8a2e51b0d0305e28aa48951965b84e0677e"
+      "bytes": 473,
+      "sha256": "5728314ce6d9561210b12de02f081fde922bfc7600e858065c5af03fc461f7ef"
     },
     {
       "path": "skills/gemini-provider/SKILL.md",
@@ -609,18 +624,18 @@
     },
     {
       "path": "skills/observability-langfuse/SKILL.md",
-      "bytes": 391,
-      "sha256": "e855b45a6945faf0f4fa3a3c080fa80af09977808a14a1414294d057580f2693"
+      "bytes": 561,
+      "sha256": "16818d6d470ab9899551bde486a90095d2190d9060a7211922b0872cc5bfb16d"
     },
     {
       "path": "skills/qdrant-rag/SKILL.md",
-      "bytes": 911,
-      "sha256": "577211b865c5b15be28517b8d8121936ce5b64ba2c9cb1306c24744780d6d783"
+      "bytes": 1071,
+      "sha256": "a2cf3cb42152f971d504a08d4ae1efacc3141139659ea8928548a2c7944eb9c1"
     },
     {
       "path": "skills/testing-release/SKILL.md",
-      "bytes": 240,
-      "sha256": "19e828a38bedf756b12d1b0354be5ed645a128dd77fa9ae3a8af2a2f0f3e6582"
+      "bytes": 416,
+      "sha256": "750543beee38537978bca77d7dd1e65e7d7dd5b6a64d70c1239bb1958a5dd474"
     }
   ]
 }

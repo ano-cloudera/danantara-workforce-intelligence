@@ -2,9 +2,14 @@ applications:
   frontend:
     entrypoint: apps/frontend/run_cai.py
     depends_on: [backend]
+    service_urls:
+      backend: BACKEND_BASE_URL
   backend:
     entrypoint: apps/backend/run_cai.py
     depends_on: [qdrant, observability, gemini, cdw]
+    service_urls:
+      qdrant: QDRANT_BASE_URL
+      observability: OBSERVABILITY_BASE_URL
   qdrant:
     entrypoint: apps/qdrant/run_cai.py
     depends_on: []
@@ -17,3 +22,6 @@ platform_services:
   structured_serving: Cloudera Data Warehouse / Impala
   management_analytics: Cloudera Data Visualization
   governance: Cloudera SDX / Ranger / Atlas
+cai_runtime:
+  bind_host: 127.0.0.1
+  port_precedence: [CDSW_APP_PORT, PORT, local_default]

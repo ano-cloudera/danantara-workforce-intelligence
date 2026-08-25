@@ -53,6 +53,8 @@ Observability events are sent to the Observability CAI Application and optionall
 - Structured enterprise data remains in Iceberg/CDW.
 - Guardrails and observability are horizontal platform layers, not agent tools.
 - All integrations are configuration-driven with working demo-mode fallbacks.
+- Every CAI Application binds to `127.0.0.1` and resolves its listening port as
+  `CDSW_APP_PORT`, then `PORT`, then its local-development default.
 
 ## Repository map
 
@@ -130,6 +132,24 @@ Upload the complete repository to one Cloudera AI project. Create four Applicati
 | Observability | `apps/observability/run_cai.py` |
 
 Detailed settings are in `docs/CLOUDERA_AI_DEPLOYMENT.md`.
+
+### CAI port and service URL standard
+
+Do not assign an exposed port in Cloudera AI. The platform injects `CDSW_APP_PORT`, and every
+launcher uses this precedence:
+
+```text
+CDSW_APP_PORT -> PORT -> application local default
+```
+
+The local defaults are frontend `8080`, backend `8000`, Qdrant `6333`, and observability `8100`.
+They apply only outside CAI. Communication between Applications uses their CAI URLs:
+
+- frontend: `BACKEND_BASE_URL`
+- backend: `QDRANT_BASE_URL`
+- backend: `OBSERVABILITY_BASE_URL`
+
+Set these to the URLs assigned by Cloudera AI; never construct them from a fixed hostname or port.
 
 ## Project state
 

@@ -4,6 +4,10 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
+
+from config.cai_runtime import resolve_app_port  # noqa: E402
+
 required = [
     "apps/frontend/run_cai.py",
     "apps/backend/run_cai.py",
@@ -23,6 +27,32 @@ qdrant_collection_vars = (
     "QDRANT_POLICY_COLLECTION",
 )
 missing_collection_vars = [name for name in qdrant_collection_vars if f"{name}=" not in env_example]
+inter_app_url_vars = (
+    "BACKEND_BASE_URL",
+    "QDRANT_BASE_URL",
+    "OBSERVABILITY_BASE_URL",
+)
+missing_inter_app_urls = [name for name in inter_app_url_vars if f"{name}=" not in env_example]
+launchers = [
+    ROOT / "apps/frontend/run_cai.py",
+    ROOT / "apps/backend/run_cai.py",
+    ROOT / "apps/qdrant/run_cai.py",
+    ROOT / "apps/observability/run_cai.py",
+]
+launcher_errors = []
+for launcher in launchers:
+    source = launcher.read_text()
+    if "resolve_app_port" not in source or "resolve_bind_host" not in source:
+        launcher_errors.append(f"{launcher.relative_to(ROOT)} does not use shared CAI resolution")
+    if "CML_APP_PORT" in source:
+        launcher_errors.append(f"{launcher.relative_to(ROOT)} still uses CML_APP_PORT")
+    if any(port in source for port in ("8000", "8080", "8100", "6333")):
+        launcher_errors.append(f"{launcher.relative_to(ROOT)} embeds an exposed port literal")
+port_precedence_ok = (
+    resolve_app_port(7000, {"CDSW_APP_PORT": "12001", "PORT": "12002"}) == 12001
+    and resolve_app_port(7000, {"PORT": "12002"}) == 12002
+    and resolve_app_port(7000, {}) == 7000
+)
 print("Danantara Workforce Intelligence preflight")
 print("Repository:", ROOT)
 print("Required files:", "OK" if not missing else "MISSING " + ",".join(missing))
@@ -31,10 +61,22 @@ print(
     "OK" if not missing_collection_vars else "MISSING " + ",".join(missing_collection_vars),
 )
 print(
+    "Inter-application URLs:",
+    "OK" if not missing_inter_app_urls else "MISSING " + ",".join(missing_inter_app_urls),
+)
+print("CAI port precedence:", "OK" if port_precedence_ok else "FAILED")
+print("CAI launcher port policy:", "OK" if not launcher_errors else "; ".join(launcher_errors))
+print(
     "Gemini key in current environment:",
     "SET" if os.getenv("GEMINI_API_KEY") else "NOT SET (expected before runtime)",
 )
 print("Python:", sys.version.split()[0])
-if missing or missing_collection_vars:
+if (
+    missing
+    or missing_collection_vars
+    or missing_inter_app_urls
+    or not port_precedence_ok
+    or launcher_errors
+):
     raise SystemExit(1)
 print("Preflight passed. Environment connectivity still requires target CAI validation.")

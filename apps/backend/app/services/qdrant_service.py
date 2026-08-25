@@ -11,11 +11,17 @@ class QdrantService:
         self.observability = observability
         self.client = None
         if settings.qdrant_mode != "disabled":
+            if not settings.qdrant_base_url:
+                if settings.qdrant_mode == "required":
+                    raise RuntimeError("QDRANT_BASE_URL is required when QDRANT_MODE=required")
+                return
             try:
                 from qdrant_client import QdrantClient
 
                 self.client = QdrantClient(
-                    url=settings.qdrant_url, api_key=settings.qdrant_api_key, timeout=5.0
+                    url=settings.qdrant_base_url,
+                    api_key=settings.qdrant_api_key,
+                    timeout=5.0,
                 )
             except Exception:
                 if settings.qdrant_mode == "required":
@@ -59,7 +65,7 @@ class QdrantService:
             name,
             vectors_config=VectorParams(
                 size=self.settings.gemini_embed_dim, distance=Distance.COSINE
-            )
+            ),
         )
         return True
 

@@ -19,3 +19,8 @@ Use `QDRANT_STORAGE_PATH=./data/qdrant-storage` for local persistent storage. Fr
 `apps/backend`, run `python scripts/init_qdrant_collections.py` after Qdrant starts to create any
 missing collections with `GEMINI_EMBED_DIM` as the vector size. Existing collections are retained;
 the utility fails clearly if an existing vector size is incompatible.
+
+In Cloudera AI, the HTTP API listens on `127.0.0.1:${CDSW_APP_PORT}` through
+`QDRANT__SERVICE__HTTP_PORT`. Port precedence is `CDSW_APP_PORT -> PORT -> 6333`, where `6333` is
+strictly the local-development fallback. Backend clients use `QDRANT_BASE_URL` set to the CAI
+Application URL and never infer this listener port.

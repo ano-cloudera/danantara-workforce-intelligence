@@ -14,3 +14,8 @@ reserves `QDRANT_NIFI_COLLECTION` for the independent NiFi ingestion demo. Initi
 collections with `python scripts/init_qdrant_collections.py` from this directory.
 
 The backend calls Gemini directly through `google-genai`. CrewAI Flows orchestrate business steps but do not hide the model provider.
+
+In Cloudera AI it binds to `127.0.0.1:${CDSW_APP_PORT}`. Port precedence is
+`CDSW_APP_PORT -> PORT -> 8000` (local only). Configure Qdrant and observability with the CAI URLs
+in `QDRANT_BASE_URL` and `OBSERVABILITY_BASE_URL`; legacy `QDRANT_URL` and `OBSERVABILITY_URL`
+remain accepted only for backward compatibility.

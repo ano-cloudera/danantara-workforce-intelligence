@@ -2,6 +2,18 @@
 
 Upload the repository into one Cloudera AI project and create four Applications.
 
+## Mandatory CAI networking standard
+
+Cloudera AI injects `CDSW_APP_PORT` for each Application. Do not configure a fixed exposed port.
+Every project launcher binds to `127.0.0.1` and uses:
+
+```text
+CDSW_APP_PORT -> PORT -> local development default
+```
+
+`PORT` is a secondary compatibility override. The application-specific default is used only
+outside Cloudera AI. `CML_APP_PORT` is not part of this project standard.
+
 ## 1. Frontend Application
 
 Script: `apps/frontend/run_cai.py`  
@@ -17,12 +29,12 @@ Minimum environment variables:
 - `GEMINI_API_KEY=<hidden>`
 - `GEMINI_TEXT_MODEL=gemini-2.5-flash`
 - `GEMINI_EMBEDDING_MODEL=gemini-embedding-001`
-- `QDRANT_URL=https://<qdrant-app-url>`
+- `QDRANT_BASE_URL=https://<qdrant-app-url>`
 - `QDRANT_API_KEY=<hidden>`
 - `QDRANT_NIFI_COLLECTION=nifi_documents`
 - `QDRANT_CANDIDATE_COLLECTION=workforce_candidates`
 - `QDRANT_POLICY_COLLECTION=workforce_policies`
-- `OBSERVABILITY_URL=https://<observability-app-url>`
+- `OBSERVABILITY_BASE_URL=https://<observability-app-url>`
 - `OBSERVABILITY_API_KEY=<hidden>`
 
 Start with `DATA_MODE=demo`. Change to `DATA_MODE=impala` only after CDW connectivity is validated.
@@ -53,7 +65,12 @@ When Langfuse is available, add `LANGFUSE_PUBLIC_KEY`, `LANGFUSE_SECRET_KEY`, `L
 
 ## Port handling
 
-The launchers use the Cloudera application port environment variable when present and fall back to a local development port only outside CAI.
+The frontend, backend and observability launchers pass the resolved port to Uvicorn. The Qdrant
+launcher sets `QDRANT__SERVICE__HTTP_PORT` to the same resolved value. All four force
+`127.0.0.1` when `CDSW_APP_PORT` is present.
+
+Do not put local defaults or CAI-internal port assumptions into Application environment variables.
+Use the HTTPS Application URLs shown by Cloudera AI for all cross-Application communication.
 
 ## Recommended deployment order
 

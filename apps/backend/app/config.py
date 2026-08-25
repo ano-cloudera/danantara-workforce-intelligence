@@ -1,13 +1,16 @@
+import os
 from functools import lru_cache
 from pathlib import Path
 from typing import Literal
 
-from pydantic import model_validator
+from pydantic import AliasChoices, Field, field_validator, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
-    model_config = SettingsConfigDict(env_file=("../../.env", ".env"), extra="ignore")
+    model_config = SettingsConfigDict(
+        env_file=("../../.env", ".env"), extra="ignore", populate_by_name=True
+    )
 
     environment: str = "poc"
     log_level: str = "INFO"
@@ -32,7 +35,9 @@ class Settings(BaseSettings):
     cors_origins: str = "*"
 
     qdrant_mode: Literal["required", "optional", "disabled"] = "optional"
-    qdrant_url: str = "http://127.0.0.1:6333"
+    qdrant_base_url: str | None = Field(
+        default=None, validation_alias=AliasChoices("QDRANT_BASE_URL", "QDRANT_URL")
+    )
     qdrant_api_key: str | None = None
     qdrant_nifi_collection: str = "nifi_documents"
     qdrant_candidate_collection: str = "workforce_candidates"
@@ -56,8 +61,19 @@ class Settings(BaseSettings):
     guardrails_max_input_chars: int = 12000
     guardrails_require_policy_citations: bool = True
 
-    observability_url: str | None = None
+    observability_base_url: str | None = Field(
+        default=None,
+        validation_alias=AliasChoices("OBSERVABILITY_BASE_URL", "OBSERVABILITY_URL"),
+    )
     observability_api_key: str | None = None
+
+    @field_validator("qdrant_base_url", "observability_base_url", mode="before")
+    @classmethod
+    def normalize_optional_base_url(cls, value):
+        if isinstance(value, str):
+            value = value.strip().rstrip("/")
+            return value or None
+        return value
 
     @model_validator(mode="after")
     def validate_qdrant_collection_names(self):
@@ -70,6 +86,9 @@ class Settings(BaseSettings):
             raise ValueError("Qdrant collection names must not be empty")
         if len(set(names.values())) != len(names):
             raise ValueError("Qdrant collection names must be unique across demo workloads")
+        if not os.getenv("CDSW_APP_PORT"):
+            self.qdrant_base_url = self.qdrant_base_url or "http://127.0.0.1:6333"
+            self.observability_base_url = self.observability_base_url or "http://127.0.0.1:8100"
         return self
 
     @property

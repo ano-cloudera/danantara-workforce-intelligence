@@ -33,6 +33,16 @@ def test_qdrant_collection_names_are_read_from_environment(monkeypatch):
     assert settings.qdrant_policy_collection == "demo_policies"
 
 
+def test_inter_app_base_urls_are_read_from_environment(monkeypatch):
+    monkeypatch.setenv("QDRANT_BASE_URL", "https://qdrant.example.test/")
+    monkeypatch.setenv("OBSERVABILITY_BASE_URL", "https://observability.example.test/")
+
+    settings = Settings(_env_file=None)
+
+    assert settings.qdrant_base_url == "https://qdrant.example.test"
+    assert settings.observability_base_url == "https://observability.example.test"
+
+
 def test_qdrant_collection_names_must_be_unique():
     with pytest.raises(ValidationError, match="must be unique"):
         Settings(

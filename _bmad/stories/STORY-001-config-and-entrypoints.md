@@ -11,6 +11,8 @@
   `QDRANT_CANDIDATE_COLLECTION` and `QDRANT_POLICY_COLLECTION`; values are non-empty and unique.
 - Local workload files remain under their owner-specific `data/nifi-demo/` or
   `data/workforce-app/` root.
+- Every launcher resolves `CDSW_APP_PORT -> PORT -> local default` and binds to loopback in CAI.
+- Cross-Application URLs are explicit environment configuration, never inferred hostnames/ports.
 
 ## Dev handoff
 Read the relevant skill under `/skills` before modifying this story. Update `PROJECT_STATE.md` after a material architecture decision.

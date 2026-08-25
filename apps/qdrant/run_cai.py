@@ -4,6 +4,7 @@ import os
 import platform
 import shutil
 import stat
+import sys
 import tarfile
 import tempfile
 import urllib.request
@@ -13,6 +14,14 @@ HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
 RUNTIME = HERE / ".runtime"
 BIN_DIR = HERE / "bin"
+
+sys.path.insert(0, str(ROOT))
+
+from config.cai_runtime import (  # noqa: E402
+    LOCAL_QDRANT_PORT,
+    resolve_app_port,
+    resolve_bind_host,
+)
 
 
 def download_binary(version: str) -> Path:
@@ -46,12 +55,12 @@ def download_binary(version: str) -> Path:
 
 def main():
     p = argparse.ArgumentParser()
-    p.add_argument("--local-port", type=int, default=6333)
+    p.add_argument("--local-port", type=int, default=LOCAL_QDRANT_PORT)
     a = p.parse_args()
     version = os.getenv("QDRANT_VERSION", "1.19.0")
     binary = download_binary(version)
-    port = os.getenv("CDSW_APP_PORT") or os.getenv("CML_APP_PORT") or str(a.local_port)
-    os.environ["QDRANT__SERVICE__HOST"] = os.getenv("APP_BIND_HOST", "127.0.0.1")
+    port = resolve_app_port(a.local_port)
+    os.environ["QDRANT__SERVICE__HOST"] = resolve_bind_host()
     os.environ["QDRANT__SERVICE__HTTP_PORT"] = str(port)
     storage_path = Path(os.getenv("QDRANT_STORAGE_PATH", str(ROOT / "data" / "qdrant-storage")))
     if not storage_path.is_absolute():

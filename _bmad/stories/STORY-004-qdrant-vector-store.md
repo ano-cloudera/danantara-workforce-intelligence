@@ -12,6 +12,8 @@
 - Backend Qdrant operations contain no hardcoded collection names.
 - An idempotent utility creates all three collections when missing using the configured embedding
   dimension.
+- The Qdrant HTTP API uses `CDSW_APP_PORT` in CAI, with `6333` reserved for local development, and
+  backend clients connect through `QDRANT_BASE_URL`.
 
 ## Dev handoff
 Read the relevant skill under `/skills` before modifying this story. Update `PROJECT_STATE.md` after a material architecture decision.

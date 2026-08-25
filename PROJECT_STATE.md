@@ -8,6 +8,10 @@
 ## Locked decisions
 
 - Four logical applications: frontend, backend, qdrant, observability.
+- All four CAI launchers bind to `127.0.0.1` in Workbench and resolve their port using
+  `CDSW_APP_PORT -> PORT -> local development default`; CAI exposed ports are never fixed in code.
+- Inter-Application calls use CAI-assigned URLs configured through `BACKEND_BASE_URL`,
+  `QDRANT_BASE_URL`, and `OBSERVABILITY_BASE_URL`.
 - Gemini is the default LLM and embedding provider.
 - `from google import genai` is the required Gemini SDK path.
 - CrewAI Flows are the default orchestration engine.
@@ -30,7 +34,9 @@
 - [ ] Set `GEMINI_API_KEY` or Vertex AI settings.
 - [ ] Create the four CAI Applications and capture their URLs.
 - [ ] Set `BACKEND_BASE_URL` in frontend application variables.
-- [ ] Set `QDRANT_URL`, shared Qdrant API key and the three collection variables in backend/NiFi.
+- [ ] Set `QDRANT_BASE_URL`, shared Qdrant API key and the three collection variables in backend/NiFi.
+- [ ] Set `OBSERVABILITY_BASE_URL` in backend Application variables.
+- [ ] Confirm each CAI Application receives `CDSW_APP_PORT`; do not set a fixed exposed port.
 - [ ] Run `apps/backend/scripts/init_qdrant_collections.py` and verify all three collections.
 - [ ] Validate Qdrant binary download from the target CAI runtime, or upload binary manually.
 - [ ] Configure CDW Impala connection and change `DATA_MODE=impala`.

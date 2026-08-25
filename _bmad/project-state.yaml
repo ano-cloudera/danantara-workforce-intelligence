@@ -9,6 +9,16 @@ architecture:
     - backend
     - qdrant
     - observability
+  cai_runtime:
+    bind_host: 127.0.0.1
+    port_precedence:
+      - CDSW_APP_PORT
+      - PORT
+      - local-development-default
+    inter_application_urls:
+      frontend_to_backend: BACKEND_BASE_URL
+      backend_to_qdrant: QDRANT_BASE_URL
+      backend_to_observability: OBSERVABILITY_BASE_URL
   orchestrator: crewai-flows
   llm_provider: gemini
   llm_sdk: google-genai
@@ -33,10 +43,12 @@ locked_decisions:
   - Gemini text and embeddings are configurable.
   - Guardrails execute before and after AI workflow.
   - Shared Qdrant workloads use unique environment-configured collections, not folder isolation.
+  - CAI Applications use CDSW_APP_PORT and CAI-assigned service URLs; exposed ports are not fixed.
 pending_environment_tasks:
   - configure Gemini credentials
   - create CAI application URLs
-  - configure Qdrant URL and API key
+  - configure Qdrant and observability CAI base URLs and API keys
+  - validate CDSW_APP_PORT injection for all four Applications
   - configure CDW Impala credentials
   - configure NiFi ingestion URL
   - configure optional Langfuse

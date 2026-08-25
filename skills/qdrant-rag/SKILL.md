@@ -15,3 +15,5 @@ Implement vector indexing and retrieval safely.
 - Require the three collection names to be non-empty and unique. Filesystem folders are not a
   Qdrant workload-isolation mechanism.
 - Use the idempotent collection initialization utility after deploying or reconfiguring Qdrant.
+- In CAI, expose Qdrant HTTP on `127.0.0.1:${CDSW_APP_PORT}` and connect through the configured
+  `QDRANT_BASE_URL`; `6333` is local-development fallback only.

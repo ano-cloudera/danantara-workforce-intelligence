@@ -24,6 +24,14 @@ Before demonstrating NiFi ingestion or Workforce retrieval:
 4. Keep NiFi-owned files under `data/nifi-demo/` and Workforce files under
    `data/workforce-app/`.
 
+## CAI application rehearsal check
+
+1. Confirm all four Applications received `CDSW_APP_PORT` and bind to `127.0.0.1`.
+2. Confirm no fixed exposed port is configured in CAI Application variables.
+3. Verify `BACKEND_BASE_URL`, `QDRANT_BASE_URL`, and `OBSERVABILITY_BASE_URL` use the Application
+   URLs assigned by Cloudera AI.
+4. Validate each health endpoint before wiring the next Application.
+
 ### Track D: Management
 Open Cloudera Data Visualization and show total candidates, candidate distribution and recruitment KPIs.
 
