@@ -17,6 +17,8 @@
 - CrewAI Flows are the default orchestration engine.
 - No LangChain dependency in the baseline.
 - Qdrant is the vector store.
+- The backend uses Qdrant's REST API through `httpx` for CAI health, collection management, upsert,
+  and query operations; this is the stable transport across the platform Istio/Envoy proxy.
 - One Qdrant deployment is shared safely: NiFi, Workforce candidates and Workforce policies use
   distinct collections configured by `QDRANT_NIFI_COLLECTION`, `QDRANT_CANDIDATE_COLLECTION` and
   `QDRANT_POLICY_COLLECTION`.

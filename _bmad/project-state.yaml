@@ -30,6 +30,7 @@ architecture:
   llm_provider: gemini
   llm_sdk: google-genai
   vector_store: qdrant
+  qdrant_backend_transport: rest-httpx
   qdrant_workload_isolation:
     nifi_demo: QDRANT_NIFI_COLLECTION
     workforce_candidates: QDRANT_CANDIDATE_COLLECTION
@@ -50,6 +51,7 @@ locked_decisions:
   - Gemini text and embeddings are configurable.
   - Guardrails execute before and after AI workflow.
   - Shared Qdrant workloads use unique environment-configured collections, not folder isolation.
+  - Backend-to-Qdrant operations use REST through httpx for CAI Istio/Envoy compatibility.
   - CAI Applications use CDSW_APP_PORT and CAI-assigned service URLs; exposed ports are not fixed.
   - BMAD is used selectively; existing BMAD artifacts do not force all changes through BMAD.
 pending_environment_tasks:

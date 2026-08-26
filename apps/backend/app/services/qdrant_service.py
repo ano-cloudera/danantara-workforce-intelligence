@@ -3,7 +3,7 @@ import os
 import socket
 import time
 import uuid
-from urllib.parse import urlsplit
+from urllib.parse import quote, urlsplit
 
 import httpx
 
@@ -13,35 +13,81 @@ from app.models import PolicySource
 logger = logging.getLogger(__name__)
 
 
+class QdrantRestClient:
+    """Small Qdrant REST adapter that works reliably through CAI's Envoy proxy."""
+
+    def __init__(self, base_url: str, api_key: str | None, timeout: float, trust_env: bool):
+        headers = {"api-key": api_key} if api_key else {}
+        self._client = httpx.Client(
+            base_url=base_url.rstrip("/"), headers=headers, timeout=timeout, trust_env=trust_env
+        )
+
+    def request(self, method: str, path: str, **kwargs) -> dict:
+        response = self._client.request(method, path, **kwargs)
+        response.raise_for_status()
+        payload = response.json()
+        if payload.get("status") != "ok":
+            raise RuntimeError("Qdrant returned a non-ok response")
+        return payload
+
+    def get_collections(self) -> list[str]:
+        payload = self.request("GET", "/collections")
+        return [item["name"] for item in payload.get("result", {}).get("collections", [])]
+
+    def get_collection(self, name: str) -> dict:
+        return self.request("GET", f"/collections/{quote(name, safe='')}").get("result", {})
+
+    def create_collection(self, name: str, vector_size: int) -> None:
+        self.request(
+            "PUT",
+            f"/collections/{quote(name, safe='')}",
+            json={"vectors": {"size": vector_size, "distance": "Cosine"}},
+        )
+
+    def upsert(self, name: str, points: list[dict]) -> None:
+        self.request(
+            "PUT",
+            f"/collections/{quote(name, safe='')}/points",
+            params={"wait": "true"},
+            json={"points": points},
+        )
+
+    def query(self, name: str, vector: list[float], limit: int) -> list[dict]:
+        payload = self.request(
+            "POST",
+            f"/collections/{quote(name, safe='')}/points/query",
+            json={"query": vector, "limit": limit, "with_payload": True},
+        )
+        return payload.get("result", {}).get("points", [])
+
+
 class QdrantService:
     def __init__(self, settings: Settings, gemini, observability=None):
         self.settings = settings
         self.gemini = gemini
         self.observability = observability
-        self.client = None
-        if settings.qdrant_mode != "disabled":
-            if not settings.qdrant_base_url:
-                if settings.qdrant_mode == "required":
-                    raise RuntimeError("QDRANT_BASE_URL is required when QDRANT_MODE=required")
-                return
-            try:
-                from qdrant_client import QdrantClient
-
-                self.client = QdrantClient(
-                    url=settings.qdrant_base_url,
-                    api_key=settings.qdrant_api_key,
-                    timeout=settings.qdrant_timeout_seconds,
-                    check_compatibility=settings.qdrant_check_compatibility,
-                    trust_env=settings.qdrant_trust_env,
-                )
-            except Exception as exc:
-                logger.warning(
-                    "Qdrant client initialization failed: error_type=%s url_configured=%s",
-                    type(exc).__name__,
-                    bool(settings.qdrant_base_url),
-                )
-                if settings.qdrant_mode == "required":
-                    raise
+        self.client: QdrantRestClient | None = None
+        if settings.qdrant_mode == "disabled":
+            return
+        if not settings.qdrant_base_url:
+            if settings.qdrant_mode == "required":
+                raise RuntimeError("QDRANT_BASE_URL is required when QDRANT_MODE=required")
+            return
+        try:
+            self.client = QdrantRestClient(
+                settings.qdrant_base_url,
+                settings.qdrant_api_key,
+                settings.qdrant_timeout_seconds,
+                settings.qdrant_trust_env,
+            )
+        except Exception as exc:
+            logger.warning(
+                "Qdrant REST client initialization failed: error_type=%s url_configured=%s",
+                type(exc).__name__,
+                bool(settings.qdrant_base_url),
+            )
+            if settings.qdrant_mode == "required":
+                raise
 
     def healthy(self) -> bool:
         if not self.client:
@@ -62,13 +108,12 @@ class QdrantService:
     def diagnostics(self) -> dict:
         result = {
             "configured": bool(self.settings.qdrant_base_url),
+            "transport": "rest",
             "client_healthy": self.healthy(),
             "dns": {"ok": False, "error_type": None},
             "proxy_environment": {
                 "http_proxy_configured": bool(os.getenv("HTTP_PROXY") or os.getenv("http_proxy")),
-                "https_proxy_configured": bool(
-                    os.getenv("HTTPS_PROXY") or os.getenv("https_proxy")
-                ),
+                "https_proxy_configured": bool(os.getenv("HTTPS_PROXY") or os.getenv("https_proxy")),
                 "no_proxy_configured": bool(os.getenv("NO_PROXY") or os.getenv("no_proxy")),
             },
             "http_probes": [],
@@ -97,9 +142,7 @@ class QdrantService:
             }
             try:
                 with httpx.Client(
-                    timeout=probe_timeout,
-                    trust_env=trust_env,
-                    follow_redirects=False,
+                    timeout=probe_timeout, trust_env=trust_env, follow_redirects=False
                 ) as client:
                     response = client.get(probe_url, headers=headers)
                 probe["status_code"] = response.status_code
@@ -121,26 +164,17 @@ class QdrantService:
     def ensure_collection(self, name: str) -> bool:
         if not self.client:
             return False
-        from qdrant_client.models import Distance, VectorParams
-
-        existing = {x.name for x in self.client.get_collections().collections}
-        if name in existing:
+        if name in set(self.client.get_collections()):
             collection = self.client.get_collection(name)
-            vectors = collection.config.params.vectors
-            existing_size = getattr(vectors, "size", None)
+            vectors = collection.get("config", {}).get("params", {}).get("vectors", {})
+            existing_size = vectors.get("size") if isinstance(vectors, dict) else None
             if existing_size is not None and existing_size != self.settings.gemini_embed_dim:
                 raise RuntimeError(
                     f"Collection {name!r} has vector size {existing_size}; "
                     f"expected {self.settings.gemini_embed_dim}"
                 )
             return False
-
-        self.client.create_collection(
-            name,
-            vectors_config=VectorParams(
-                size=self.settings.gemini_embed_dim, distance=Distance.COSINE
-            ),
-        )
+        self.client.create_collection(name, self.settings.gemini_embed_dim)
         return True
 
     def ensure_required_collections(self) -> dict[str, bool]:
@@ -149,37 +183,35 @@ class QdrantService:
     def index_policy_chunks(self, chunks: list[dict]):
         if not self.client or not chunks:
             return 0
-        from qdrant_client.models import PointStruct
-
         self.ensure_collection(self.settings.qdrant_policy_collection)
         vectors = self.gemini.embed([c["text"] for c in chunks], task_type="RETRIEVAL_DOCUMENT")
-        points = []
-        for chunk, vector in zip(chunks, vectors):
-            points.append(PointStruct(id=str(uuid.uuid4()), vector=vector, payload=chunk))
-        self.client.upsert(self.settings.qdrant_policy_collection, points=points, wait=True)
+        points = [
+            {"id": str(uuid.uuid4()), "vector": vector, "payload": chunk}
+            for chunk, vector in zip(chunks, vectors)
+        ]
+        self.client.upsert(self.settings.qdrant_policy_collection, points)
         return len(points)
 
     def search_policies(self, query: str, top_k: int | None = None) -> list[PolicySource]:
         if not self.client:
             return []
         vector = self.gemini.embed([query], task_type="RETRIEVAL_QUERY")[0]
-        result = self.client.query_points(
-            collection_name=self.settings.qdrant_policy_collection,
-            query=vector,
-            limit=top_k or self.settings.qdrant_top_k,
-            with_payload=True,
-        ).points
+        points = self.client.query(
+            self.settings.qdrant_policy_collection,
+            vector,
+            top_k or self.settings.qdrant_top_k,
+        )
         sources = []
-        for point in result:
-            p = point.payload or {}
+        for point in points:
+            payload = point.get("payload") or {}
             sources.append(
                 PolicySource(
-                    source_id=str(point.id),
-                    entity=p.get("entity"),
-                    title=p.get("title", "Policy Document"),
-                    page=p.get("page"),
-                    score=float(point.score) if point.score is not None else None,
-                    text_excerpt=p.get("text", "")[:1200],
+                    source_id=str(point.get("id")),
+                    entity=payload.get("entity"),
+                    title=payload.get("title", "Policy Document"),
+                    page=payload.get("page"),
+                    score=float(point["score"]) if point.get("score") is not None else None,
+                    text_excerpt=payload.get("text", "")[:1200],
                 )
             )
         if self.observability:

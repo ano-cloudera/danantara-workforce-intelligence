@@ -1,12 +1,11 @@
 import socket
-import sys
 from types import SimpleNamespace
 
 import pytest
 from pydantic import ValidationError
 
 from app.config import Settings
-from app.services.qdrant_service import QdrantService
+from app.services.qdrant_service import QdrantRestClient, QdrantService
 
 
 def test_qdrant_collection_defaults_are_workload_isolated(monkeypatch):
@@ -57,26 +56,28 @@ def test_qdrant_timeout_is_read_from_environment(monkeypatch):
     assert settings.qdrant_trust_env is False
 
 
-def test_qdrant_client_uses_configured_timeout(monkeypatch):
+def test_qdrant_rest_client_uses_configured_transport(monkeypatch):
     captured = {}
 
-    def fake_client(**kwargs):
-        captured.update(kwargs)
+    def fake_client(base_url, api_key, timeout, trust_env):
+        captured.update(
+            base_url=base_url, api_key=api_key, timeout=timeout, trust_env=trust_env
+        )
         return SimpleNamespace()
 
-    monkeypatch.setitem(
-        sys.modules, "qdrant_client", SimpleNamespace(QdrantClient=fake_client)
-    )
+    monkeypatch.setattr("app.services.qdrant_service.QdrantRestClient", fake_client)
     settings = Settings(
         _env_file=None,
         qdrant_base_url="https://qdrant.example.test",
+        qdrant_api_key="secret",
         qdrant_timeout_seconds=20,
     )
 
     QdrantService(settings, gemini=None)
 
+    assert captured["base_url"] == "https://qdrant.example.test"
+    assert captured["api_key"] == "secret"
     assert captured["timeout"] == 20
-    assert captured["check_compatibility"] is False
     assert captured["trust_env"] is False
 
 
@@ -155,10 +156,11 @@ def test_qdrant_diagnostics_never_exposes_endpoint_or_api_key(monkeypatch):
     assert "do-not-expose-this-key" not in serialized
 
 
-def test_qdrant_client_minor_matches_server_release():
+def test_backend_uses_httpx_without_qdrant_sdk_dependency():
     requirements = (Settings(_env_file=None).project_root / "apps/backend/requirements.txt").read_text()
 
-    assert "qdrant-client>=1.19,<1.20" in requirements
+    assert "httpx>=0.28,<1" in requirements
+    assert "qdrant-client" not in requirements
 
 
 def test_qdrant_collection_names_must_be_unique():
@@ -183,13 +185,40 @@ def test_policy_search_uses_configured_collection_name():
         def __init__(self):
             self.collection_name = None
 
-        def query_points(self, *, collection_name, **_kwargs):
+        def query(self, collection_name, _vector, _limit):
             self.collection_name = collection_name
-            return SimpleNamespace(points=[])
+            return []
 
     service.client = FakeClient()
     assert service.search_policies("leave policy") == []
     assert service.client.collection_name == "custom_workforce_policies"
+
+
+def test_qdrant_rest_client_uses_official_collections_endpoint(monkeypatch):
+    requests = []
+
+    def handler(request):
+        requests.append(request)
+        return __import__("httpx").Response(
+            200,
+            json={"result": {"collections": [{"name": "workforce_policies"}]}, "status": "ok"},
+        )
+
+    import httpx
+
+    client = QdrantRestClient(
+        "https://qdrant.example.test", "secret", timeout=20, trust_env=False
+    )
+    client._client.close()
+    client._client = httpx.Client(
+        base_url="https://qdrant.example.test",
+        headers={"api-key": "secret"},
+        transport=httpx.MockTransport(handler),
+    )
+
+    assert client.get_collections() == ["workforce_policies"]
+    assert requests[0].url.path == "/collections"
+    assert requests[0].headers["api-key"] == "secret"
 
 
 def test_initializer_targets_all_configured_collections():

@@ -48,6 +48,8 @@ Observability events are sent to the Observability CAI Application and optionall
 - CrewAI **Flows** are used for deterministic, auditable orchestration.
 - Gemini is called with `google-genai`, not hidden behind a second agent framework.
 - Qdrant is complementary vector infrastructure hosted as a separate CAI Application. Its
+  backend integration uses the official REST API through `httpx` for reliable CAI Istio/Envoy
+  compatibility.
   deployment is shared, while collection names isolate the NiFi demo from Workforce workloads.
 - SQLite stores application state only, never the enterprise system of record.
 - Structured enterprise data remains in Iceberg/CDW.

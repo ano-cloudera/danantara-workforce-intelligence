@@ -23,11 +23,14 @@ remain accepted only for backward compatibility.
 Set `QDRANT_TIMEOUT_SECONDS` on the backend Application when CAI cross-Application routing needs
 more than the five-second local default. Qdrant health failures log only the exception type and
 configured timeout; API keys are never logged.
-For CAI Application URLs, keep `QDRANT_CHECK_COMPATIBILITY=false` to avoid the client's extra
-version probe through the Application proxy, and `QDRANT_TRUST_ENV=false` to prevent unrelated
-runtime proxy variables from changing app-to-app routing.
+The backend uses Qdrant's official REST API through `httpx` for health, collection management,
+upsert, and query operations. This avoids SDK transport incompatibilities through CAI's Istio/Envoy
+Application proxy. `QDRANT_TRUST_ENV=false` prevents unrelated runtime proxy variables from
+changing app-to-app routing. `QDRANT_CHECK_COMPATIBILITY` remains accepted as a deprecated,
+no-effect compatibility input for existing deployments.
 
-When the CAI ECS runtime has no terminal, call `GET /api/v1/health/qdrant`. It safely reports DNS,
+When the CAI ECS runtime has no terminal, call `GET /api/v1/health/qdrant`. It safely reports the
+active `rest` transport, DNS,
 proxy-presence flags, and raw HTTP probe results with and without environment proxy routing. The
 response never includes the endpoint, resolved IP addresses, proxy values, or API key.
 

@@ -43,7 +43,6 @@ Minimum environment variables:
 - `QDRANT_BASE_URL=https://<qdrant-app-url>`
 - `QDRANT_API_KEY=<hidden>`
 - `QDRANT_TIMEOUT_SECONDS=20` for CAI cross-Application routing (`5` is the local default)
-- `QDRANT_CHECK_COMPATIBILITY=false`
 - `QDRANT_TRUST_ENV=false`
 - `QDRANT_NIFI_COLLECTION=nifi_documents`
 - `QDRANT_CANDIDATE_COLLECTION=workforce_candidates`
@@ -52,6 +51,9 @@ Minimum environment variables:
 - `OBSERVABILITY_API_KEY=<hidden>`
 
 Start with `DATA_MODE=demo`. Change to `DATA_MODE=impala` only after CDW connectivity is validated.
+The backend uses Qdrant REST over `httpx` as the production CAI transport; it does not depend on
+the Qdrant Python SDK transport across Istio/Envoy. Existing `QDRANT_CHECK_COMPATIBILITY` values are
+harmless but deprecated.
 For ECS Applications without terminal access, use `GET /api/v1/health/qdrant` to compare direct
 and environment-proxy connectivity without exposing endpoint or credential values.
 
