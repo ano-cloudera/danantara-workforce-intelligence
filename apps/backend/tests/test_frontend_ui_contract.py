@@ -94,8 +94,11 @@ def test_frontend_has_responsive_global_search_and_policy_chat_controls():
     assert 'api.post("policy/chat"' in javascript
     assert 'api.download("policy/export"' in javascript
     assert 'api.post("feedback"' in javascript
+    assert 'class="match-activity-table"' in javascript
+    assert "state.matchPosition = data.position" in javascript
     assert ".global-search-wrap.open" in styles
     assert ".policy-chat-layout" in styles
+    assert ".match-activity-row" in styles
 
 
 def test_frontend_uses_official_logo_and_professional_action_icons():

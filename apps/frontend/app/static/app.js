@@ -9,6 +9,7 @@ const state = {
   config: null,
   health: null,
   matches: [],
+  matchPosition: null,
   uploads: [],
   sourceInventory: null,
   policySessionId: null,
@@ -145,10 +146,32 @@ function renderOverview() {
 
 function renderRecentMatches() {
   const containers = [$("#recent-matches"), $("#dashboard-recent")];
-  const content = state.matches.length
-    ? state.matches.slice(0, 4).map(item => `<div class="table-row"><strong>${escapeHtml(item.candidate.name)}</strong><span>${escapeHtml(item.candidate.company || "Not available")}</span><b>${escapeHtml(item.match_score)}</b></div>`).join("")
-    : `<div class="empty-state compact">${icon("scan-search", "stat")}<p>No matching activity in this browser session.</p></div>`;
-  containers.forEach(container => { if (container) container.innerHTML = content; });
+  const position = state.matchPosition;
+  containers.forEach(container => {
+    if (!container) return;
+    if (!state.matches.length) {
+      container.innerHTML = `<div class="empty-state compact">${icon("scan-search", "stat")}<h3>No matching activity yet</h3><p>Run Talent Match to populate ranked candidate results.</p></div>`;
+      return;
+    }
+    const rows = state.matches.slice(0, 4).map((item, index) => {
+      const candidate = item.candidate;
+      const initials = candidate.name.split(/\s+/).map(part => part[0]).slice(0, 2).join("");
+      const score = Number(item.match_score) || 0;
+      const scoreTone = score >= 80 ? "strong" : score >= 60 ? "review" : "low";
+      const scoreLabel = score >= 80 ? "Strong match" : score >= 60 ? "Review match" : "Skill gaps";
+      return `<button type="button" class="match-activity-row candidate-details" data-candidate="${escapeHtml(candidate.candidate_id)}" aria-label="Open ${escapeHtml(candidate.name)} details">
+        <span class="activity-rank">${index + 1}</span>
+        <span class="activity-candidate"><span class="activity-avatar">${escapeHtml(initials)}</span><span><strong>${escapeHtml(candidate.name)}</strong><small>${escapeHtml(candidate.company || "Entity unavailable")} · ${escapeHtml(candidate.years_experience)} years</small></span></span>
+        <span class="activity-context"><strong>${escapeHtml(position?.title || "Latest talent match")}</strong><small>${escapeHtml(item.matched_skills?.length || 0)} skills matched · ${escapeHtml(item.skill_gaps?.length || 0)} gaps</small></span>
+        <span class="activity-score ${scoreTone}"><strong>${escapeHtml(score)}%</strong><small>${scoreLabel}</small></span>
+        <span class="activity-open">${icon("arrow-right")}</span>
+      </button>`;
+    }).join("");
+    container.innerHTML = `<div class="match-activity-table"><div class="match-activity-head"><span>Rank</span><span>Candidate</span><span>Matching context</span><span>Score</span><span></span></div>${rows}</div>`;
+  });
+  $$(".match-activity-row.candidate-details").forEach(button => {
+    button.onclick = () => openCandidateDetail(button.dataset.candidate);
+  });
   refreshIcons();
 }
 
@@ -230,6 +253,7 @@ async function runTalentMatch() {
       top_n: 5,
     });
     state.matches = data.matches || [];
+    state.matchPosition = data.position || null;
     renderTalent(state.matches);
     renderOverview();
     renderDashboard();
