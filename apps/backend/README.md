@@ -27,5 +27,9 @@ For CAI Application URLs, keep `QDRANT_CHECK_COMPATIBILITY=false` to avoid the c
 version probe through the Application proxy, and `QDRANT_TRUST_ENV=false` to prevent unrelated
 runtime proxy variables from changing app-to-app routing.
 
+When the CAI ECS runtime has no terminal, call `GET /api/v1/health/qdrant`. It safely reports DNS,
+proxy-presence flags, and raw HTTP probe results with and without environment proxy routing. The
+response never includes the endpoint, resolved IP addresses, proxy values, or API key.
+
 The launcher supports CAI interpreter execution where `__file__` is unavailable by resolving the
 Application directory from `CDSW_PROJECT_DIR` or the project working directory.

@@ -1,3 +1,4 @@
+import socket
 import sys
 from types import SimpleNamespace
 
@@ -111,6 +112,47 @@ def test_qdrant_health_logs_wrapped_source_type(caplog):
     assert service.healthy() is False
     assert "error_type=WrappedTransportError" in caplog.text
     assert "source_type=TimeoutError" in caplog.text
+
+
+def test_qdrant_diagnostics_never_exposes_endpoint_or_api_key(monkeypatch):
+    settings = Settings(
+        _env_file=None,
+        qdrant_mode="disabled",
+        qdrant_base_url="https://secret-qdrant.example.test",
+        qdrant_api_key="do-not-expose-this-key",
+    )
+    service = QdrantService(settings, gemini=None)
+    monkeypatch.setattr(
+        "app.services.qdrant_service.socket.getaddrinfo",
+        lambda *_args, **_kwargs: [(socket.AF_INET, socket.SOCK_STREAM, 6, "", ("127.0.0.1", 443))],
+    )
+
+    class FakeResponse:
+        status_code = 200
+
+    class FakeHttpClient:
+        def __init__(self, **_kwargs):
+            pass
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *_args):
+            return None
+
+        def get(self, _url, headers):
+            assert headers == {"api-key": "do-not-expose-this-key"}
+            return FakeResponse()
+
+    monkeypatch.setattr("app.services.qdrant_service.httpx.Client", FakeHttpClient)
+
+    result = service.diagnostics()
+    serialized = str(result)
+
+    assert result["dns"]["ok"] is True
+    assert all(probe["ok"] for probe in result["http_probes"])
+    assert "secret-qdrant.example.test" not in serialized
+    assert "do-not-expose-this-key" not in serialized
 
 
 def test_qdrant_client_minor_matches_server_release():

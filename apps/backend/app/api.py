@@ -33,6 +33,10 @@ def build_router(services: dict, settings: Settings) -> APIRouter:
             "orchestrator_mode": settings.orchestrator_mode,
         }
 
+    @router.get("/health/qdrant")
+    def qdrant_health():
+        return services["qdrant"].diagnostics()
+
     @router.get("/config/public", response_model=PublicConfig)
     def public_config():
         return PublicConfig(

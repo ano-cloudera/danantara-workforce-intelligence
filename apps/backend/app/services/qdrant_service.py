@@ -1,5 +1,11 @@
 import logging
+import os
+import socket
+import time
 import uuid
+from urllib.parse import urlsplit
+
+import httpx
 
 from app.config import Settings
 from app.models import PolicySource
@@ -52,6 +58,57 @@ class QdrantService:
                 self.settings.qdrant_timeout_seconds,
             )
             return False
+
+    def diagnostics(self) -> dict:
+        result = {
+            "configured": bool(self.settings.qdrant_base_url),
+            "client_healthy": self.healthy(),
+            "dns": {"ok": False, "error_type": None},
+            "proxy_environment": {
+                "http_proxy_configured": bool(os.getenv("HTTP_PROXY") or os.getenv("http_proxy")),
+                "https_proxy_configured": bool(
+                    os.getenv("HTTPS_PROXY") or os.getenv("https_proxy")
+                ),
+                "no_proxy_configured": bool(os.getenv("NO_PROXY") or os.getenv("no_proxy")),
+            },
+            "http_probes": [],
+        }
+        if not self.settings.qdrant_base_url:
+            return result
+
+        parsed = urlsplit(self.settings.qdrant_base_url)
+        try:
+            socket.getaddrinfo(parsed.hostname, parsed.port or 443, type=socket.SOCK_STREAM)
+            result["dns"]["ok"] = True
+        except Exception as exc:
+            result["dns"]["error_type"] = type(exc).__name__
+
+        headers = {"api-key": self.settings.qdrant_api_key} if self.settings.qdrant_api_key else {}
+        probe_url = f"{self.settings.qdrant_base_url.rstrip('/')}/collections"
+        probe_timeout = min(self.settings.qdrant_timeout_seconds, 20.0)
+        for trust_env in (False, True):
+            started = time.monotonic()
+            probe = {
+                "trust_env": trust_env,
+                "ok": False,
+                "status_code": None,
+                "error_type": None,
+                "elapsed_ms": None,
+            }
+            try:
+                with httpx.Client(
+                    timeout=probe_timeout,
+                    trust_env=trust_env,
+                    follow_redirects=False,
+                ) as client:
+                    response = client.get(probe_url, headers=headers)
+                probe["status_code"] = response.status_code
+                probe["ok"] = response.status_code == 200
+            except Exception as exc:
+                probe["error_type"] = type(exc).__name__
+            probe["elapsed_ms"] = round((time.monotonic() - started) * 1000)
+            result["http_probes"].append(probe)
+        return result
 
     @property
     def required_collections(self) -> tuple[str, str, str]:

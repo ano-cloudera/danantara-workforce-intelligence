@@ -52,6 +52,8 @@ Minimum environment variables:
 - `OBSERVABILITY_API_KEY=<hidden>`
 
 Start with `DATA_MODE=demo`. Change to `DATA_MODE=impala` only after CDW connectivity is validated.
+For ECS Applications without terminal access, use `GET /api/v1/health/qdrant` to compare direct
+and environment-proxy connectivity without exposing endpoint or credential values.
 
 ## 3. Qdrant Application
 

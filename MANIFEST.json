@@ -219,8 +219,8 @@
     },
     {
       "path": "apps/backend/README.md",
-      "bytes": 1782,
-      "sha256": "ff953c2b4a054d041aeffd6da2f88a58817f972d1e413d5ffbf8cb2bf0de64cb"
+      "bytes": 2066,
+      "sha256": "5206ed0d7a6f86af3407433e69eeac05467256f03161e91a651c1fa2551cada6"
     },
     {
       "path": "apps/backend/app/__init__.py",
@@ -229,8 +229,8 @@
     },
     {
       "path": "apps/backend/app/api.py",
-      "bytes": 6572,
-      "sha256": "e7776ccfbb0dd4f977a95611e12cc3bfa3113c6baee4a7f93d28acc8637be246"
+      "bytes": 6680,
+      "sha256": "39e16f5a35a0a9546c49f92b3aa9e5af8be7e0bd38be0844db26550be45a7388"
     },
     {
       "path": "apps/backend/app/config.py",
@@ -304,8 +304,8 @@
     },
     {
       "path": "apps/backend/app/services/qdrant_service.py",
-      "bytes": 5233,
-      "sha256": "145acbcd71fad7c0e4064f1bb82bedd9a9770ce8afe94f75560314b545d1e213"
+      "bytes": 7510,
+      "sha256": "d29c0a71c43418a812b373c2df286d95a4bc165afaff06d1e1c9e918797c74f5"
     },
     {
       "path": "apps/backend/app/services/session_store.py",
@@ -349,8 +349,8 @@
     },
     {
       "path": "apps/backend/tests/test_qdrant_configuration.py",
-      "bytes": 5636,
-      "sha256": "f1d0c21dcf339d657daf377034ef0e451f26c19801f356ecec47f3721ef50f8a"
+      "bytes": 6922,
+      "sha256": "0df0d6d93183d6fd5a3c687fb61e3cf8ef9db89c63e225a34a22f57821851051"
     },
     {
       "path": "apps/backend/tests/test_scoring_logic.py",
@@ -544,8 +544,8 @@
     },
     {
       "path": "docs/CLOUDERA_AI_DEPLOYMENT.md",
-      "bytes": 4682,
-      "sha256": "629fc0259826d9dda85b2dca6696f2d8496ca17a262e9fbd49e11c67b18d696e"
+      "bytes": 4861,
+      "sha256": "17977bd549a1a861477a287d3d2e31594f7172f0c5d56f6c8dd791adb8d034db"
     },
     {
       "path": "docs/DEMO_RUNBOOK.md",
