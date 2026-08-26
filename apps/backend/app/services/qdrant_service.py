@@ -25,6 +25,8 @@ class QdrantService:
                     url=settings.qdrant_base_url,
                     api_key=settings.qdrant_api_key,
                     timeout=settings.qdrant_timeout_seconds,
+                    check_compatibility=settings.qdrant_check_compatibility,
+                    trust_env=settings.qdrant_trust_env,
                 )
             except Exception as exc:
                 logger.warning(
@@ -42,9 +44,11 @@ class QdrantService:
             self.client.get_collections()
             return True
         except Exception as exc:
+            source = getattr(exc, "source", None)
             logger.warning(
-                "Qdrant health check failed: error_type=%s timeout_seconds=%s",
+                "Qdrant health check failed: error_type=%s source_type=%s timeout_seconds=%s",
                 type(exc).__name__,
+                type(source).__name__ if source is not None else "none",
                 self.settings.qdrant_timeout_seconds,
             )
             return False

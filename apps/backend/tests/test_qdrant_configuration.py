@@ -46,10 +46,14 @@ def test_inter_app_base_urls_are_read_from_environment(monkeypatch):
 
 def test_qdrant_timeout_is_read_from_environment(monkeypatch):
     monkeypatch.setenv("QDRANT_TIMEOUT_SECONDS", "20")
+    monkeypatch.setenv("QDRANT_CHECK_COMPATIBILITY", "false")
+    monkeypatch.setenv("QDRANT_TRUST_ENV", "false")
 
     settings = Settings(_env_file=None)
 
     assert settings.qdrant_timeout_seconds == 20
+    assert settings.qdrant_check_compatibility is False
+    assert settings.qdrant_trust_env is False
 
 
 def test_qdrant_client_uses_configured_timeout(monkeypatch):
@@ -71,6 +75,8 @@ def test_qdrant_client_uses_configured_timeout(monkeypatch):
     QdrantService(settings, gemini=None)
 
     assert captured["timeout"] == 20
+    assert captured["check_compatibility"] is False
+    assert captured["trust_env"] is False
 
 
 def test_qdrant_health_logs_safe_error_type(caplog):
@@ -87,7 +93,30 @@ def test_qdrant_health_logs_safe_error_type(caplog):
 
     assert service.healthy() is False
     assert "error_type=TimeoutError" in caplog.text
+    assert "source_type=none" in caplog.text
     assert "do-not-log-this-key" not in caplog.text
+
+
+def test_qdrant_health_logs_wrapped_source_type(caplog):
+    class WrappedTransportError(Exception):
+        def __init__(self):
+            self.source = TimeoutError("connection timed out")
+
+    settings = Settings(_env_file=None, qdrant_mode="disabled")
+    service = QdrantService(settings, gemini=None)
+    service.client = SimpleNamespace(
+        get_collections=lambda: (_ for _ in ()).throw(WrappedTransportError())
+    )
+
+    assert service.healthy() is False
+    assert "error_type=WrappedTransportError" in caplog.text
+    assert "source_type=TimeoutError" in caplog.text
+
+
+def test_qdrant_client_minor_matches_server_release():
+    requirements = (Settings(_env_file=None).project_root / "apps/backend/requirements.txt").read_text()
+
+    assert "qdrant-client>=1.19,<1.20" in requirements
 
 
 def test_qdrant_collection_names_must_be_unique():

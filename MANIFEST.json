@@ -9,8 +9,8 @@
     },
     {
       "path": ".env.example",
-      "bytes": 1857,
-      "sha256": "d28adc9141525782400ac2f11f7e8ca59352f8d426232127f0365d094fe4f65e"
+      "bytes": 1913,
+      "sha256": "0bf38ee4e6c85a38f520c6b7b33fe633a2bd7c0fa36e26b9930197a36cee4ed4"
     },
     {
       "path": ".github/copilot-instructions.md",
@@ -219,8 +219,8 @@
     },
     {
       "path": "apps/backend/README.md",
-      "bytes": 1535,
-      "sha256": "106716cbfd3403107be61846abc879bde40536e9b37c711cf87016688d23a8f0"
+      "bytes": 1782,
+      "sha256": "ff953c2b4a054d041aeffd6da2f88a58817f972d1e413d5ffbf8cb2bf0de64cb"
     },
     {
       "path": "apps/backend/app/__init__.py",
@@ -234,8 +234,8 @@
     },
     {
       "path": "apps/backend/app/config.py",
-      "bytes": 4168,
-      "sha256": "d37ba58f8efb237fff0a94854d22156ec2075f36f4cfaa392718d8e6e6e9f82f"
+      "bytes": 4248,
+      "sha256": "dab0515b956c61f490acdd602ec1fafab06a194ef66fba9c80ef817b1d02afaa"
     },
     {
       "path": "apps/backend/app/main.py",
@@ -304,8 +304,8 @@
     },
     {
       "path": "apps/backend/app/services/qdrant_service.py",
-      "bytes": 4961,
-      "sha256": "87c23020a236414396cd1982eb1986bd90d5a58bb3e218d6a49184e2a404de9b"
+      "bytes": 5233,
+      "sha256": "145acbcd71fad7c0e4064f1bb82bedd9a9770ce8afe94f75560314b545d1e213"
     },
     {
       "path": "apps/backend/app/services/session_store.py",
@@ -314,8 +314,8 @@
     },
     {
       "path": "apps/backend/requirements.txt",
-      "bytes": 290,
-      "sha256": "8b652b4475a5163981386838fbb866835229dadfe51113fb75fdd2d41fb0d7ff"
+      "bytes": 293,
+      "sha256": "624022ec68ada50160b153ed2ffc4da6f515e00efeec2ed62cb833d84f1901d1"
     },
     {
       "path": "apps/backend/run_cai.py",
@@ -349,8 +349,8 @@
     },
     {
       "path": "apps/backend/tests/test_qdrant_configuration.py",
-      "bytes": 4477,
-      "sha256": "00cbd1e16a02026236e220457920309affabf713da27718ff89fef11bb629441"
+      "bytes": 5636,
+      "sha256": "f1d0c21dcf339d657daf377034ef0e451f26c19801f356ecec47f3721ef50f8a"
     },
     {
       "path": "apps/backend/tests/test_scoring_logic.py",
@@ -544,8 +544,8 @@
     },
     {
       "path": "docs/CLOUDERA_AI_DEPLOYMENT.md",
-      "bytes": 4618,
-      "sha256": "a79c6e7cdfc166cb83aa0ef625d14b10079bc1d57c49b0efb2220a5851cbfeba"
+      "bytes": 4682,
+      "sha256": "629fc0259826d9dda85b2dca6696f2d8496ca17a262e9fbd49e11c67b18d696e"
     },
     {
       "path": "docs/DEMO_RUNBOOK.md",
@@ -579,8 +579,8 @@
     },
     {
       "path": "scripts/preflight.py",
-      "bytes": 4268,
-      "sha256": "29dca2c6468f533292372b5855c5a1c81f807bffcdd1aceab11220d1c8a5a877"
+      "bytes": 4332,
+      "sha256": "102e6aa4d3f6480f274fbf1482b7b59cf091e2fb343144804c1f606e15343497"
     },
     {
       "path": "scripts/project_tree.py",

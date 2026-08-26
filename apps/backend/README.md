@@ -23,6 +23,9 @@ remain accepted only for backward compatibility.
 Set `QDRANT_TIMEOUT_SECONDS` on the backend Application when CAI cross-Application routing needs
 more than the five-second local default. Qdrant health failures log only the exception type and
 configured timeout; API keys are never logged.
+For CAI Application URLs, keep `QDRANT_CHECK_COMPATIBILITY=false` to avoid the client's extra
+version probe through the Application proxy, and `QDRANT_TRUST_ENV=false` to prevent unrelated
+runtime proxy variables from changing app-to-app routing.
 
 The launcher supports CAI interpreter execution where `__file__` is unavailable by resolving the
 Application directory from `CDSW_PROJECT_DIR` or the project working directory.

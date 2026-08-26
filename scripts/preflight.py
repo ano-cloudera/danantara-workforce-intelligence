@@ -28,7 +28,11 @@ qdrant_collection_vars = (
     "QDRANT_POLICY_COLLECTION",
 )
 missing_collection_vars = [name for name in qdrant_collection_vars if f"{name}=" not in env_example]
-qdrant_runtime_vars = ("QDRANT_TIMEOUT_SECONDS",)
+qdrant_runtime_vars = (
+    "QDRANT_TIMEOUT_SECONDS",
+    "QDRANT_CHECK_COMPATIBILITY",
+    "QDRANT_TRUST_ENV",
+)
 missing_qdrant_runtime_vars = [
     name for name in qdrant_runtime_vars if f"{name}=" not in env_example
 ]

@@ -40,6 +40,8 @@ class Settings(BaseSettings):
     )
     qdrant_api_key: str | None = None
     qdrant_timeout_seconds: float = Field(default=5.0, gt=0, le=120)
+    qdrant_check_compatibility: bool = False
+    qdrant_trust_env: bool = False
     qdrant_nifi_collection: str = "nifi_documents"
     qdrant_candidate_collection: str = "workforce_candidates"
     qdrant_policy_collection: str = "workforce_policies"
