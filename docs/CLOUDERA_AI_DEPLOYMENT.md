@@ -42,6 +42,7 @@ Minimum environment variables:
 - `GEMINI_EMBEDDING_MODEL=gemini-embedding-001`
 - `QDRANT_BASE_URL=https://<qdrant-app-url>`
 - `QDRANT_API_KEY=<hidden>`
+- `QDRANT_TIMEOUT_SECONDS=20` for CAI cross-Application routing (`5` is the local default)
 - `QDRANT_NIFI_COLLECTION=nifi_documents`
 - `QDRANT_CANDIDATE_COLLECTION=workforce_candidates`
 - `QDRANT_POLICY_COLLECTION=workforce_policies`

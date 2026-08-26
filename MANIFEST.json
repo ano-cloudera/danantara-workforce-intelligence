@@ -9,8 +9,8 @@
     },
     {
       "path": ".env.example",
-      "bytes": 1832,
-      "sha256": "1645e44c172dfc2d30f0b0ac3542f866c9402a8ab29eff578f0157402b85010a"
+      "bytes": 1857,
+      "sha256": "d28adc9141525782400ac2f11f7e8ca59352f8d426232127f0365d094fe4f65e"
     },
     {
       "path": ".github/copilot-instructions.md",
@@ -219,8 +219,8 @@
     },
     {
       "path": "apps/backend/README.md",
-      "bytes": 1294,
-      "sha256": "9d8728abe7a58af9c8aaa286ea5fdb63878612a42209de604b55fc8bba2a084b"
+      "bytes": 1535,
+      "sha256": "106716cbfd3403107be61846abc879bde40536e9b37c711cf87016688d23a8f0"
     },
     {
       "path": "apps/backend/app/__init__.py",
@@ -234,8 +234,8 @@
     },
     {
       "path": "apps/backend/app/config.py",
-      "bytes": 4099,
-      "sha256": "7841f842412966fd1d4ce97aeadd0cd251a649c73378f9b5c104b5fc23ea17aa"
+      "bytes": 4168,
+      "sha256": "d37ba58f8efb237fff0a94854d22156ec2075f36f4cfaa392718d8e6e6e9f82f"
     },
     {
       "path": "apps/backend/app/main.py",
@@ -304,8 +304,8 @@
     },
     {
       "path": "apps/backend/app/services/qdrant_service.py",
-      "bytes": 4420,
-      "sha256": "50f1e5288e2263f994a14cc3e65cf6fe22c2728208baf947a7933f154be64665"
+      "bytes": 4961,
+      "sha256": "87c23020a236414396cd1982eb1986bd90d5a58bb3e218d6a49184e2a404de9b"
     },
     {
       "path": "apps/backend/app/services/session_store.py",
@@ -349,8 +349,8 @@
     },
     {
       "path": "apps/backend/tests/test_qdrant_configuration.py",
-      "bytes": 3187,
-      "sha256": "443993f1f7bff43ff37d4950d3d72043f376c1f8497d29c0d04ed68dac343fd1"
+      "bytes": 4477,
+      "sha256": "00cbd1e16a02026236e220457920309affabf713da27718ff89fef11bb629441"
     },
     {
       "path": "apps/backend/tests/test_scoring_logic.py",
@@ -544,8 +544,8 @@
     },
     {
       "path": "docs/CLOUDERA_AI_DEPLOYMENT.md",
-      "bytes": 4527,
-      "sha256": "09511f8613e9a683a82a442b2b1eb2da20f967c9e0ab5c7cbdcdece26e460c0c"
+      "bytes": 4618,
+      "sha256": "a79c6e7cdfc166cb83aa0ef625d14b10079bc1d57c49b0efb2220a5851cbfeba"
     },
     {
       "path": "docs/DEMO_RUNBOOK.md",
@@ -579,8 +579,8 @@
     },
     {
       "path": "scripts/preflight.py",
-      "bytes": 3920,
-      "sha256": "31dafe794ef053bcea8f8512e8faca004f413a9e15c657e66a74c14301baeea6"
+      "bytes": 4268,
+      "sha256": "29dca2c6468f533292372b5855c5a1c81f807bffcdd1aceab11220d1c8a5a877"
     },
     {
       "path": "scripts/project_tree.py",

@@ -28,6 +28,10 @@ qdrant_collection_vars = (
     "QDRANT_POLICY_COLLECTION",
 )
 missing_collection_vars = [name for name in qdrant_collection_vars if f"{name}=" not in env_example]
+qdrant_runtime_vars = ("QDRANT_TIMEOUT_SECONDS",)
+missing_qdrant_runtime_vars = [
+    name for name in qdrant_runtime_vars if f"{name}=" not in env_example
+]
 inter_app_url_vars = (
     "BACKEND_BASE_URL",
     "QDRANT_BASE_URL",
@@ -83,6 +87,12 @@ print(
     "OK" if not missing_collection_vars else "MISSING " + ",".join(missing_collection_vars),
 )
 print(
+    "Qdrant runtime configuration:",
+    "OK"
+    if not missing_qdrant_runtime_vars
+    else "MISSING " + ",".join(missing_qdrant_runtime_vars),
+)
+print(
     "Inter-application URLs:",
     "OK" if not missing_inter_app_urls else "MISSING " + ",".join(missing_inter_app_urls),
 )
@@ -96,6 +106,7 @@ print("Python:", sys.version.split()[0])
 if (
     missing
     or missing_collection_vars
+    or missing_qdrant_runtime_vars
     or missing_inter_app_urls
     or not port_precedence_ok
     or launcher_errors

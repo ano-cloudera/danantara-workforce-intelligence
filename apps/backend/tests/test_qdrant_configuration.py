@@ -1,3 +1,4 @@
+import sys
 from types import SimpleNamespace
 
 import pytest
@@ -41,6 +42,52 @@ def test_inter_app_base_urls_are_read_from_environment(monkeypatch):
 
     assert settings.qdrant_base_url == "https://qdrant.example.test"
     assert settings.observability_base_url == "https://observability.example.test"
+
+
+def test_qdrant_timeout_is_read_from_environment(monkeypatch):
+    monkeypatch.setenv("QDRANT_TIMEOUT_SECONDS", "20")
+
+    settings = Settings(_env_file=None)
+
+    assert settings.qdrant_timeout_seconds == 20
+
+
+def test_qdrant_client_uses_configured_timeout(monkeypatch):
+    captured = {}
+
+    def fake_client(**kwargs):
+        captured.update(kwargs)
+        return SimpleNamespace()
+
+    monkeypatch.setitem(
+        sys.modules, "qdrant_client", SimpleNamespace(QdrantClient=fake_client)
+    )
+    settings = Settings(
+        _env_file=None,
+        qdrant_base_url="https://qdrant.example.test",
+        qdrant_timeout_seconds=20,
+    )
+
+    QdrantService(settings, gemini=None)
+
+    assert captured["timeout"] == 20
+
+
+def test_qdrant_health_logs_safe_error_type(caplog):
+    settings = Settings(
+        _env_file=None,
+        qdrant_mode="disabled",
+        qdrant_api_key="do-not-log-this-key",
+        qdrant_timeout_seconds=20,
+    )
+    service = QdrantService(settings, gemini=None)
+    service.client = SimpleNamespace(
+        get_collections=lambda: (_ for _ in ()).throw(TimeoutError("connection timed out"))
+    )
+
+    assert service.healthy() is False
+    assert "error_type=TimeoutError" in caplog.text
+    assert "do-not-log-this-key" not in caplog.text
 
 
 def test_qdrant_collection_names_must_be_unique():

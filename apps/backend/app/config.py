@@ -39,6 +39,7 @@ class Settings(BaseSettings):
         default=None, validation_alias=AliasChoices("QDRANT_BASE_URL", "QDRANT_URL")
     )
     qdrant_api_key: str | None = None
+    qdrant_timeout_seconds: float = Field(default=5.0, gt=0, le=120)
     qdrant_nifi_collection: str = "nifi_documents"
     qdrant_candidate_collection: str = "workforce_candidates"
     qdrant_policy_collection: str = "workforce_policies"

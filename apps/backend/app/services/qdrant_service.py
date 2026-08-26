@@ -1,7 +1,10 @@
+import logging
 import uuid
 
 from app.config import Settings
 from app.models import PolicySource
+
+logger = logging.getLogger(__name__)
 
 
 class QdrantService:
@@ -21,9 +24,14 @@ class QdrantService:
                 self.client = QdrantClient(
                     url=settings.qdrant_base_url,
                     api_key=settings.qdrant_api_key,
-                    timeout=5.0,
+                    timeout=settings.qdrant_timeout_seconds,
                 )
-            except Exception:
+            except Exception as exc:
+                logger.warning(
+                    "Qdrant client initialization failed: error_type=%s url_configured=%s",
+                    type(exc).__name__,
+                    bool(settings.qdrant_base_url),
+                )
                 if settings.qdrant_mode == "required":
                     raise
 
@@ -33,7 +41,12 @@ class QdrantService:
         try:
             self.client.get_collections()
             return True
-        except Exception:
+        except Exception as exc:
+            logger.warning(
+                "Qdrant health check failed: error_type=%s timeout_seconds=%s",
+                type(exc).__name__,
+                self.settings.qdrant_timeout_seconds,
+            )
             return False
 
     @property
