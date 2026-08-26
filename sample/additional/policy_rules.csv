@@ -1,0 +1,13 @@
+policy_scope,entity,grade,rule_type,rule_value,effective_from,source_document
+GROUP,NSH,G7,notice_period_months,3,2026-01-01,NSH-HR-POL-001_Group-Recruitment-and-Talent-Policy.docx
+GROUP,NSH,G5,notice_period_months,2,2026-01-01,NSH-HR-POL-001_Group-Recruitment-and-Talent-Policy.docx
+GROUP,NSH,G3,notice_period_months,1,2026-01-01,NSH-HR-POL-001_Group-Recruitment-and-Talent-Policy.docx
+GROUP,NSH,G1,notice_period_months,1,2026-01-01,NSH-HR-POL-001_Group-Recruitment-and-Talent-Policy.docx
+ENTITY,BNS,G7,annual_leave_days,24,2025-01-01,PKB-BNS-2025-2027_Part3_Leave-Grievance-Termination.pdf
+ENTITY,BNS,G5,annual_leave_days,20,2025-01-01,PKB-BNS-2025-2027_Part3_Leave-Grievance-Termination.pdf
+ENTITY,BNS,G3,annual_leave_days,16,2025-01-01,PKB-BNS-2025-2027_Part3_Leave-Grievance-Termination.pdf
+ENTITY,BNS,G1,annual_leave_days,12,2025-01-01,PKB-BNS-2025-2027_Part3_Leave-Grievance-Termination.pdf
+ENTITY,ENP,G7,annual_leave_days,24,2025-01-01,PKB-ENP-2025-2027_Part3_Leave-Grievance-Termination.pdf
+ENTITY,ENP,G5,annual_leave_days,21,2025-01-01,PKB-ENP-2025-2027_Part3_Leave-Grievance-Termination.pdf
+ENTITY,ENP,G3,annual_leave_days,17,2025-01-01,PKB-ENP-2025-2027_Part3_Leave-Grievance-Termination.pdf
+ENTITY,ENP,G1,annual_leave_days,13,2025-01-01,PKB-ENP-2025-2027_Part3_Leave-Grievance-Termination.pdf

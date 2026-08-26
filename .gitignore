@@ -12,6 +12,10 @@ __pycache__/
 data/workforce-app/uploads/*
 !data/workforce-app/uploads/.gitkeep
 data/qdrant-storage/
+llm/models/
+llm/.ray/
+llm/ray_results/
+llm/*.log
 dist/
 node_modules/
 coverage.xml

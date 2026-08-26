@@ -206,12 +206,25 @@ class QdrantService:
             payload = point.get("payload") or {}
             sources.append(
                 PolicySource(
-                    source_id=str(point.get("id")),
+                    source_id=payload.get("chunk_id") or str(point.get("id")),
+                    document_id=payload.get("document_id"),
                     entity=payload.get("entity"),
                     title=payload.get("title", "Policy Document"),
+                    document_type=payload.get("document_type"),
                     page=payload.get("page"),
+                    section=payload.get("section"),
                     score=float(point["score"]) if point.get("score") is not None else None,
                     text_excerpt=payload.get("text", "")[:1200],
+                    view_url=(
+                        f'/api/v1/documents/{payload["document_id"]}'
+                        if payload.get("document_id")
+                        else None
+                    ),
+                    download_url=(
+                        f'/api/v1/documents/{payload["document_id"]}/download'
+                        if payload.get("document_id")
+                        else None
+                    ),
                 )
             )
         if self.observability:

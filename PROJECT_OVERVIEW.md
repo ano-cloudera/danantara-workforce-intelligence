@@ -20,7 +20,7 @@ Needs monitoring of total candidates, recruitment activity, skills, companies an
 ## Primary business scenarios
 
 1. Rank the best candidates for a selected role and explain the gaps.
-2. Compare a policy topic across BNS, ENP and NHS with source citations.
+2. Compare a policy topic across BNS, ENP and NSH with source citations.
 3. Monitor candidate and recruitment KPIs on a governed management dashboard.
 
 ## Technical position

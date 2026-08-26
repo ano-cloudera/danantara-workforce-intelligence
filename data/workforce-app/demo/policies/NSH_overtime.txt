@@ -1,0 +1,2 @@
+NSH Group Overtime Policy
+Overtime requires manager approval and HR notification. The standard limit is 2 hours per day and 10 hours per week. Compensation is 1.25 times the regular rate for the first hour and 1.75 times for subsequent hours. Critical operational incidents and business-continuity events may follow documented exception procedures.

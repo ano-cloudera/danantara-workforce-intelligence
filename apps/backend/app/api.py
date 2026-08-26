@@ -1,11 +1,14 @@
 import uuid
 
-from fastapi import APIRouter, File, Form, Header, HTTPException, UploadFile
+from fastapi import APIRouter, File, Form, Header, HTTPException, Query, UploadFile
+from fastapi.responses import FileResponse, Response
 
 from app.config import Settings
 from app.models import (
     CandidateForm,
     FeedbackRequest,
+    PolicyChatRequest,
+    PolicyExportRequest,
     PolicyQueryRequest,
     PolicyQueryResponse,
     PolicySource,
@@ -15,6 +18,7 @@ from app.models import (
 )
 from app.orchestration.policy_flow import PolicyRAGFlow
 from app.orchestration.talent_flow import TalentMatchingFlow
+from app.services.pdf_export import build_policy_pdf
 
 
 def build_router(services: dict, settings: Settings) -> APIRouter:
@@ -57,9 +61,25 @@ def build_router(services: dict, settings: Settings) -> APIRouter:
     def candidates(company: str | None = None):
         return [x.model_dump() for x in services["data"].list_candidates(company)]
 
+    @router.get("/candidates/{candidate_id}")
+    def candidate_detail(candidate_id: str):
+        try:
+            return services["data"].get_candidate(candidate_id).model_dump()
+        except ValueError as exc:
+            raise HTTPException(404, str(exc)) from exc
+
     @router.get("/positions")
     def positions():
         return [x.model_dump() for x in services["data"].list_positions()]
+
+    @router.get("/search")
+    def global_search(
+        q: str = Query(min_length=2, max_length=200),
+        types: str | None = None,
+        limit: int = Query(default=5, ge=1, le=20),
+    ):
+        selected = {value.strip().lower() for value in (types or "").split(",") if value.strip()}
+        return services["data"].search(q, selected or None, limit)
 
     @router.post("/talent/match", response_model=TalentMatchResponse)
     def talent_match(payload: TalentMatchRequest, x_user_id: str | None = Header(default=None)):
@@ -93,9 +113,7 @@ def build_router(services: dict, settings: Settings) -> APIRouter:
             human_review_required=True,
         )
 
-    @router.post("/policy/query", response_model=PolicyQueryResponse)
-    def policy_query(payload: PolicyQueryRequest, x_user_id: str | None = Header(default=None)):
-        uid = user_id(x_user_id)
+    def execute_policy_query(payload: PolicyQueryRequest, uid: str) -> PolicyQueryResponse:
         sid = services["store"].ensure_session(payload.session_id, uid)
         request_id = str(uuid.uuid4())
         services["obs"].set_context(session_id=sid, user_id=uid, request_id=request_id)
@@ -108,12 +126,15 @@ def build_router(services: dict, settings: Settings) -> APIRouter:
                     "guardrail": input_guard.model_dump(),
                 },
             )
+        history = services["store"].list_policy_messages(sid)[-8:]
+        services["store"].add_policy_message(sid, "user", payload.question, request_id=request_id)
         flow = PolicyRAGFlow(
             payload,
             services["qdrant"],
             services["policy_fallback"],
             services["gemini"],
             services["obs"],
+            history=history,
         )
         flow.kickoff()
         sources = [PolicySource(**s) for s in flow.state.sources]
@@ -121,6 +142,20 @@ def build_router(services: dict, settings: Settings) -> APIRouter:
             flow.state.answer, len(sources)
         )
         citations = [f"[{i}] {s.title}" for i, s in enumerate(sources, start=1)]
+        source_payloads = [source.model_dump() for source in sources]
+        message_id = services["store"].add_policy_message(
+            sid,
+            "assistant",
+            flow.state.answer,
+            request_id=request_id,
+            sources=source_payloads,
+        )
+        selected_entities = ", ".join(payload.entities) if payload.entities else "the selected entities"
+        suggestions = [
+            f"What exceptions apply for {selected_entities}?",
+            f"Summarize the approval and escalation requirements for {selected_entities}.",
+            "Which source sections should HR review before making a decision?",
+        ]
         return PolicyQueryResponse(
             request_id=request_id,
             session_id=sid,
@@ -129,13 +164,67 @@ def build_router(services: dict, settings: Settings) -> APIRouter:
             citations=citations,
             guardrail=output_guard,
             human_review_required=True,
+            message_id=message_id,
+            suggested_questions=suggestions,
         )
+
+    @router.post("/policy/query", response_model=PolicyQueryResponse)
+    def policy_query(payload: PolicyQueryRequest, x_user_id: str | None = Header(default=None)):
+        return execute_policy_query(payload, user_id(x_user_id))
 
     @router.post("/policy/compare", response_model=PolicyQueryResponse)
     def policy_compare(payload: PolicyQueryRequest, x_user_id: str | None = Header(default=None)):
         if not payload.question.lower().startswith("compare"):
             payload.question = f"Compare the following policy topic across the selected entities: {payload.topic or payload.question}. {payload.question}"
         return policy_query(payload, x_user_id)
+
+    @router.post("/policy/chat", response_model=PolicyQueryResponse)
+    def policy_chat(payload: PolicyChatRequest, x_user_id: str | None = Header(default=None)):
+        query = PolicyQueryRequest(
+            question=payload.message,
+            entities=payload.filters.entities,
+            topic=payload.filters.topics[0] if payload.filters.topics else None,
+            document_types=payload.filters.document_types,
+            top_k=payload.retrieval.top_k,
+            session_id=payload.session_id,
+        )
+        return execute_policy_query(query, user_id(x_user_id))
+
+    @router.get("/policy/sessions/{session_id}")
+    def policy_session(session_id: str):
+        return {
+            "session_id": session_id,
+            "messages": services["store"].list_policy_messages(session_id),
+        }
+
+    @router.post("/policy/export")
+    def policy_export(payload: PolicyExportRequest):
+        answer = services["store"].get_policy_answer(payload.request_id)
+        if not answer:
+            raise HTTPException(404, "Policy answer not found")
+        title = payload.title or "Danantara Workforce Intelligence - Policy Analysis"
+        pdf = build_policy_pdf(title, answer["content"], answer["sources"])
+        return Response(
+            content=pdf,
+            media_type="application/pdf",
+            headers={"Content-Disposition": 'attachment; filename="policy-analysis.pdf"'},
+        )
+
+    @router.get("/documents/{document_id}")
+    def document_detail(document_id: str):
+        try:
+            document = services["data"].get_document(document_id)
+        except ValueError as exc:
+            raise HTTPException(404, str(exc)) from exc
+        return {key: value for key, value in document.items() if key != "relative_path"}
+
+    @router.get("/documents/{document_id}/download")
+    def document_download(document_id: str):
+        try:
+            path = services["data"].document_path(document_id)
+        except ValueError as exc:
+            raise HTTPException(404, str(exc)) from exc
+        return FileResponse(path, filename=path.name)
 
     @router.post("/sources/candidate")
     def candidate_form(payload: CandidateForm):
@@ -145,6 +234,13 @@ def build_router(services: dict, settings: Settings) -> APIRouter:
             "submission_id": item_id,
             "routing": "nifi" if settings.ingest_mode == "nifi" else "backend_poc_fallback",
         }
+
+    @router.get("/sources")
+    def source_inventory():
+        documents = []
+        for item in services["data"].list_documents():
+            documents.append({key: value for key, value in item.items() if key != "relative_path"})
+        return {"documents": documents, "uploads": services["store"].list_uploads()}
 
     @router.post("/sources/upload")
     async def source_upload(

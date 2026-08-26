@@ -22,10 +22,21 @@ use `BACKEND_BASE_URL`, `QDRANT_BASE_URL`, and `OBSERVABILITY_BASE_URL`, respect
 Frontend -> Backend -> input guardrail -> CrewAI Talent Flow -> CDW candidate/position retrieval -> deterministic scoring -> Gemini reasoning -> output guardrail -> response -> observability.
 
 ### Policy Intelligence
-Frontend -> Backend -> input guardrail -> CrewAI Policy Flow -> Gemini query embedding -> Qdrant retrieval -> Gemini grounded generation -> citation validation -> output guardrail -> response -> observability.
+Frontend conversational workspace -> Backend session state -> input guardrail -> CrewAI Policy Flow
+-> Gemini query embedding -> Qdrant retrieval -> Gemini grounded generation -> citation validation
+-> output guardrail -> response/feedback/PDF export -> observability. Original source files remain
+governed artifacts; Qdrant stores chunks and source metadata, not the policy system of record.
+
+### Global search
+
+The frontend calls the backend through its same-origin proxy. Search groups safe candidate
+summaries, positions, skills, and policy metadata. It does not search direct candidate identifiers
+or expose unrestricted document paths.
 
 ## Identity
 Prefer CAI/enterprise SSO. Frontend can read trusted CAI identity headers and forward a user identifier to backend. This PoC does not implement password authentication.
 
 ## State
-SQLite persists application sessions, feedback and upload metadata. Replace with PostgreSQL before backend multi-replica/HA deployment.
+SQLite persists application sessions, Policy conversation messages, feedback and upload metadata.
+It does not store candidate system-of-record data. Replace it with a shared transactional store
+before backend multi-replica/HA deployment.

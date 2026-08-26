@@ -1,0 +1,5 @@
+application_id,candidate_id,entity,position_id,stage,status,match_score_demo,salary_compliance_demo
+APP-2026-0001,CAND-BNS-0001,BNS,REQ-BNS-001,Final Interview,Active,92,WITHIN_BAND
+APP-2026-0002,CAND-BNS-0002,BNS,REQ-BNS-002,Technical Interview,Active,88,WITHIN_BAND
+APP-2026-0003,CAND-ENP-0001,ENP,REQ-ENP-002,Screening,Active,86,WITHIN_BAND
+APP-2026-0004,CAND-ENP-0003,ENP,REQ-ENP-003,HR Review,Active,94,REVIEW

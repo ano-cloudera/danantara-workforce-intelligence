@@ -5,8 +5,9 @@ Recommended initial sequence:
 1. Copy `.env.example` to `.env`.
 2. Set `GEMINI_API_KEY`.
 3. Keep `DATA_MODE=demo` and `QDRANT_MODE=optional`.
-4. Start observability, backend and frontend.
-5. Add Qdrant when Policy Intelligence vector retrieval is being tested.
+4. Run `cd apps/backend && python scripts/import_sample_data.py`.
+5. Start observability, backend and frontend.
+6. Add Qdrant when Policy Intelligence vector retrieval is being tested.
 
 Local data ownership is explicit:
 
@@ -35,3 +36,7 @@ After starting Qdrant, create its configured collections:
 ```bash
 cd apps/backend && python scripts/init_qdrant_collections.py
 ```
+
+Then run `python scripts/seed_qdrant.py` to index the supplied Group policy, PKB, and salary-policy
+sources with stable document/chunk metadata. Without Qdrant, Policy chat uses the same supplied
+documents through the local fallback and still returns citations for local review.

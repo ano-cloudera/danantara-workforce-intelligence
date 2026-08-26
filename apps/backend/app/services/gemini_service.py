@@ -13,17 +13,30 @@ class GeminiService:
         self.settings = settings
         self.observability = observability
         if settings.gemini_backend == "vertex_ai":
-            self.client = genai.Client(
-                vertexai=True,
-                project=settings.google_cloud_project,
-                location=settings.google_cloud_location,
+            self.client = (
+                genai.Client(
+                    vertexai=True,
+                    project=settings.google_cloud_project,
+                    location=settings.google_cloud_location,
+                )
+                if settings.google_cloud_project
+                else None
             )
         else:
-            self.client = genai.Client(api_key=settings.gemini_api_key)
+            self.client = (
+                genai.Client(api_key=settings.gemini_api_key)
+                if settings.gemini_api_key
+                else None
+            )
+
+    def _require_client(self):
+        if not self.client:
+            raise RuntimeError("Gemini is not configured")
+        return self.client
 
     def generate_text(self, prompt: str, name: str = "gemini-generation") -> str:
         started = time.perf_counter()
-        response = self.client.models.generate_content(
+        response = self._require_client().models.generate_content(
             model=self.settings.gemini_text_model,
             contents=prompt,
             config=types.GenerateContentConfig(
@@ -40,7 +53,7 @@ class GeminiService:
 
     def generate_json(self, prompt: str, name: str = "gemini-json") -> Any:
         started = time.perf_counter()
-        response = self.client.models.generate_content(
+        response = self._require_client().models.generate_content(
             model=self.settings.gemini_text_model,
             contents=prompt,
             config=types.GenerateContentConfig(
@@ -63,7 +76,7 @@ class GeminiService:
                 config.task_type = task_type
             except Exception:
                 pass
-        response = self.client.models.embed_content(
+        response = self._require_client().models.embed_content(
             model=self.settings.gemini_embedding_model,
             contents=texts,
             config=config,

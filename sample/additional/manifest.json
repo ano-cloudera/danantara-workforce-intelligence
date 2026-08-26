@@ -1,0 +1,18 @@
+{
+  "package": "Danantara additional structured sample sources",
+  "purpose": "Supplement the existing 15 PoC source files with structured datasets suitable for NiFi ingestion and Iceberg curated tables.",
+  "target_tables": {
+    "candidate_master.csv": "talent_profile.candidate_master",
+    "candidate_skills.csv": "talent_profile.candidate_skills",
+    "candidate_experience.csv": "talent_profile.candidate_experience",
+    "recruitment_status.csv": "recruitment.recruitment_status",
+    "policy_rules.csv": "policy_regulation.policy_rules"
+  },
+  "notes": [
+    "Candidate identity, roles, experience, education and skills are based on the submitted CV samples.",
+    "recruitment_status.csv contains synthetic demo lifecycle, score and compliance fields for dashboard/demo purposes.",
+    "policy_rules.csv contains selected structured policy facts derived from the submitted NSH/BNS/ENP policy documents.",
+    "Existing job-opening.xlsx and salary-policy.xlsx should remain source-of-truth structured inputs and can be ingested separately.",
+    "Raw PDFs/DOCX/XLSX should remain in S3 Raw; curated structured outputs should be written to Iceberg."
+  ]
+}

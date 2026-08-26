@@ -1,0 +1,42 @@
+[
+  {
+    "application_id": "APP-2026-0001",
+    "candidate_id": "CAND-BNS-0001",
+    "entity": "BNS",
+    "position_id": "REQ-BNS-001",
+    "stage": "Final Interview",
+    "status": "Active",
+    "match_score_demo": "92",
+    "salary_compliance_demo": "WITHIN_BAND"
+  },
+  {
+    "application_id": "APP-2026-0002",
+    "candidate_id": "CAND-BNS-0002",
+    "entity": "BNS",
+    "position_id": "REQ-BNS-002",
+    "stage": "Technical Interview",
+    "status": "Active",
+    "match_score_demo": "88",
+    "salary_compliance_demo": "WITHIN_BAND"
+  },
+  {
+    "application_id": "APP-2026-0003",
+    "candidate_id": "CAND-ENP-0001",
+    "entity": "ENP",
+    "position_id": "REQ-ENP-002",
+    "stage": "Screening",
+    "status": "Active",
+    "match_score_demo": "86",
+    "salary_compliance_demo": "WITHIN_BAND"
+  },
+  {
+    "application_id": "APP-2026-0004",
+    "candidate_id": "CAND-ENP-0003",
+    "entity": "ENP",
+    "position_id": "REQ-ENP-003",
+    "stage": "HR Review",
+    "status": "Active",
+    "match_score_demo": "94",
+    "salary_compliance_demo": "REVIEW"
+  }
+]

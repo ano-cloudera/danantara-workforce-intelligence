@@ -1,0 +1,152 @@
+[
+  {
+    "document_id": "CAND-BNS-0001-RANGGA-WIJAYA-KUSUMA-CV",
+    "title": "CAND BNS 0001 Rangga Wijaya Kusuma CV",
+    "entity": "BNS",
+    "document_type": "Candidate CV",
+    "file_name": "CAND-BNS-0001_Rangga-Wijaya-Kusuma_CV.pdf",
+    "relative_path": "sample/data/CAND-BNS-0001_Rangga-Wijaya-Kusuma_CV.pdf",
+    "size_bytes": 3336,
+    "downloadable": true
+  },
+  {
+    "document_id": "CAND-BNS-0001-RANGGA-WIJAYA-KUSUMA-REGISTRATION",
+    "title": "CAND BNS 0001 Rangga Wijaya Kusuma Registration",
+    "entity": "BNS",
+    "document_type": "Candidate Registration",
+    "file_name": "CAND-BNS-0001_Rangga-Wijaya-Kusuma_Registration.xlsx",
+    "relative_path": "sample/data/CAND-BNS-0001_Rangga-Wijaya-Kusuma_Registration.xlsx",
+    "size_bytes": 6626,
+    "downloadable": true
+  },
+  {
+    "document_id": "CAND-BNS-0002-SARI-DEWI-ANGGRAINI-CV",
+    "title": "CAND BNS 0002 Sari Dewi Anggraini CV",
+    "entity": "BNS",
+    "document_type": "Candidate CV",
+    "file_name": "CAND-BNS-0002_Sari-Dewi-Anggraini_CV.pdf",
+    "relative_path": "sample/data/CAND-BNS-0002_Sari-Dewi-Anggraini_CV.pdf",
+    "size_bytes": 3153,
+    "downloadable": true
+  },
+  {
+    "document_id": "CAND-BNS-0002-SARI-DEWI-ANGGRAINI-REGISTRATION",
+    "title": "CAND BNS 0002 Sari Dewi Anggraini Registration",
+    "entity": "BNS",
+    "document_type": "Candidate Registration",
+    "file_name": "CAND-BNS-0002_Sari-Dewi-Anggraini_Registration.xlsx",
+    "relative_path": "sample/data/CAND-BNS-0002_Sari-Dewi-Anggraini_Registration.xlsx",
+    "size_bytes": 6554,
+    "downloadable": true
+  },
+  {
+    "document_id": "CAND-ENP-0001-BIMO-PRASETYO-CV",
+    "title": "CAND ENP 0001 Bimo Prasetyo CV",
+    "entity": "ENP",
+    "document_type": "Candidate CV",
+    "file_name": "CAND-ENP-0001_Bimo-Prasetyo_CV.pdf",
+    "relative_path": "sample/data/CAND-ENP-0001_Bimo-Prasetyo_CV.pdf",
+    "size_bytes": 3136,
+    "downloadable": true
+  },
+  {
+    "document_id": "CAND-ENP-0001-BIMO-PRASETYO-REGISTRATION",
+    "title": "CAND ENP 0001 Bimo Prasetyo Registration",
+    "entity": "ENP",
+    "document_type": "Candidate Registration",
+    "file_name": "CAND-ENP-0001_Bimo-Prasetyo_Registration.xlsx",
+    "relative_path": "sample/data/CAND-ENP-0001_Bimo-Prasetyo_Registration.xlsx",
+    "size_bytes": 6549,
+    "downloadable": true
+  },
+  {
+    "document_id": "CAND-ENP-0003-REZA-PRATAMA-CV",
+    "title": "CAND ENP 0003 Reza Pratama CV",
+    "entity": "ENP",
+    "document_type": "Candidate CV",
+    "file_name": "CAND-ENP-0003_Reza-Pratama_CV.pdf",
+    "relative_path": "sample/data/CAND-ENP-0003_Reza-Pratama_CV.pdf",
+    "size_bytes": 2692,
+    "downloadable": true
+  },
+  {
+    "document_id": "CAND-ENP-0003-REZA-PRATAMA-REGISTRATION",
+    "title": "CAND ENP 0003 Reza Pratama Registration",
+    "entity": "ENP",
+    "document_type": "Candidate Registration",
+    "file_name": "CAND-ENP-0003_Reza-Pratama_Registration.xlsx",
+    "relative_path": "sample/data/CAND-ENP-0003_Reza-Pratama_Registration.xlsx",
+    "size_bytes": 6567,
+    "downloadable": true
+  },
+  {
+    "document_id": "NSH-HR-POL-001-GROUP-RECRUITMENT-AND-TALENT-POLICY",
+    "title": "NSH HR POL 001 Group Recruitment and Talent Policy",
+    "entity": "NSH",
+    "document_type": "Group Policy",
+    "file_name": "NSH-HR-POL-001_Group-Recruitment-and-Talent-Policy.docx",
+    "relative_path": "sample/data/NSH-HR-POL-001_Group-Recruitment-and-Talent-Policy.docx",
+    "size_bytes": 38746,
+    "downloadable": true
+  },
+  {
+    "document_id": "PKB-BNS-2025-2027-PART1-2-GENERAL-COMPENSATION",
+    "title": "PKB BNS 2025 2027 Part1 2 General Compensation",
+    "entity": "BNS",
+    "document_type": "PKB",
+    "file_name": "PKB-BNS-2025-2027_Part1-2_General-Compensation.pdf",
+    "relative_path": "sample/data/PKB-BNS-2025-2027_Part1-2_General-Compensation.pdf",
+    "size_bytes": 4383,
+    "downloadable": true
+  },
+  {
+    "document_id": "PKB-BNS-2025-2027-PART3-LEAVE-GRIEVANCE-TERMINATION",
+    "title": "PKB BNS 2025 2027 Part3 Leave Grievance Termination",
+    "entity": "BNS",
+    "document_type": "PKB",
+    "file_name": "PKB-BNS-2025-2027_Part3_Leave-Grievance-Termination.pdf",
+    "relative_path": "sample/data/PKB-BNS-2025-2027_Part3_Leave-Grievance-Termination.pdf",
+    "size_bytes": 3496,
+    "downloadable": true
+  },
+  {
+    "document_id": "PKB-ENP-2025-2027-PART1-2-GENERAL-COMPENSATION",
+    "title": "PKB ENP 2025 2027 Part1 2 General Compensation",
+    "entity": "ENP",
+    "document_type": "PKB",
+    "file_name": "PKB-ENP-2025-2027_Part1-2_General-Compensation.pdf",
+    "relative_path": "sample/data/PKB-ENP-2025-2027_Part1-2_General-Compensation.pdf",
+    "size_bytes": 4784,
+    "downloadable": true
+  },
+  {
+    "document_id": "PKB-ENP-2025-2027-PART3-LEAVE-GRIEVANCE-TERMINATION",
+    "title": "PKB ENP 2025 2027 Part3 Leave Grievance Termination",
+    "entity": "ENP",
+    "document_type": "PKB",
+    "file_name": "PKB-ENP-2025-2027_Part3_Leave-Grievance-Termination.pdf",
+    "relative_path": "sample/data/PKB-ENP-2025-2027_Part3_Leave-Grievance-Termination.pdf",
+    "size_bytes": 3571,
+    "downloadable": true
+  },
+  {
+    "document_id": "JOB-OPENING",
+    "title": "job opening",
+    "entity": null,
+    "document_type": "Job Opening",
+    "file_name": "job-opening.xlsx",
+    "relative_path": "sample/data/job-opening.xlsx",
+    "size_bytes": 6185,
+    "downloadable": true
+  },
+  {
+    "document_id": "SALARY-POLICY",
+    "title": "salary policy",
+    "entity": null,
+    "document_type": "Salary Policy",
+    "file_name": "salary-policy.xlsx",
+    "relative_path": "sample/data/salary-policy.xlsx",
+    "size_bytes": 5976,
+    "downloadable": true
+  }
+]

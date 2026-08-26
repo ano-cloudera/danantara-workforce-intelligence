@@ -8,6 +8,7 @@ from fastapi.staticfiles import StaticFiles
 
 HERE = Path(__file__).resolve().parent
 STATIC = HERE / "static"
+ASSETS = HERE.parents[2] / "assets"
 configured_backend = os.getenv("BACKEND_BASE_URL", "").strip().rstrip("/")
 BACKEND = configured_backend or (None if os.getenv("CDSW_APP_PORT") else "http://127.0.0.1:8000")
 DEMO_USER = os.getenv("DEMO_USER", "demo.hr@danantara.local")
@@ -15,6 +16,7 @@ CDV_URL = os.getenv("CDV_DASHBOARD_URL", "")
 
 app = FastAPI(title="Danantara Workforce Intelligence Frontend")
 app.mount("/static", StaticFiles(directory=STATIC), name="static")
+app.mount("/assets", StaticFiles(directory=ASSETS), name="assets")
 
 
 @app.get("/health")
@@ -31,6 +33,11 @@ def config_js():
 @app.get("/")
 def index():
     return FileResponse(STATIC / "index.html")
+
+
+@app.get("/favicon.ico", include_in_schema=False)
+def favicon():
+    return FileResponse(ASSETS / "logo.webp", media_type="image/webp")
 
 
 @app.api_route("/api-proxy/{path:path}", methods=["GET", "POST", "PUT", "PATCH", "DELETE"])
@@ -53,10 +60,14 @@ async def proxy(path: str, request: Request):
             resp = await client.request(
                 request.method, url, params=request.query_params, content=body, headers=headers
             )
+        response_headers = {}
+        if resp.headers.get("content-disposition"):
+            response_headers["Content-Disposition"] = resp.headers["content-disposition"]
         return Response(
             content=resp.content,
             status_code=resp.status_code,
             media_type=resp.headers.get("content-type"),
+            headers=response_headers,
         )
     except Exception as exc:
         return JSONResponse({"detail": f"Backend unavailable: {exc}"}, status_code=502)

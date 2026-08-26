@@ -3,58 +3,221 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="description" content="Danantara Workforce Intelligence enterprise PoC" />
   <title>Danantara Workforce Intelligence</title>
+  <link rel="icon" type="image/webp" href="/assets/logo.webp" />
+  <link rel="apple-touch-icon" href="/assets/logo.webp" />
+  <link rel="preconnect" href="https://esm.sh" crossorigin />
   <link rel="stylesheet" href="/static/styles.css" />
 </head>
 <body>
-<div class="shell">
-  <header><div class="brand"><span class="logo">D</span><b>Danantara</b> <span>Workforce Intelligence</span></div><div class="user">HR Business User</div></header>
-  <aside>
-    <button data-page="overview" class="nav active">Overview</button>
-    <button data-page="talent" class="nav">Talent Intelligence</button>
-    <button data-page="policy" class="nav">Policy Intelligence</button>
-    <button data-page="dashboard" class="nav">Dashboard</button>
-    <button data-page="sources" class="nav">Data Sources</button>
-    <button data-page="settings" class="nav">Settings</button>
-  </aside>
-  <main>
-    <section id="page-overview" class="page active">
-      <h1>Workforce Intelligence</h1><p class="sub">Governed analytics and AI for talent and workforce decisions.</p>
-      <div class="cards"><div class="card"><b>Talent Intelligence</b><p>Rank candidates and explain skill gaps.</p></div><div class="card"><b>Policy Intelligence</b><p>Search and compare policy with source references.</p></div><div class="card"><b>Management Analytics</b><p>Open governed dashboard in Cloudera Data Visualization.</p></div></div>
-      <div id="overview-summary" class="panel">Loading summary...</div>
-    </section>
-
-    <section id="page-talent" class="page">
-      <h1>Talent Intelligence</h1><p class="sub">AI-powered candidate screening with deterministic scoring and human review.</p>
-      <div class="toolbar"><select id="position"></select><input id="skills" placeholder="Additional skills, comma separated"><button id="run-match" class="primary">Run Match</button></div>
-      <div class="notice">AI-generated recommendation. Human review required before employment decisions.</div>
-      <div id="talent-results"></div>
-    </section>
-
-    <section id="page-policy" class="page">
-      <h1>Policy Intelligence</h1><p class="sub">Grounded policy search and comparison across entities.</p>
-      <div class="toolbar"><input id="policy-question" class="grow" value="Compare overtime policy between BNS, ENP and NHS"><button id="run-policy" class="primary">Analyze</button></div>
-      <div id="policy-answer" class="panel muted">Run a query to retrieve grounded policy context.</div>
-      <div id="policy-sources"></div>
-    </section>
-
-    <section id="page-dashboard" class="page">
-      <h1>Management Dashboard</h1><p class="sub">Management analytics is served by Cloudera Data Visualization.</p>
-      <div class="panel"><p>This custom app keeps conversational AI separate from management BI.</p><button id="open-cdv" class="primary">Open Cloudera Data Visualization</button></div>
-    </section>
-
-    <section id="page-sources" class="page">
-      <h1>Data Sources</h1><p class="sub">Upload PDF documents or submit candidate information. NiFi routing is used when configured.</p>
-      <div class="grid2">
-        <form id="upload-form" class="panel"><h3>Document Upload</h3><input name="file" type="file" accept="application/pdf" required><input name="entity" placeholder="Entity (BNS / ENP / NHS)"><input name="doc_type" placeholder="Document type"><button class="primary">Upload PDF</button><pre id="upload-result"></pre></form>
-        <form id="candidate-form" class="panel"><h3>Candidate Registration</h3><input name="full_name" placeholder="Full name" required><input name="company" placeholder="Company / Entity" required><input name="position_applied" placeholder="Position" required><input name="email" type="email" placeholder="Email" required><input name="core_skills" placeholder="Skills, comma separated"><input name="years_experience" type="number" step="0.1" placeholder="Years experience"><button class="primary">Submit Candidate</button><pre id="candidate-result"></pre></form>
+  <div class="app-shell">
+    <header class="topbar">
+      <button class="mobile-menu icon-button" id="mobile-menu" aria-label="Toggle navigation">
+        <span data-icon="menu" data-context="button"></span>
+      </button>
+      <button class="brand" data-page="overview" aria-label="Danantara Workforce Intelligence home">
+        <img class="brand-logo" src="/assets/logo.webp" alt="" aria-hidden="true" />
+        <span class="brand-copy"><strong>Danantara</strong><b>Workforce Intelligence</b></span>
+      </button>
+      <div class="global-search-wrap" id="global-search-wrap">
+        <label class="global-search">
+          <span data-icon="search" data-context="button"></span>
+          <input id="global-search" autocomplete="off" aria-controls="global-search-results" aria-expanded="false" placeholder="Search candidates, positions, skills, policies..." />
+          <kbd>⌘ K</kbd>
+          <button type="button" class="search-close" id="search-close" aria-label="Close search"><span data-icon="x" data-context="button"></span></button>
+        </label>
+        <div id="global-search-results" class="search-results" role="listbox" aria-label="Global search results"></div>
       </div>
-    </section>
+      <div class="top-actions">
+        <button class="icon-button mobile-search" id="mobile-search" aria-label="Open global search">
+          <span data-icon="search" data-context="button"></span>
+        </button>
+        <button class="icon-button notification" aria-label="Notifications">
+          <span data-icon="bell" data-context="nav"></span><em>3</em>
+        </button>
+        <div class="profile">
+          <span class="avatar">AP</span>
+          <span><strong>Arif Pratama</strong><small>HR Business Partner</small></span>
+          <span data-icon="chevron-down" data-context="button"></span>
+        </div>
+      </div>
+    </header>
 
-    <section id="page-settings" class="page">
-      <h1>Settings</h1><p class="sub">Runtime configuration overview. Secret values are never displayed.</p><div id="runtime-config" class="panel">Loading...</div>
-    </section>
-  </main>
-</div>
-<script src="/config.js"></script><script src="/static/app.js"></script>
-</body></html>
+    <aside class="sidebar" id="sidebar">
+      <nav aria-label="Primary navigation">
+        <button class="nav active" data-page="overview"><span data-icon="house" data-context="nav"></span><span>Overview</span></button>
+        <button class="nav" data-page="talent"><span data-icon="users" data-context="nav"></span><span>Talent Intelligence</span></button>
+        <button class="nav" data-page="policy"><span data-icon="files" data-context="nav"></span><span>Policy Intelligence</span></button>
+        <button class="nav" data-page="dashboard"><span data-icon="chart-pie" data-context="nav"></span><span>Dashboard</span></button>
+        <button class="nav" data-page="sources"><span data-icon="database" data-context="nav"></span><span>Data Sources</span></button>
+        <button class="nav" data-page="settings"><span data-icon="settings" data-context="nav"></span><span>Settings</span></button>
+      </nav>
+      <div class="sidebar-footer">
+        <img class="brand-logo small" src="/assets/logo.webp" alt="" aria-hidden="true" />
+        <span><strong>Danantara Indonesia</strong><small>Sovereign investment platform</small></span>
+      </div>
+    </aside>
+
+    <main class="main-content" id="main-content">
+      <div id="app-banner" class="toast" role="status" aria-live="polite"></div>
+
+      <section id="page-overview" class="page active" aria-labelledby="overview-title">
+        <div class="page-heading">
+          <div><span class="eyebrow">WORKFORCE INTELLIGENCE</span><h1 id="overview-title">Overview</h1><p>Governed talent, policy, and workforce insights for the Danantara PoC.</p></div>
+        </div>
+        <div id="overview-metrics" class="metric-grid five"><div class="skeleton wide"></div></div>
+        <div class="overview-grid">
+          <section class="card span-2"><div class="section-title"><div><h2>Recent matching activity</h2><p>Results generated during this browser session.</p></div><button class="text-button" data-page="talent">Open Talent <span data-icon="arrow-right" data-context="button"></span></button></div><div id="recent-matches" class="empty-state"></div></section>
+          <section class="card"><div class="section-title"><div><h2>System health</h2><p>Live backend service state.</p></div></div><div id="system-health" class="stack-list"><div class="skeleton"></div></div></section>
+          <button class="shortcut card" data-page="talent"><span class="stat-icon red"><span data-icon="scan-search" data-context="stat"></span></span><span><strong>Talent Intelligence</strong><small>Rank candidates against real PoC positions.</small></span><span data-icon="arrow-up-right" data-context="button"></span></button>
+          <button class="shortcut card" data-page="policy"><span class="stat-icon green"><span data-icon="book-open-check" data-context="stat"></span></span><span><strong>Policy Intelligence</strong><small>Compare grounded entity policies with citations.</small></span><span data-icon="arrow-up-right" data-context="button"></span></button>
+        </div>
+      </section>
+
+      <section id="page-talent" class="page" aria-labelledby="talent-title">
+        <div class="page-heading">
+          <div><h1 id="talent-title">Talent Intelligence</h1><p>AI-powered candidate screening and workforce insights.</p></div>
+          <div class="heading-badges"><span class="badge danger"><span data-icon="scan-search" data-context="button"></span>Model-assisted recommendation</span><span class="badge warning"><span data-icon="shield-check" data-context="button"></span>Human review recommended</span></div>
+        </div>
+        <section class="filter-card card">
+          <label><span>Position</span><select id="position"><option>Loading positions...</option></select></label>
+          <label><span>Company / Entity</span><select id="talent-company"><option value="">All PoC entities</option></select></label>
+          <label class="grow"><span>Skills / Keywords</span><span class="input-with-icon"><span data-icon="search" data-context="button"></span><input id="skills" placeholder="e.g. Spark, Kafka, Data Governance" /></span></label>
+          <button id="run-match" class="primary"><span data-icon="send" data-context="button"></span>Run Match</button>
+        </section>
+        <div class="talent-layout">
+          <div id="talent-results" class="result-list"><div class="empty-state card"><span data-icon="scan-search" data-context="stat"></span><h3>Ready to match candidates</h3><p>Select a position and run the governed matching workflow.</p></div></div>
+          <aside class="explanation card">
+            <h2>Why this recommendation?</h2>
+            <div class="explain-item"><span class="stat-icon red"><span data-icon="target" data-context="stat"></span></span><div><strong>Skills alignment</strong><p>Required and preferred skills contribute directly to deterministic scoring.</p></div></div>
+            <div class="explain-item"><span class="stat-icon blue"><span data-icon="briefcase-business" data-context="stat"></span></span><div><strong>Experience alignment</strong><p>Years of experience are compared with the selected position minimum.</p></div></div>
+            <div class="explain-item"><span class="stat-icon amber"><span data-icon="badge-dollar-sign" data-context="stat"></span></span><div><strong>Salary / policy compliance</strong><p>Not available in the current backend match response.</p></div></div>
+            <div class="explain-item"><span class="stat-icon green"><span data-icon="layers-3" data-context="stat"></span></span><div><strong>Source coverage</strong><p>PoC candidate profile and position requirements are used.</p></div></div>
+            <hr />
+            <h3>Data sources used</h3>
+            <div class="source-check"><span data-icon="file-user" data-context="button"></span><span>CV / Resume</span><small>When indexed</small></div>
+            <div class="source-check"><span data-icon="contact" data-context="button"></span><span>Registration Profile</span><small>Available</small></div>
+            <div class="source-check"><span data-icon="briefcase" data-context="button"></span><span>Job Opening</span><small>Available</small></div>
+            <div class="source-check muted"><span data-icon="circle-alert" data-context="button"></span><span>Salary / Policy Data</span><small>Not in match API</small></div>
+          </aside>
+        </div>
+      </section>
+
+      <section id="page-policy" class="page" aria-labelledby="policy-title">
+        <div class="page-heading">
+          <div><h1 id="policy-title">Policy Intelligence</h1><p>Ask follow-up questions and inspect every grounded source before using the answer.</p></div>
+          <div class="heading-badges"><span class="badge success"><span data-icon="badge-check" data-context="button"></span>Citation-first</span><button id="new-policy-chat" class="secondary"><span data-icon="message-square-plus" data-context="button"></span>New Chat</button></div>
+        </div>
+        <div class="policy-chat-layout">
+          <section class="policy-chat card">
+            <div class="policy-toolbar">
+              <details>
+                <summary><span data-icon="sliders-horizontal" data-context="button"></span>Source filters</summary>
+                <div class="policy-filters">
+                  <fieldset><legend>Companies / Entities</legend><div id="entity-options" class="check-chips"></div></fieldset>
+                  <label><span>Policy Topic</span><select id="policy-topic"><option value="annual_leave">Annual Leave</option><option value="overtime">Overtime</option><option value="notice_period">Notice Period</option><option value="probation">Probation</option><option value="recruitment">Recruitment Rules</option></select></label>
+                  <label><span>Document Type</span><select id="policy-document-type"><option value="">All supplied policy documents</option><option value="PKB">Collective Agreement / PKB</option><option value="Group Policy">Group HR Policy</option><option value="Salary Policy">Salary Policy</option></select></label>
+                </div>
+              </details>
+              <span class="badge warning"><span data-icon="shield-check" data-context="button"></span>Human review required</span>
+            </div>
+            <div id="policy-conversation" class="policy-conversation" aria-live="polite">
+              <div class="policy-welcome">
+                <span class="stat-icon purple"><span data-icon="book-open-check" data-context="stat"></span></span>
+                <h2>Ask about workforce policies</h2>
+                <p>Answers are grounded in the supplied Group policy, PKB documents, and salary framework.</p>
+                <div class="suggested-prompts">
+                  <button type="button">Compare annual leave for BNS and ENP grade G3.</button>
+                  <button type="button">What notice period applies to a G5 employee?</button>
+                  <button type="button">Explain the recruitment approval rules.</button>
+                </div>
+              </div>
+            </div>
+            <form id="policy-form" class="policy-composer">
+              <textarea id="policy-question" rows="2" maxlength="8000" placeholder="Ask a policy question or compare entities..." required></textarea>
+              <button id="run-policy" class="primary" type="submit"><span data-icon="send" data-context="button"></span>Send</button>
+              <small>AI-generated answers must be verified against cited sources.</small>
+            </form>
+          </section>
+          <aside id="policy-sources" class="policy-source-panel card">
+            <div class="section-title"><div><h2>Sources & Citations</h2><p>Open a cited document or download the original.</p></div><span id="policy-source-count" class="badge neutral">0</span></div>
+            <div id="policy-source-list" class="empty-state compact">Sources will appear after the first answer.</div>
+          </aside>
+        </div>
+      </section>
+
+      <section id="page-dashboard" class="page" aria-labelledby="dashboard-title">
+        <div class="page-heading">
+          <div><h1 id="dashboard-title">Management Dashboard</h1><p>Current candidate, recruitment, and workforce snapshot.</p></div>
+          <div class="heading-badges"><span class="badge neutral"><span data-icon="flask-conical" data-context="button"></span>PoC Sample Data</span><button id="open-cdv" class="secondary"><span data-icon="external-link" data-context="button"></span>Open in Cloudera Data Visualization</button></div>
+        </div>
+        <div id="dashboard-metrics" class="metric-grid five"><div class="skeleton wide"></div></div>
+        <div class="dashboard-grid">
+          <section class="card span-2"><div class="section-title"><div><h2>Candidates by Entity</h2><p>Current PoC distribution; no historical series is fabricated.</p></div></div><div id="company-bars" class="bar-chart"></div></section>
+          <section class="card"><div class="section-title"><div><h2>Current PoC Snapshot</h2><p>Candidate coverage and system state.</p></div></div><div id="snapshot-panel"></div></section>
+          <section class="card"><div class="section-title"><div><h2>Candidates by Skill Category</h2></div></div><div id="skill-bars" class="bar-chart purple"></div></section>
+          <section class="card"><div class="section-title"><div><h2>Recruitment Pipeline</h2><p>Current sample snapshot; historical transitions are not fabricated.</p></div></div><div id="recruitment-bars" class="bar-chart"></div></section>
+          <section class="card"><div class="section-title"><div><h2>Recent Matching Activity</h2></div></div><div id="dashboard-recent" class="compact-table"></div></section>
+        </div>
+      </section>
+
+      <section id="page-sources" class="page" aria-labelledby="sources-title">
+        <div class="page-heading">
+          <div><h1 id="sources-title">Data Sources</h1><p>Upload and manage candidate and policy data across PoC entities.</p></div>
+          <div class="heading-badges"><button class="primary" id="upload-focus"><span data-icon="cloud-upload" data-context="button"></span>Upload PDF</button><button class="secondary" id="candidate-focus"><span data-icon="user-plus" data-context="button"></span>Candidate Form</button></div>
+        </div>
+        <div class="sources-grid">
+          <div class="sources-main">
+            <section class="card"><div class="section-title"><div><h2>Document Upload Center</h2><p>PDFs up to 50 MB; routing follows backend ingestion mode.</p></div></div>
+              <form id="upload-form" class="upload-form">
+                <label class="drop-zone"><span data-icon="cloud-upload" data-context="stat"></span><strong>Choose a PDF document</strong><span>Candidate CV, Group HR Policy, or PKB / Collective Agreement</span><input name="file" type="file" accept="application/pdf" required /></label>
+                <div class="form-row"><label><span>Entity</span><select name="entity"><option>BNS</option><option>ENP</option><option>NSH</option></select></label><label><span>Document type</span><select name="doc_type"><option>Candidate CV</option><option>Group HR Policy</option><option>PKB / Collective Agreement</option><option>Job Opening</option><option>Salary Policy</option></select></label><button class="primary" type="submit"><span data-icon="upload" data-context="button"></span>Upload</button></div>
+              </form><div id="upload-result" class="inline-status"></div>
+              <div class="section-title table-title"><div><h3>Recent uploads</h3><p>Uploads completed during this browser session.</p></div></div><div id="recent-uploads" class="compact-table"><div class="empty-state compact">No uploads in this session.</div></div>
+            </section>
+            <section class="card" id="candidate-registration"><div class="section-title"><div><h2>Candidate Registration Form</h2><p>Submission is routed through the backend PoC intake endpoint.</p></div></div>
+              <form id="candidate-form" class="candidate-form">
+                <label><span>Full Name *</span><input name="full_name" required placeholder="Enter full name" /></label>
+                <label><span>Company / Entity *</span><select name="company" required><option>BNS</option><option>ENP</option><option>NSH</option></select></label>
+                <label><span>Position Applied *</span><select name="position_applied" id="candidate-position" required><option>Loading...</option></select></label>
+                <label><span>Email *</span><input name="email" type="email" required placeholder="name@example.com" /></label>
+                <label><span>Phone Number</span><input name="phone" placeholder="+62" /></label>
+                <label><span>Core Skills</span><input name="core_skills" placeholder="Spark, Kafka, SQL" /></label>
+                <label><span>Years of Experience</span><input name="years_experience" type="number" min="0" step="0.1" placeholder="0" /></label>
+                <label class="span-2"><span>Notes</span><textarea name="notes" placeholder="Additional notes (optional)"></textarea></label>
+                <div class="form-footer span-2"><small><span data-icon="lock-keyhole" data-context="button"></span>PoC submission; enterprise governance applies downstream.</small><button class="primary" type="submit"><span data-icon="send" data-context="button"></span>Submit Candidate</button></div>
+              </form><div id="candidate-result" class="inline-status"></div>
+            </section>
+          </div>
+          <aside class="sources-side">
+            <section class="card"><div class="section-title"><div><h2>Processing Pipeline</h2><p>Governed structured path with secondary AI indexing.</p></div><span class="badge success">Live design</span></div><ol class="pipeline" id="pipeline"></ol></section>
+            <section class="card"><div class="section-title"><div><h2>Source Summary</h2></div></div><div id="source-summary" class="mini-metrics"></div></section>
+            <section class="card"><div class="section-title"><div><h2>Connected Sources</h2></div></div><div id="connected-sources" class="stack-list"></div></section>
+          </aside>
+        </div>
+      </section>
+
+      <section id="page-settings" class="page" aria-labelledby="settings-title">
+        <div class="page-heading"><div><h1 id="settings-title">Settings</h1><p>Runtime configuration and non-persistent PoC display preferences.</p></div><span class="badge warning"><span data-icon="info" data-context="button"></span>Display controls are not persisted</span></div>
+        <div class="settings-tabs"><button class="active"><span data-icon="sliders-horizontal" data-context="button"></span>All Settings</button><button><span data-icon="lock-keyhole" data-context="button"></span>Access & Security</button><button><span data-icon="workflow" data-context="button"></span>AI & Models</button><button><span data-icon="database" data-context="button"></span>Data & Pipeline</button><button><span data-icon="shield-check" data-context="button"></span>System</button></div>
+        <div class="settings-grid">
+          <section class="card"><div class="section-title"><div><h2>Access & Roles</h2><p>PoC display reference; not an authorization editor.</p></div></div><div class="role-table"><div><strong>HR Business User</strong><span>View insights and run matching</span><em>Display only</em></div><div><strong>HR Analyst</strong><span>Analyze talent and policies</span><em>Display only</em></div><div><strong>Reviewer</strong><span>Validate AI recommendations</span><em>Display only</em></div></div></section>
+          <section class="card"><div class="section-title"><div><h2>Runtime Configuration</h2><p>Non-secret values from <code>/config/public</code>.</p></div></div><div id="runtime-config" class="config-list"><div class="skeleton"></div></div></section>
+          <section class="card"><div class="section-title"><div><h2>Security & Audit</h2><p>Platform-aligned PoC controls.</p></div></div><div class="stack-list"><div class="status-row"><span data-icon="badge-check" data-context="button"></span><span>Human review required</span><strong class="success-text">Enabled</strong></div><div class="status-row"><span data-icon="badge-check" data-context="button"></span><span>Source citation checks</span><strong class="success-text">Enabled</strong></div><div class="status-row"><span data-icon="shield-check" data-context="button"></span><span>CAI identity propagation</span><strong>Proxy-managed</strong></div><div class="status-row"><span data-icon="eye-off" data-context="button"></span><span>Secret rendering</span><strong class="success-text">Disabled</strong></div></div></section>
+          <section class="card"><div class="section-title"><div><h2>Data Pipeline & Governance</h2><p>Architecture state, not editable runtime values.</p></div></div><div class="config-list"><div><span>Source ingestion</span><strong>NiFi / backend fallback</strong></div><div><span>Lakehouse</span><strong>Iceberg raw + curated</strong></div><div><span>Structured serving</span><strong>Impala / CDW</strong></div><div><span>Vector serving</span><strong>Qdrant REST</strong></div></div></section>
+          <section class="card span-2"><div class="section-title"><div><h2>PoC Display Preferences</h2><p>Local browser-only controls; refresh resets them.</p></div></div><div class="preference-row"><label><input type="checkbox" checked /> Show human-review labels</label><label><input type="checkbox" checked /> Show source verification</label><label><input type="checkbox" checked /> Compact information density</label><button class="secondary" id="reset-display"><span data-icon="rotate-ccw" data-context="button"></span>Reset display</button></div></section>
+        </div>
+      </section>
+    </main>
+  </div>
+  <dialog id="candidate-dialog" class="candidate-dialog">
+    <button type="button" class="dialog-close icon-button" id="candidate-dialog-close" aria-label="Close candidate details"><span data-icon="x" data-context="button"></span></button>
+    <div id="candidate-detail"><div class="skeleton wide"></div></div>
+  </dialog>
+  <script src="/config.js"></script>
+  <script src="/static/api.js"></script>
+  <script src="/static/app.js"></script>
+  <script type="module" src="/static/icons.js"></script>
+</body>
+</html>

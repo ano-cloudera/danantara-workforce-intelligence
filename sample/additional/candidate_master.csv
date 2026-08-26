@@ -1,0 +1,5 @@
+candidate_id,entity,full_name,current_title,years_experience,education_level,education_institution,email,phone,city,source_cv,source_registration
+CAND-BNS-0001,BNS,Rangga Wijaya Kusuma,VP of Engineering,18,S2,Universitas Indonesia,rangga.wijaya@email.example,+62 811 8820 114,Jakarta Selatan,CAND-BNS-0001_Rangga-Wijaya-Kusuma_CV.pdf,CAND-BNS-0001_Rangga-Wijaya-Kusuma_Registration.xlsx
+CAND-BNS-0002,BNS,Sari Dewi Anggraini,Data Platform Manager,11,S1,Institut Teknologi Bandung,sari.dewi.a@email.example,+62 812 9100 222,Bandung,CAND-BNS-0002_Sari-Dewi-Anggraini_CV.pdf,CAND-BNS-0002_Sari-Dewi-Anggraini_Registration.xlsx
+CAND-ENP-0001,ENP,Bimo Prasetyo,Senior Data Engineer,6,S1,Institut Teknologi Sepuluh Nopember,bimo.prasetyo94@email.example,+62 813-5567-303,Surabaya,CAND-ENP-0001_Bimo-Prasetyo_CV.pdf,CAND-ENP-0001_Bimo-Prasetyo_Registration.xlsx
+CAND-ENP-0003,ENP,Reza Pratama,Head of Data Governance,16,S2,Universitas Indonesia,reza.pratama@email.example,+62 811 2003 907,Jakarta Selatan,CAND-ENP-0003_Reza-Pratama_CV.pdf,CAND-ENP-0003_Reza-Pratama_Registration.xlsx

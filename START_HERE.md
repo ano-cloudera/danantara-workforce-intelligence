@@ -45,6 +45,16 @@ Before development, use `skills/delivery-method-selector/SKILL.md` to choose dir
 lightweight spec-kit planning, or full BMAD. BMAD is reserved for changes whose business or
 architecture scope justifies the full artifact chain.
 
+The frontend now provides a responsive six-page enterprise PoC experience (Overview, Talent,
+Policy, Dashboard, Data Sources, and Settings) while preserving the FastAPI same-origin proxy.
+Reference screenshots define visual language only; every visible business value comes from the
+PoC backend or is explicitly labelled as unavailable/PoC state.
+
+The supplied `sample/data` and `sample/additional` package is normalized by
+`apps/backend/scripts/import_sample_data.py`. Policy Intelligence is a citation-first conversational
+workspace with feedback, source access, and PDF export; global search remains available across
+desktop, tablet, and mobile layouts.
+
 For all four CAI Applications, the platform-provided `CDSW_APP_PORT` is authoritative. Launchers
 bind to `127.0.0.1` and resolve ports as `CDSW_APP_PORT -> PORT -> local default`. Cross-Application
 calls use `BACKEND_BASE_URL`, `QDRANT_BASE_URL`, and `OBSERVABILITY_BASE_URL` assigned by CAI.

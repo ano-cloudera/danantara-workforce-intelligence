@@ -1,70 +1,212 @@
 [
   {
-    "candidate_id": "C001",
-    "name": "Fahri Ananda",
+    "candidate_id": "CAND-BNS-0001",
+    "name": "Rangga Wijaya Kusuma",
     "company": "BNS",
-    "years_experience": 5.2,
+    "current_title": "VP of Engineering",
+    "years_experience": 18.0,
     "skills": [
-      "Python",
-      "Machine Learning",
-      "SQL",
-      "Data Modeling",
-      "Data Visualization"
+      "Organizational Strategy",
+      "Team Leadership",
+      "Stakeholder Management",
+      "Data Governance",
+      "AWS",
+      "Apache Kafka",
+      "Banking & Financial Services"
     ],
-    "summary": "Data scientist with Python, ML and analytics experience."
+    "skill_proficiency": {
+      "Organizational Strategy": 5,
+      "Team Leadership": 5,
+      "Stakeholder Management": 5,
+      "Data Governance": 4,
+      "AWS": 4,
+      "Apache Kafka": 4,
+      "Banking & Financial Services": 5
+    },
+    "summary": "Led data and engineering organization and delivered real-time fraud scoring platform.",
+    "education_level": "S2",
+    "education_institution": "Universitas Indonesia",
+    "city": "Jakarta Selatan",
+    "experiences": [
+      {
+        "employer": "PT Fintech Andalan Nusantara",
+        "role": "VP of Engineering",
+        "start_year": 2018,
+        "end_year": null,
+        "summary": "Led data and engineering organization and delivered real-time fraud scoring platform."
+      },
+      {
+        "employer": "PT Telekomunikasi Cakrawala",
+        "role": "Head of Data Platform",
+        "start_year": 2011,
+        "end_year": 2018,
+        "summary": "Built enterprise data lake and streaming ingestion; introduced governance and lineage."
+      }
+    ],
+    "application_id": "APP-2026-0001",
+    "position_id": "REQ-BNS-001",
+    "application_stage": "Final Interview",
+    "application_status": "Active",
+    "salary_compliance": "WITHIN_BAND",
+    "source_documents": [
+      "CAND-BNS-0001_Rangga-Wijaya-Kusuma_CV.pdf",
+      "CAND-BNS-0001_Rangga-Wijaya-Kusuma_Registration.xlsx"
+    ]
   },
   {
-    "candidate_id": "C002",
-    "name": "Dewi Lestari",
-    "company": "ENP",
-    "years_experience": 4.1,
-    "skills": [
-      "Python",
-      "SQL",
-      "Machine Learning",
-      "Statistics",
-      "Data Visualization"
-    ],
-    "summary": "Analytics and ML practitioner with strong statistics background."
-  },
-  {
-    "candidate_id": "C003",
-    "name": "Rizky Permana",
-    "company": "NHS",
-    "years_experience": 6.3,
-    "skills": [
-      "SQL",
-      "Python",
-      "Data Modeling",
-      "Statistics"
-    ],
-    "summary": "Senior analytics professional with data modeling experience."
-  },
-  {
-    "candidate_id": "C004",
-    "name": "Siti Nurhaliza",
+    "candidate_id": "CAND-BNS-0002",
+    "name": "Sari Dewi Anggraini",
     "company": "BNS",
-    "years_experience": 7.4,
+    "current_title": "Data Platform Manager",
+    "years_experience": 11.0,
     "skills": [
-      "Python",
-      "Spark",
+      "Team Leadership",
+      "Stakeholder Management",
+      "Apache Kafka",
+      "Apache Spark",
       "SQL",
-      "MLOps",
-      "AWS"
+      "Airflow",
+      "Banking & Financial Services"
     ],
-    "summary": "Data engineer and ML platform specialist."
+    "skill_proficiency": {
+      "Team Leadership": 4,
+      "Stakeholder Management": 4,
+      "Apache Kafka": 4,
+      "Apache Spark": 4,
+      "SQL": 4,
+      "Airflow": 4,
+      "Banking & Financial Services": 4
+    },
+    "summary": "Leads platform team and owns streaming/batch platform SLA.",
+    "education_level": "S1",
+    "education_institution": "Institut Teknologi Bandung",
+    "city": "Bandung",
+    "experiences": [
+      {
+        "employer": "PT Ritel Digital Sejahtera",
+        "role": "Data Platform Manager",
+        "start_year": 2019,
+        "end_year": null,
+        "summary": "Leads platform team and owns streaming/batch platform SLA."
+      },
+      {
+        "employer": "PT Media Kreasi Nusantara",
+        "role": "Lead Data Engineer",
+        "start_year": 2014,
+        "end_year": 2019,
+        "summary": "Led analytics data pipeline squad."
+      }
+    ],
+    "application_id": "APP-2026-0002",
+    "position_id": "REQ-BNS-002",
+    "application_stage": "Technical Interview",
+    "application_status": "Active",
+    "salary_compliance": "WITHIN_BAND",
+    "source_documents": [
+      "CAND-BNS-0002_Sari-Dewi-Anggraini_CV.pdf",
+      "CAND-BNS-0002_Sari-Dewi-Anggraini_Registration.xlsx"
+    ]
   },
   {
-    "candidate_id": "C005",
-    "name": "Bagas Prasetyo",
+    "candidate_id": "CAND-ENP-0001",
+    "name": "Bimo Prasetyo",
     "company": "ENP",
-    "years_experience": 3.8,
+    "current_title": "Senior Data Engineer",
+    "years_experience": 6.0,
     "skills": [
+      "Apache Kafka",
+      "Apache Flink",
+      "Apache Spark",
       "Python",
-      "Data Analytics",
-      "Power BI",
-      "SQL"
+      "SQL",
+      "Airflow"
     ],
-    "summary": "Data analyst focused on business intelligence."
+    "skill_proficiency": {
+      "Apache Kafka": 4,
+      "Apache Flink": 5,
+      "Apache Spark": 4,
+      "Python": 4,
+      "SQL": 4,
+      "Airflow": 4
+    },
+    "summary": "Owns real-time shipment tracking pipeline using Kafka and Flink.",
+    "education_level": "S1",
+    "education_institution": "Institut Teknologi Sepuluh Nopember",
+    "city": "Surabaya",
+    "experiences": [
+      {
+        "employer": "PT Logistik Cepat Indonesia",
+        "role": "Senior Data Engineer",
+        "start_year": 2021,
+        "end_year": null,
+        "summary": "Owns real-time shipment tracking pipeline using Kafka and Flink."
+      },
+      {
+        "employer": "PT Aplikasi Karya Bangsa",
+        "role": "Data Engineer",
+        "start_year": 2017,
+        "end_year": 2021,
+        "summary": "Built Spark batch ETL and Airflow scheduled jobs."
+      }
+    ],
+    "application_id": "APP-2026-0003",
+    "position_id": "REQ-ENP-002",
+    "application_stage": "Screening",
+    "application_status": "Active",
+    "salary_compliance": "WITHIN_BAND",
+    "source_documents": [
+      "CAND-ENP-0001_Bimo-Prasetyo_CV.pdf",
+      "CAND-ENP-0001_Bimo-Prasetyo_Registration.xlsx"
+    ]
+  },
+  {
+    "candidate_id": "CAND-ENP-0003",
+    "name": "Reza Pratama",
+    "company": "ENP",
+    "current_title": "Head of Data Governance",
+    "years_experience": 16.0,
+    "skills": [
+      "Organizational Strategy",
+      "Stakeholder Management",
+      "Data Governance",
+      "AWS",
+      "Energy & Utilities"
+    ],
+    "skill_proficiency": {
+      "Organizational Strategy": 5,
+      "Stakeholder Management": 5,
+      "Data Governance": 5,
+      "AWS": 4,
+      "Energy & Utilities": 5
+    },
+    "summary": "Built enterprise catalog, lineage, governance council, and PII classification.",
+    "education_level": "S2",
+    "education_institution": "Universitas Indonesia",
+    "city": "Jakarta Selatan",
+    "experiences": [
+      {
+        "employer": "PT Asuransi Amanah Sentosa",
+        "role": "Head of Data Governance",
+        "start_year": 2017,
+        "end_year": null,
+        "summary": "Built enterprise catalog, lineage, governance council, and PII classification."
+      },
+      {
+        "employer": "PT Telekomunikasi Cakrawala",
+        "role": "Data Governance Lead",
+        "start_year": 2009,
+        "end_year": 2017,
+        "summary": "Implemented role-based access and audit for data lake."
+      }
+    ],
+    "application_id": "APP-2026-0004",
+    "position_id": "REQ-ENP-003",
+    "application_stage": "HR Review",
+    "application_status": "Active",
+    "salary_compliance": "REVIEW",
+    "source_documents": [
+      "CAND-ENP-0003_Reza-Pratama_CV.pdf",
+      "CAND-ENP-0003_Reza-Pratama_Registration.xlsx"
+    ]
   }
 ]

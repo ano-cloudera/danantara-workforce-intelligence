@@ -33,6 +33,17 @@
 - Delivery method is proportional: direct implementation for bounded changes, lightweight
   spec-kit planning for medium well-defined features, and BMAD for material business/architecture
   work. BMAD is not the default for every change.
+- The frontend uses one responsive six-page enterprise shell, same-origin API proxying, the
+  official `assets/logo.webp` brand mark (including favicon), and named `lucide-react` icons.
+  Functional enterprise icons replace decorative AI/sparkle motifs; primary-action icons are white.
+- Supplied CV, registration, job-opening, salary, Group-policy, PKB, and curated CSV samples are
+  normalized into safe local demo fixtures; public candidate APIs exclude direct identifiers and
+  protected HR attributes.
+- Policy Intelligence is a citation-first multi-turn workspace. SQLite stores Policy conversation
+  state and feedback, while sources remain in governed documents/Qdrant and structured data remains
+  in CDW.
+- Global search groups candidates, positions, skills, and policy documents and remains accessible
+  through a responsive overlay on compact layouts.
 
 ## Environment-specific tasks still required
 
@@ -54,8 +65,8 @@
 
 1. Validate backend Gemini health.
 2. Validate frontend to backend proxy.
-3. Validate Qdrant and index policy sample.
-4. Validate Policy Intelligence end-to-end.
+3. Run the sample importer, validate Qdrant, and index supplied policy chunks.
+4. Validate Policy chat, citations, source download, feedback, and PDF export end-to-end.
 5. Configure CDW and validate candidate query.
 6. Validate Talent Intelligence end-to-end.
 7. Connect NiFi/CDE pipeline.

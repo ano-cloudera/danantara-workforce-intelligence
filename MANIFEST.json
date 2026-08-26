@@ -1,6 +1,6 @@
 {
   "project": "danantara-workforce-intelligence-bmad",
-  "file_count": 128,
+  "file_count": 132,
   "files": [
     {
       "path": ".cursor/rules/project.mdc",
@@ -65,12 +65,12 @@
     {
       "path": "PROJECT_OVERVIEW.md",
       "bytes": 1317,
-      "sha256": "9060bfa3041640bdc6bcb03047457374bd5b7890acc1b9358a11f9829bac0c68"
+      "sha256": "dd12cfff4e12e3697c527b24b1c4bb31112cacb15c9c75759ce73ca7afd82820"
     },
     {
       "path": "PROJECT_STATE.md",
-      "bytes": 3761,
-      "sha256": "ce00c67ea57e36f61299acbf5a36c271ab0cc6c57360cd8570dddc767ae8ddd6"
+      "bytes": 3953,
+      "sha256": "a00d2a5756c1312d59e02e07c045d8c69ab747eb42a5d05480db3eba3c7d3265"
     },
     {
       "path": "README.md",
@@ -94,8 +94,8 @@
     },
     {
       "path": "START_HERE.md",
-      "bytes": 3316,
-      "sha256": "939fffacc13230fffeaab6081d8e276e6c61e5913273246cdd63f4c8e14c0b35"
+      "bytes": 3664,
+      "sha256": "5b275f69306d4468775fe91562938a28916f2ebe568254269958f20809612302"
     },
     {
       "path": "_bmad/README.md",
@@ -154,8 +154,8 @@
     },
     {
       "path": "_bmad/project-state.yaml",
-      "bytes": 2447,
-      "sha256": "6ab8b2da73ff91251ea64c1d14bf36f0d997628fcdb15c862317380fcaa71ddd"
+      "bytes": 2552,
+      "sha256": "c950bcef9538fb5a552889fd3f8b573b84a795f011c845d523b1c28c0bc4b141"
     },
     {
       "path": "_bmad/stories/STORY-001-config-and-entrypoints.md",
@@ -204,8 +204,8 @@
     },
     {
       "path": "_bmad/stories/STORY-010-frontend.md",
-      "bytes": 564,
-      "sha256": "8d15d97d8aa8ab6da7c6702ba70012328c67cced22d916d3bfb773359190b41d"
+      "bytes": 1033,
+      "sha256": "975fdf3c8b067bfd321c785297c39e88fe4b67643d3252e91a5352f0ae870e6e"
     },
     {
       "path": "_bmad/stories/STORY-011-nifi-ingestion.md",
@@ -259,8 +259,8 @@
     },
     {
       "path": "apps/backend/app/orchestration/policy_flow.py",
-      "bytes": 2107,
-      "sha256": "4c79819673556498d8c740b8e1406aaaa9f7e96bd9496241432d7b924fa183e9"
+      "bytes": 2983,
+      "sha256": "91f0f0a8fc5d3854233606b90e1c013b6a5b6b917e6ec168493f6d9bcde45dd6"
     },
     {
       "path": "apps/backend/app/orchestration/talent_flow.py",
@@ -274,8 +274,8 @@
     },
     {
       "path": "apps/backend/app/services/data_gateway.py",
-      "bytes": 4804,
-      "sha256": "f1835c449ff3b6e0563cb94ba4f6c26979a0c663a92ced096750e64e3f7c054f"
+      "bytes": 5034,
+      "sha256": "1568e7e7b13cc7c54d1b241774f3a4cfecbf2c8a32d03ee7dc476c1782f1ca41"
     },
     {
       "path": "apps/backend/app/services/document_ingestion.py",
@@ -299,8 +299,8 @@
     },
     {
       "path": "apps/backend/app/services/policy_fallback.py",
-      "bytes": 956,
-      "sha256": "a64946cdfae49cfea74bd78c9ccc00905af7bff1642a56206b8659ebd98b718c"
+      "bytes": 974,
+      "sha256": "e946b0fce2cdbdd307ed26cfbb7e2c83bb151cfca4ce81990fbe0f99c2f411d5"
     },
     {
       "path": "apps/backend/app/services/qdrant_service.py",
@@ -343,6 +343,11 @@
       "sha256": "1cb48a04c6179b1795c399d14c9bd1d9c070df96118825912ba9fef422294064"
     },
     {
+      "path": "apps/backend/tests/test_frontend_ui_contract.py",
+      "bytes": 2370,
+      "sha256": "4edead6c987929d8536e0011f859dfda86040642ea772f923880640301552987"
+    },
+    {
       "path": "apps/backend/tests/test_guardrails.py",
       "bytes": 405,
       "sha256": "99901d044144dccb609f16c558b41e7d14ce93ff8941354e8dbbd45d47e2cc7c"
@@ -359,8 +364,8 @@
     },
     {
       "path": "apps/frontend/README.md",
-      "bytes": 769,
-      "sha256": "97d85f1c8b84a50206f3e3813d2255cb75b6345add775fcb228b693e728b6b4a"
+      "bytes": 2330,
+      "sha256": "4359b34952a3485de64eba153d82e2a3d2bb886bf033463a24506148740157c5"
     },
     {
       "path": "apps/frontend/app/__init__.py",
@@ -373,19 +378,29 @@
       "sha256": "97f1f91cc67c3fdda629a078145132fc6ce19dfc33365790449166968a601d36"
     },
     {
+      "path": "apps/frontend/app/static/api.js",
+      "bytes": 894,
+      "sha256": "0d5a2b2493ecc9b5ec4e3d290d6be2f6b1ead4684f0bf8cc91f7c308e9513365"
+    },
+    {
       "path": "apps/frontend/app/static/app.js",
-      "bytes": 4250,
-      "sha256": "ecbebf69cca11d13527a97fcef1e1c2c03b8e2072c7736afe1dfd433bd9bd624"
+      "bytes": 20788,
+      "sha256": "8264aa11cf0d066ed3e85187e0cc2fe9935e0897ccba0c358d96d5fa08ddbb69"
+    },
+    {
+      "path": "apps/frontend/app/static/icons.js",
+      "bytes": 2595,
+      "sha256": "e092502698bc0c336c6e748a872bf7a6cdf4094762d35372a37c108c798e34d4"
     },
     {
       "path": "apps/frontend/app/static/index.html",
-      "bytes": 4338,
-      "sha256": "22052d659536bd89a703ef559654e63fd60664d1365b559803c329bc0980ad01"
+      "bytes": 20562,
+      "sha256": "f482ad66139a1dcee1d413b8960552ee91ada3178047b438c05c3dd5107eb95e"
     },
     {
       "path": "apps/frontend/app/static/styles.css",
-      "bytes": 3053,
-      "sha256": "b775ea6967c37d1bc57e427e0e93ba8a2ff6130d26598e1905f944e9e0f61800"
+      "bytes": 22125,
+      "sha256": "5d4dccf1696765ad54303e0f02c1d437f43ed48feced0146a654b367ab94c9f7"
     },
     {
       "path": "apps/frontend/requirements.txt",
@@ -504,8 +519,8 @@
     },
     {
       "path": "data/workforce-app/demo/candidates.json",
-      "bytes": 1479,
-      "sha256": "c0d250fb0e9c20cc8d8bd16aa283a8d77688edf8923de64dfa64abf72d664ee8"
+      "bytes": 1263,
+      "sha256": "e4847b21e05d1fedfe6642e2697d17ca68362334bc0e0d72a6468507fd078c6c"
     },
     {
       "path": "data/workforce-app/demo/policies/BNS_overtime.txt",
@@ -518,9 +533,9 @@
       "sha256": "a4e3d5d6ba5108e6111f1fd56550b1792021fc43814602187faa44c302092119"
     },
     {
-      "path": "data/workforce-app/demo/policies/NHS_overtime.txt",
-      "bytes": 338,
-      "sha256": "81d310a2648d7f2a84b9bd4ad8db9809bf615686d7ee470289c532c97b12a6a3"
+      "path": "data/workforce-app/demo/policies/NSH_overtime.txt",
+      "bytes": 349,
+      "sha256": "600cde869981177dcc31a9b91dfadfbff96ea603e8cda8ea1de6bf0950a26c40"
     },
     {
       "path": "data/workforce-app/demo/positions.json",
@@ -609,8 +624,8 @@
     },
     {
       "path": "skills/frontend-ui/SKILL.md",
-      "bytes": 473,
-      "sha256": "5728314ce6d9561210b12de02f081fde922bfc7600e858065c5af03fc461f7ef"
+      "bytes": 917,
+      "sha256": "eff7dc20a59b254a7503a2c6a9a785b8116e948b62550eb4ecae9e7afc88bc62"
     },
     {
       "path": "skills/gemini-provider/SKILL.md",
@@ -641,6 +656,11 @@
       "path": "skills/testing-release/SKILL.md",
       "bytes": 525,
       "sha256": "4a52a427932a7d173e0e720761ffe55b43a0fb661f5fcb1d87fca5214d1dc74b"
+    },
+    {
+      "path": "specs/frontend-redesign.md",
+      "bytes": 1510,
+      "sha256": "f5470d88994e967b957104d0f6b0ab0da0063f9085deed20f49e0fbd86e2eaa9"
     }
   ]
 }

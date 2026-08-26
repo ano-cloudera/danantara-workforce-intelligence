@@ -99,6 +99,25 @@ BACKEND_BASE_URL=http://127.0.0.1:8000 python run_cai.py --local-port 8080
 
 By default `DATA_MODE=demo` and `QDRANT_MODE=optional`, so the UI and talent matching path can be tested before CDW/Qdrant are wired.
 
+### Supplied PoC sample data
+
+The raw CV, registration, job-opening, salary, Group-policy, and PKB files remain under
+`sample/data/`. Curated CSV supplements are under `sample/additional/`. Generate the safe browser
+fixtures after changing those sources with:
+
+```bash
+cd apps/backend
+python scripts/import_sample_data.py
+```
+
+The importer excludes NIK, birth date, gender, marital status, address, email, phone, and expected
+salary from public candidate responses. In production, structured records remain in Iceberg/CDW;
+the generated JSON is a local PoC fallback only.
+
+Policy Intelligence provides multi-turn grounded chat, citations, original-source viewing,
+thumbs-up/down feedback, and PDF export. Existing `policy/query` and `policy/compare` routes remain
+available for compatibility. Global search groups candidates, positions, skills, and policies.
+
 ## Shared Qdrant workload isolation
 
 One Qdrant deployment safely serves both demos through distinct, configurable collections:

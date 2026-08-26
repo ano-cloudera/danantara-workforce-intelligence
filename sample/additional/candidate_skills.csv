@@ -1,0 +1,26 @@
+candidate_id,skill,proficiency_demo_score
+CAND-BNS-0001,Organizational Strategy,5
+CAND-BNS-0001,Team Leadership,5
+CAND-BNS-0001,Stakeholder Management,5
+CAND-BNS-0001,Data Governance,4
+CAND-BNS-0001,AWS,4
+CAND-BNS-0001,Apache Kafka,4
+CAND-BNS-0001,Banking & Financial Services,5
+CAND-BNS-0002,Team Leadership,4
+CAND-BNS-0002,Stakeholder Management,4
+CAND-BNS-0002,Apache Kafka,4
+CAND-BNS-0002,Apache Spark,4
+CAND-BNS-0002,SQL,4
+CAND-BNS-0002,Airflow,4
+CAND-BNS-0002,Banking & Financial Services,4
+CAND-ENP-0001,Apache Kafka,4
+CAND-ENP-0001,Apache Flink,5
+CAND-ENP-0001,Apache Spark,4
+CAND-ENP-0001,Python,4
+CAND-ENP-0001,SQL,4
+CAND-ENP-0001,Airflow,4
+CAND-ENP-0003,Organizational Strategy,5
+CAND-ENP-0003,Stakeholder Management,5
+CAND-ENP-0003,Data Governance,5
+CAND-ENP-0003,AWS,4
+CAND-ENP-0003,Energy & Utilities,5

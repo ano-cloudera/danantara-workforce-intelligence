@@ -36,3 +36,23 @@ response never includes the endpoint, resolved IP addresses, proxy values, or AP
 
 The launcher supports CAI interpreter execution where `__file__` is unavailable by resolving the
 Application directory from `CDSW_PROJECT_DIR` or the project working directory.
+
+## Supplied sample and API extensions
+
+Run `python scripts/import_sample_data.py` after changing `sample/data` or `sample/additional`.
+It creates safe local JSON fixtures without exposing direct candidate identifiers or protected HR
+attributes. `DATA_MODE=impala` continues to use CDW rather than these files.
+
+Additional PoC routes:
+
+- `GET /api/v1/search`
+- `GET /api/v1/candidates/{candidate_id}`
+- `POST /api/v1/policy/chat`
+- `GET /api/v1/policy/sessions/{session_id}`
+- `POST /api/v1/policy/export`
+- `GET /api/v1/documents/{document_id}` and `/download`
+- `GET /api/v1/sources`
+
+`policy/query` and `policy/compare` remain compatible. The Qdrant seed utility indexes the supplied
+policy documents with stable document/chunk IDs, page/section metadata, and browser-safe source
+links.

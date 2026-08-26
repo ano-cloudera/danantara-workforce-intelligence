@@ -1,0 +1,110 @@
+[
+  {
+    "policy_scope": "GROUP",
+    "entity": "NSH",
+    "grade": "G7",
+    "rule_type": "notice_period_months",
+    "rule_value": "3",
+    "effective_from": "2026-01-01",
+    "source_document": "NSH-HR-POL-001_Group-Recruitment-and-Talent-Policy.docx"
+  },
+  {
+    "policy_scope": "GROUP",
+    "entity": "NSH",
+    "grade": "G5",
+    "rule_type": "notice_period_months",
+    "rule_value": "2",
+    "effective_from": "2026-01-01",
+    "source_document": "NSH-HR-POL-001_Group-Recruitment-and-Talent-Policy.docx"
+  },
+  {
+    "policy_scope": "GROUP",
+    "entity": "NSH",
+    "grade": "G3",
+    "rule_type": "notice_period_months",
+    "rule_value": "1",
+    "effective_from": "2026-01-01",
+    "source_document": "NSH-HR-POL-001_Group-Recruitment-and-Talent-Policy.docx"
+  },
+  {
+    "policy_scope": "GROUP",
+    "entity": "NSH",
+    "grade": "G1",
+    "rule_type": "notice_period_months",
+    "rule_value": "1",
+    "effective_from": "2026-01-01",
+    "source_document": "NSH-HR-POL-001_Group-Recruitment-and-Talent-Policy.docx"
+  },
+  {
+    "policy_scope": "ENTITY",
+    "entity": "BNS",
+    "grade": "G7",
+    "rule_type": "annual_leave_days",
+    "rule_value": "24",
+    "effective_from": "2025-01-01",
+    "source_document": "PKB-BNS-2025-2027_Part3_Leave-Grievance-Termination.pdf"
+  },
+  {
+    "policy_scope": "ENTITY",
+    "entity": "BNS",
+    "grade": "G5",
+    "rule_type": "annual_leave_days",
+    "rule_value": "20",
+    "effective_from": "2025-01-01",
+    "source_document": "PKB-BNS-2025-2027_Part3_Leave-Grievance-Termination.pdf"
+  },
+  {
+    "policy_scope": "ENTITY",
+    "entity": "BNS",
+    "grade": "G3",
+    "rule_type": "annual_leave_days",
+    "rule_value": "16",
+    "effective_from": "2025-01-01",
+    "source_document": "PKB-BNS-2025-2027_Part3_Leave-Grievance-Termination.pdf"
+  },
+  {
+    "policy_scope": "ENTITY",
+    "entity": "BNS",
+    "grade": "G1",
+    "rule_type": "annual_leave_days",
+    "rule_value": "12",
+    "effective_from": "2025-01-01",
+    "source_document": "PKB-BNS-2025-2027_Part3_Leave-Grievance-Termination.pdf"
+  },
+  {
+    "policy_scope": "ENTITY",
+    "entity": "ENP",
+    "grade": "G7",
+    "rule_type": "annual_leave_days",
+    "rule_value": "24",
+    "effective_from": "2025-01-01",
+    "source_document": "PKB-ENP-2025-2027_Part3_Leave-Grievance-Termination.pdf"
+  },
+  {
+    "policy_scope": "ENTITY",
+    "entity": "ENP",
+    "grade": "G5",
+    "rule_type": "annual_leave_days",
+    "rule_value": "21",
+    "effective_from": "2025-01-01",
+    "source_document": "PKB-ENP-2025-2027_Part3_Leave-Grievance-Termination.pdf"
+  },
+  {
+    "policy_scope": "ENTITY",
+    "entity": "ENP",
+    "grade": "G3",
+    "rule_type": "annual_leave_days",
+    "rule_value": "17",
+    "effective_from": "2025-01-01",
+    "source_document": "PKB-ENP-2025-2027_Part3_Leave-Grievance-Termination.pdf"
+  },
+  {
+    "policy_scope": "ENTITY",
+    "entity": "ENP",
+    "grade": "G1",
+    "rule_type": "annual_leave_days",
+    "rule_value": "13",
+    "effective_from": "2025-01-01",
+    "source_document": "PKB-ENP-2025-2027_Part3_Leave-Grievance-Termination.pdf"
+  }
+]

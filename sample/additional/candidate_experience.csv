@@ -1,0 +1,9 @@
+candidate_id,employer,role,start_year,end_year,summary
+CAND-BNS-0001,PT Fintech Andalan Nusantara,VP of Engineering,2018,,Led data and engineering organization and delivered real-time fraud scoring platform.
+CAND-BNS-0001,PT Telekomunikasi Cakrawala,Head of Data Platform,2011,2018,Built enterprise data lake and streaming ingestion; introduced governance and lineage.
+CAND-BNS-0002,PT Ritel Digital Sejahtera,Data Platform Manager,2019,,Leads platform team and owns streaming/batch platform SLA.
+CAND-BNS-0002,PT Media Kreasi Nusantara,Lead Data Engineer,2014,2019,Led analytics data pipeline squad.
+CAND-ENP-0001,PT Logistik Cepat Indonesia,Senior Data Engineer,2021,,Owns real-time shipment tracking pipeline using Kafka and Flink.
+CAND-ENP-0001,PT Aplikasi Karya Bangsa,Data Engineer,2017,2021,Built Spark batch ETL and Airflow scheduled jobs.
+CAND-ENP-0003,PT Asuransi Amanah Sentosa,Head of Data Governance,2017,,"Built enterprise catalog, lineage, governance council, and PII classification."
+CAND-ENP-0003,PT Telekomunikasi Cakrawala,Data Governance Lead,2009,2017,Implemented role-based access and audit for data lake.

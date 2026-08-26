@@ -1,0 +1,134 @@
+[
+  {
+    "grade": "G7",
+    "level": "Director / Executive",
+    "entity": "BNS",
+    "entity_name": "PT Bank Nusantara Sejahtera",
+    "salary_min": "IDR 60.000.000",
+    "salary_max": "IDR 95.000.000",
+    "annual_leave_days": 24,
+    "probation": "Not applicable (direct appointment)",
+    "notice_period": "3 months"
+  },
+  {
+    "grade": "G7",
+    "level": "Director / Executive",
+    "entity": "ENP",
+    "entity_name": "PT Energi Nusantara Persada",
+    "salary_min": "IDR 58.000.000",
+    "salary_max": "IDR 90.000.000",
+    "annual_leave_days": 24,
+    "probation": "Not applicable (direct appointment)",
+    "notice_period": "3 months"
+  },
+  {
+    "grade": "G7",
+    "level": "Director / Executive",
+    "entity": "TNR",
+    "entity_name": "PT Telekomunikasi Nusantara Raya",
+    "salary_min": "IDR 55.000.000",
+    "salary_max": "IDR 88.000.000",
+    "annual_leave_days": 24,
+    "probation": "Not applicable (direct appointment)",
+    "notice_period": "3 months"
+  },
+  {
+    "grade": "G5",
+    "level": "Manager",
+    "entity": "BNS",
+    "entity_name": "PT Bank Nusantara Sejahtera",
+    "salary_min": "IDR 33.000.000",
+    "salary_max": "IDR 50.000.000",
+    "annual_leave_days": 20,
+    "probation": "3 months",
+    "notice_period": "2 months"
+  },
+  {
+    "grade": "G5",
+    "level": "Manager",
+    "entity": "ENP",
+    "entity_name": "PT Energi Nusantara Persada",
+    "salary_min": "IDR 32.000.000",
+    "salary_max": "IDR 48.000.000",
+    "annual_leave_days": 21,
+    "probation": "3 months",
+    "notice_period": "2 months"
+  },
+  {
+    "grade": "G5",
+    "level": "Manager",
+    "entity": "TNR",
+    "entity_name": "PT Telekomunikasi Nusantara Raya",
+    "salary_min": "IDR 30.000.000",
+    "salary_max": "IDR 46.000.000",
+    "annual_leave_days": 20,
+    "probation": "3 months",
+    "notice_period": "2 months"
+  },
+  {
+    "grade": "G3",
+    "level": "Senior Staff / Specialist",
+    "entity": "BNS",
+    "entity_name": "PT Bank Nusantara Sejahtera",
+    "salary_min": "IDR 17.000.000",
+    "salary_max": "IDR 27.000.000",
+    "annual_leave_days": 16,
+    "probation": "3 months",
+    "notice_period": "1 month"
+  },
+  {
+    "grade": "G3",
+    "level": "Senior Staff / Specialist",
+    "entity": "ENP",
+    "entity_name": "PT Energi Nusantara Persada",
+    "salary_min": "IDR 16.000.000",
+    "salary_max": "IDR 25.000.000",
+    "annual_leave_days": 17,
+    "probation": "3 months",
+    "notice_period": "1 month"
+  },
+  {
+    "grade": "G3",
+    "level": "Senior Staff / Specialist",
+    "entity": "TNR",
+    "entity_name": "PT Telekomunikasi Nusantara Raya",
+    "salary_min": "IDR 15.000.000",
+    "salary_max": "IDR 24.000.000",
+    "annual_leave_days": 17,
+    "probation": "3 months",
+    "notice_period": "1 month"
+  },
+  {
+    "grade": "G1",
+    "level": "Junior / Entry Staff",
+    "entity": "BNS",
+    "entity_name": "PT Bank Nusantara Sejahtera",
+    "salary_min": "IDR 8.000.000",
+    "salary_max": "IDR 12.000.000",
+    "annual_leave_days": 12,
+    "probation": "3 months",
+    "notice_period": "1 month"
+  },
+  {
+    "grade": "G1",
+    "level": "Junior / Entry Staff",
+    "entity": "ENP",
+    "entity_name": "PT Energi Nusantara Persada",
+    "salary_min": "IDR 8.000.000",
+    "salary_max": "IDR 12.000.000",
+    "annual_leave_days": 13,
+    "probation": "3 months",
+    "notice_period": "1 month"
+  },
+  {
+    "grade": "G1",
+    "level": "Junior / Entry Staff",
+    "entity": "TNR",
+    "entity_name": "PT Telekomunikasi Nusantara Raya",
+    "salary_min": "IDR 7.000.000",
+    "salary_max": "IDR 11.000.000",
+    "annual_leave_days": 12,
+    "probation": "3 months",
+    "notice_period": "1 month"
+  }
+]

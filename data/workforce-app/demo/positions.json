@@ -1,47 +1,204 @@
 [
   {
-    "position_id": "P001",
-    "title": "Data Scientist",
+    "position_id": "REQ-BNS-001",
+    "title": "Director of Data & Engineering",
+    "entity": "BNS",
+    "grade": "G7",
+    "level": "Director / Executive",
+    "department": "Data & Engineering",
     "required_skills": [
-      "Python",
-      "Machine Learning",
-      "SQL",
-      "Statistics",
-      "Data Modeling"
+      "Organizational Strategy",
+      "Team Leadership",
+      "Stakeholder Management",
+      "Data Governance",
+      "Cloud Platforms (AWS)"
     ],
-    "preferred_skills": [
-      "MLOps",
-      "Spark"
+    "preferred_skills": [],
+    "min_years_experience": 12,
+    "competency_ids": [
+      "LD02",
+      "LD01",
+      "LD03",
+      "TC08",
+      "TC07"
     ],
-    "min_years_experience": 4
+    "openings": 1,
+    "status": "Open",
+    "open_date": "2026-07-15"
   },
   {
-    "position_id": "P002",
+    "position_id": "REQ-BNS-002",
+    "title": "Data Platform Manager",
+    "entity": "BNS",
+    "grade": "G5",
+    "level": "Manager",
+    "department": "Data & Engineering",
+    "required_skills": [
+      "Team Leadership",
+      "Stakeholder Management",
+      "Apache Kafka",
+      "Apache Spark",
+      "SQL"
+    ],
+    "preferred_skills": [],
+    "min_years_experience": 8,
+    "competency_ids": [
+      "LD01",
+      "LD03",
+      "TC01",
+      "TC02",
+      "TC05"
+    ],
+    "openings": 1,
+    "status": "Filled",
+    "open_date": "2026-05-01"
+  },
+  {
+    "position_id": "REQ-BNS-003",
     "title": "Senior Data Engineer",
+    "entity": "BNS",
+    "grade": "G3",
+    "level": "Senior Staff / Specialist",
+    "department": "Data & Engineering",
     "required_skills": [
+      "Apache Kafka",
+      "Apache Spark",
       "Python",
-      "Spark",
-      "SQL",
-      "Data Modeling"
+      "SQL"
     ],
-    "preferred_skills": [
-      "AWS",
-      "MLOps"
+    "preferred_skills": [],
+    "min_years_experience": 4,
+    "competency_ids": [
+      "TC01",
+      "TC02",
+      "TC04",
+      "TC05"
     ],
-    "min_years_experience": 5
+    "openings": 2,
+    "status": "Open",
+    "open_date": "2026-07-20"
   },
   {
-    "position_id": "P003",
-    "title": "Data Analyst",
+    "position_id": "REQ-ENP-001",
+    "title": "Analytics Manager",
+    "entity": "ENP",
+    "grade": "G5",
+    "level": "Manager",
+    "department": "Analytics",
+    "required_skills": [
+      "Team Leadership",
+      "Machine Learning",
+      "Data Visualization",
+      "Energy & Utilities Domain"
+    ],
+    "preferred_skills": [],
+    "min_years_experience": 8,
+    "competency_ids": [
+      "LD01",
+      "AN03",
+      "AN01",
+      "DM02"
+    ],
+    "openings": 1,
+    "status": "Open",
+    "open_date": "2026-07-10"
+  },
+  {
+    "position_id": "REQ-ENP-002",
+    "title": "Senior Data Engineer",
+    "entity": "ENP",
+    "grade": "G3",
+    "level": "Senior Staff / Specialist",
+    "department": "Data & Engineering",
+    "required_skills": [
+      "Apache Flink",
+      "Apache Kafka",
+      "Python",
+      "Workflow Orchestration (Airflow)"
+    ],
+    "preferred_skills": [],
+    "min_years_experience": 4,
+    "competency_ids": [
+      "TC03",
+      "TC01",
+      "TC04",
+      "TC06"
+    ],
+    "openings": 1,
+    "status": "Open",
+    "open_date": "2026-07-22"
+  },
+  {
+    "position_id": "REQ-ENP-003",
+    "title": "Head of Data Governance",
+    "entity": "ENP",
+    "grade": "G7",
+    "level": "Director / Executive",
+    "department": "Data & Engineering",
+    "required_skills": [
+      "Organizational Strategy",
+      "Data Governance",
+      "Stakeholder Management",
+      "Cloud Platforms (AWS)"
+    ],
+    "preferred_skills": [],
+    "min_years_experience": 12,
+    "competency_ids": [
+      "LD02",
+      "TC08",
+      "LD03",
+      "TC07"
+    ],
+    "openings": 1,
+    "status": "Open",
+    "open_date": "2026-07-05"
+  },
+  {
+    "position_id": "REQ-TNR-001",
+    "title": "Senior BI Developer",
+    "entity": "TNR",
+    "grade": "G3",
+    "level": "Senior Staff / Specialist",
+    "department": "Analytics",
+    "required_skills": [
+      "Data Visualization",
+      "SQL",
+      "Telecommunications Domain",
+      "Statistical Analysis"
+    ],
+    "preferred_skills": [],
+    "min_years_experience": 4,
+    "competency_ids": [
+      "AN01",
+      "TC05",
+      "DM03",
+      "AN02"
+    ],
+    "openings": 1,
+    "status": "Filled",
+    "open_date": "2026-05-20"
+  },
+  {
+    "position_id": "REQ-TNR-002",
+    "title": "Junior Data Analyst",
+    "entity": "TNR",
+    "grade": "G1",
+    "level": "Junior / Entry Staff",
+    "department": "Analytics",
     "required_skills": [
       "SQL",
-      "Data Analytics",
-      "Data Visualization"
+      "Data Visualization",
+      "Python"
     ],
-    "preferred_skills": [
-      "Python",
-      "Power BI"
+    "preferred_skills": [],
+    "min_years_experience": 0,
+    "competency_ids": [
+      "TC05",
+      "AN01",
+      "TC04"
     ],
-    "min_years_experience": 2
+    "openings": 2,
+    "status": "Open",
+    "open_date": "2026-07-25"
   }
 ]
