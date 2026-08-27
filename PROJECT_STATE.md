@@ -83,23 +83,28 @@
 - [ ] Validate the CAI CV dry-run through the governed S3A adapter.
 - [x] Create/synchronize Ranger access for the four policy prefixes and validate policy Job schema
   init, single-file dry-run, real run, and Qdrant/Impala writes end-to-end in CAI.
-- [ ] Validate policy citation query (`/api/v1/policy/query`) and governed download against a real
-  ingested document.
+- [x] Validate policy citation query (`/api/v1/policy/query`) and governed download against a real
+  ingested document, including the backend's own Ranger/IDBroker read access.
 
 - The Gemini policy embedding call (`GeminiEmbedder.embed`) sends chunks to `embed_content`
   individually instead of batching them in one `batchEmbedContents` call. Batching could return
   fewer embeddings than input chunks for multi-chunk documents, tripping the pipeline's
   `embedding_count_mismatch` guardrail and failing real ingestion runs. Per-chunk calls guarantee a
   1:1 vector-to-chunk mapping by construction (commit `f3574ae`).
+- `POLICY_SOURCE_ACCESS_MODE=datalake` must be set on the `danantara-backend` Application itself
+  (separate from the policy Job's `S3_ACCESS_MODE`), and the backend's own workload identity needs
+  Ranger read access to `policy-processed/`/`policy-review/`, or citation downloads 404 with
+  "Document source is unavailable" even though ingestion succeeded.
+- `policy_query` previously returned a bare 500 with no detail on any internal failure. It now logs
+  the traceback server-side and returns a 502 with `request_id` and the error message
+  (commit `4e2a0b1`).
 
 ## Next implementation sequence
 
-1. Validate `/api/v1/policy/query` citation query and governed download against a real ingested
-   policy document in CAI.
-2. Populate dashboard-serving data in Impala for Overview and Dashboard.
-3. Add governed dashboard data tools/API paths for Impala-backed metrics.
-4. Validate frontend uploads for candidate forms and PDFs end-to-end.
-5. Connect NiFi/CDE pipeline and hand off the policy ingestion Job's data contract to that team.
-6. Connect Cloudera Data Visualization dashboard URL.
-7. Turn on optional Langfuse forwarding.
-8. Execute full regression rehearsal and freeze configuration.
+1. Populate dashboard-serving data in Impala for Overview and Dashboard.
+2. Add governed dashboard data tools/API paths for Impala-backed metrics.
+3. Validate frontend uploads for candidate forms and PDFs end-to-end.
+4. Connect NiFi/CDE pipeline and hand off the policy ingestion Job's data contract to that team.
+5. Connect Cloudera Data Visualization dashboard URL.
+6. Turn on optional Langfuse forwarding.
+7. Execute full regression rehearsal and freeze configuration.
