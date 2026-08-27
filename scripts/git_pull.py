@@ -5,11 +5,22 @@ Refuses to run if there are local uncommitted changes, so it never discards
 in-progress edits made directly in a CAI session.
 """
 
+import os
 import subprocess
 import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[1]
+
+def resolve_project_root() -> Path:
+    script_path = globals().get("__file__")
+    if script_path:
+        return Path(script_path).resolve().parents[1]
+    if os.getenv("CDSW_PROJECT_DIR"):
+        return Path(os.environ["CDSW_PROJECT_DIR"]).resolve()
+    return Path.cwd().resolve()
+
+
+ROOT = resolve_project_root()
 
 
 def run(*args: str) -> str:
