@@ -1,8 +1,11 @@
 -- Run this once against Impala to widen the existing v_candidates_api view
 -- with current_title/city/education fields already present in
--- candidate_master. Safe to re-run (CREATE OR REPLACE).
+-- candidate_master. Impala does not support CREATE OR REPLACE VIEW, so this
+-- drops and recreates the view; safe to re-run.
 
-CREATE OR REPLACE VIEW danantara.v_candidates_api AS
+DROP VIEW IF EXISTS danantara.v_candidates_api;
+
+CREATE VIEW danantara.v_candidates_api AS
 SELECT
   master.candidate_id,
   master.full_name AS name,
