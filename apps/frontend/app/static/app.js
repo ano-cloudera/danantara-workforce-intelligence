@@ -435,16 +435,6 @@ function renderDashboard() {
 
 function renderSources() {
   const entities = [...new Set(state.candidates.map(candidate => candidate.company).filter(Boolean))];
-  const steps = [
-    ["Upload / Source Input", "PDF and candidate form intake", "Input"],
-    ["Cloudera DataFlow (NiFi)", "Validation and governed routing", "Primary"],
-    ["OCR / Extraction", "Document parsing and metadata", "Process"],
-    ["Iceberg Raw", "Original governed source state", "Lakehouse"],
-    ["Curated Iceberg", "Standardized workforce data", "Curated"],
-    ["Impala / CDW", "Analytics-ready structured serving", "Serving"],
-    ["Embedding → Qdrant", "Secondary AI indexing path", "AI index"],
-  ];
-  $("#pipeline").innerHTML = steps.map((step, index) => `<li><span class="pipeline-index">${index + 1}</span><div><strong>${escapeHtml(step[0])}</strong><p>${escapeHtml(step[1])}</p></div><span class="badge ${index === 6 ? "warning" : "success"}">${escapeHtml(step[2])}</span></li>`).join("");
   const documentCount = state.sourceInventory?.documents?.length ?? 0;
   $("#source-summary").innerHTML = `<div class="mini-metric"><small>Candidates</small><strong>${state.candidates.length}</strong><small>PoC records</small></div><div class="mini-metric"><small>Positions</small><strong>${state.positions.length}</strong><small>Job openings</small></div><div class="mini-metric"><small>Documents</small><strong>${documentCount}</strong><small>Supplied raw sources</small></div>`;
   $("#connected-sources").innerHTML = entities.map(entity => statusRow(`${entity} PoC source`, "Connected", true)).join("");
@@ -479,11 +469,30 @@ function showInline(selector, message, type) {
   element.textContent = message;
 }
 
+function formatFileSize(bytes) {
+  if (bytes < 1024) return `${bytes} B`;
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+}
+
+function resetUploadDropZone() {
+  $("#upload-drop-title").textContent = "Choose a PDF document";
+  $("#upload-drop-subtitle").textContent = "Candidate CV, Group HR Policy, or PKB / Collective Agreement";
+}
+
+function updateUploadDropZone(file) {
+  if (!file) return resetUploadDropZone();
+  $("#upload-drop-title").textContent = file.name;
+  $("#upload-drop-subtitle").textContent = `${formatFileSize(file.size)} · ready to upload`;
+}
+
 async function submitUpload(event) {
   event.preventDefault();
   const form = event.currentTarget;
   const button = form.querySelector("button[type=submit]");
+  const originalLabel = button.innerHTML;
   button.disabled = true;
+  button.innerHTML = `${icon("upload")} Uploading...`;
   try {
     const result = await api.upload(new FormData(form));
     const filename = form.elements.file.files[0]?.name || "Uploaded document";
@@ -491,10 +500,13 @@ async function submitUpload(event) {
     $("#recent-uploads").innerHTML = state.uploads.map(item => `<div class="table-row"><strong>${escapeHtml(item.filename)}</strong><span>${escapeHtml(item.entity)}</span><b class="success-text">${escapeHtml(item.status)}</b></div>`).join("");
     showInline("#upload-result", `Upload accepted. Routing: ${result.routing || "backend"}.`, "success");
     form.reset();
+    resetUploadDropZone();
   } catch (error) {
     showInline("#upload-result", error.message, "error");
   } finally {
     button.disabled = false;
+    button.innerHTML = originalLabel;
+    refreshIcons();
   }
 }
 
@@ -557,6 +569,7 @@ function bindEvents() {
     }
   };
   $("#upload-form").onsubmit = submitUpload;
+  $("#upload-form input[name=file]").addEventListener("change", event => updateUploadDropZone(event.target.files[0]));
   $("#candidate-form").onsubmit = submitCandidate;
   $("#upload-focus").onclick = () => $("#upload-form").scrollIntoView({ behavior: "smooth", block: "center" });
   $("#candidate-focus").onclick = () => $("#candidate-registration").scrollIntoView({ behavior: "smooth", block: "center" });

@@ -171,7 +171,7 @@
           <div class="sources-main">
             <section class="card"><div class="section-title"><div><h2>Document Upload Center</h2><p>PDFs up to 50 MB; routing follows backend ingestion mode.</p></div></div>
               <form id="upload-form" class="upload-form">
-                <label class="drop-zone"><span data-icon="cloud-upload" data-context="stat"></span><strong>Choose a PDF document</strong><span>Candidate CV, Group HR Policy, or PKB / Collective Agreement</span><input name="file" type="file" accept="application/pdf" required /></label>
+                <label class="drop-zone" id="upload-drop-zone"><span data-icon="cloud-upload" data-context="stat"></span><strong id="upload-drop-title">Choose a PDF document</strong><span id="upload-drop-subtitle">Candidate CV, Group HR Policy, or PKB / Collective Agreement</span><input name="file" type="file" accept="application/pdf" required /></label>
                 <div class="form-row"><label><span>Entity</span><select name="entity"><option>BNS</option><option>ENP</option><option>NSH</option></select></label><label><span>Document type</span><select name="doc_type"><option>Candidate CV</option><option>Group HR Policy</option><option>PKB / Collective Agreement</option><option>Job Opening</option><option>Salary Policy</option></select></label><button class="primary" type="submit"><span data-icon="upload" data-context="button"></span>Upload</button></div>
               </form><div id="upload-result" class="inline-status"></div>
               <div class="section-title table-title"><div><h3>Recent uploads</h3><p>Uploads completed during this browser session.</p></div></div><div id="recent-uploads" class="compact-table"><div class="empty-state compact">No uploads in this session.</div></div>
@@ -191,7 +191,6 @@
             </section>
           </div>
           <aside class="sources-side">
-            <section class="card"><div class="section-title"><div><h2>Processing Pipeline</h2><p>Governed structured path with secondary AI indexing.</p></div><span class="badge success">Live design</span></div><ol class="pipeline" id="pipeline"></ol></section>
             <section class="card"><div class="section-title"><div><h2>Source Summary</h2></div></div><div id="source-summary" class="mini-metrics"></div></section>
             <section class="card"><div class="section-title"><div><h2>Connected Sources</h2></div></div><div id="connected-sources" class="stack-list"></div></section>
           </aside>
