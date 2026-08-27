@@ -3,7 +3,7 @@ from types import SimpleNamespace
 
 from jobs.cv_ingestion.adapters import DataLakeS3AAdapter
 from jobs.cv_ingestion.models import CandidateProfile, Experience, S3Object, Skill
-from jobs.cv_ingestion.pipeline import CvIngestionPipeline
+from jobs.cv_ingestion.pipeline import CvIngestionPipeline, normalize_candidate_identity
 
 
 class FakeS3:
@@ -52,6 +52,7 @@ class FakeRepository:
         self.completed = completed
         self.audit = []
         self.candidates = []
+        self.entities = []
 
     def is_completed(self, item):
         return self.completed
@@ -61,14 +62,17 @@ class FakeRepository:
 
     def replace_candidate(self, ingestion_id, item, profile):
         self.candidates.append(profile.candidate_id)
+        self.entities.append(profile.entity)
 
 
 class FakeQdrant:
     def __init__(self):
         self.candidates = []
+        self.entities = []
 
     def upsert(self, profile, item, vector):
         self.candidates.append(profile.candidate_id)
+        self.entities.append(profile.entity)
 
 
 class FakeObservability:
@@ -148,6 +152,58 @@ def test_qdrant_projection_excludes_direct_contact_details_and_name():
     assert "+621234567" not in text
     assert "Data Engineer" in text
     assert "Python" in text
+
+
+def test_candidate_entity_is_inferred_from_candidate_id_for_all_sinks():
+    item = S3Object(
+        "bucket",
+        "incoming/CAND-ENP-0003_Reza-Pratama_CV.pdf",
+        "etag-entity",
+    )
+    s3 = FakeS3([item])
+    repository = FakeRepository()
+    qdrant = FakeQdrant()
+    observability = FakeObservability()
+    extractor = FakeExtractor()
+    extractor.extract = lambda _item, _content: CandidateProfile(
+        candidate_id="CAND-ENP-0003",
+        full_name="Example Candidate",
+        entity=None,
+    )
+
+    result = CvIngestionPipeline(
+        settings(), s3, extractor, repository, qdrant, observability
+    ).run()
+
+    assert result.processed == 1
+    assert repository.entities == ["ENP"]
+    assert qdrant.entities == ["ENP"]
+    completed_event = next(
+        metadata
+        for name, metadata in observability.events
+        if name == "cv-ingestion-completed"
+    )
+    assert completed_event["entity"] == "ENP"
+
+
+def test_candidate_entity_falls_back_to_source_filename():
+    profile = CandidateProfile(candidate_id="external-123", full_name="Example Candidate")
+
+    normalize_candidate_identity(
+        profile, "data/cv-collect/CAND-BNS-0001_Rangga-Wijaya-Kusuma_CV.pdf"
+    )
+
+    assert profile.entity == "BNS"
+
+
+def test_explicit_candidate_entity_is_normalized_and_preserved():
+    profile = CandidateProfile(
+        candidate_id="CAND-BNS-0001", full_name="Example Candidate", entity=" enp "
+    )
+
+    normalize_candidate_identity(profile, "data/cv-collect/CAND-BNS-0001_CV.pdf")
+
+    assert profile.entity == "ENP"
 
 
 def datalake_settings():

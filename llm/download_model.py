@@ -5,8 +5,8 @@ from pathlib import Path
 from huggingface_hub import snapshot_download
 
 
-LLM_MODEL_ID = os.getenv("LLM_MODEL_ID", "Qwen/Qwen3-14B")
-LLM_MODEL_DIR = Path(os.getenv("LLM_MODEL_DIR", "./models/qwen3-14b")).resolve()
+LLM_MODEL_ID = os.getenv("LLM_MODEL_ID", "Qwen/Qwen3-14B-AWQ")
+LLM_MODEL_DIR = Path(os.getenv("LLM_MODEL_DIR", "./models/qwen3-14b-awq")).resolve()
 EMBED_MODEL_ID = os.getenv("EMBED_MODEL_ID", "BAAI/bge-m3")
 EMBED_MODEL_DIR = Path(os.getenv("EMBED_MODEL_DIR", "./models/bge-m3")).resolve()
 

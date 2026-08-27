@@ -14,27 +14,29 @@ from ray import serve
 
 
 BASE_DIR = Path(os.getenv("MODEL_BASE_DIR", str(Path(__file__).resolve().parent / "models")))
-LLM_MODEL_ID = os.getenv("LLM_MODEL_ID", "Qwen/Qwen3-14B")
+# Qwen3-14B-AWQ (INT4, ~10 GB) instead of the BF16 checkpoint (~28 GB) so the
+# whole model fits on a single A10G (24 GB) without tensor parallelism.
+LLM_MODEL_ID = os.getenv("LLM_MODEL_ID", "Qwen/Qwen3-14B-AWQ")
 LLM_MODEL_DIR = Path(
-    os.getenv("LLM_MODEL_DIR", str(BASE_DIR / "qwen3-14b"))
+    os.getenv("LLM_MODEL_DIR", str(BASE_DIR / "qwen3-14b-awq"))
 )
 EMBED_MODEL_ID = os.getenv("EMBED_MODEL_ID", "BAAI/bge-m3")
 EMBED_MODEL_DIR = Path(
     os.getenv("EMBED_MODEL_DIR", str(BASE_DIR / "bge-m3"))
 )
 
-# 4x A10G (24 GB each) target: 2 GPUs dedicated to the LLM via vLLM tensor
-# parallelism, 2 GPUs dedicated to embedding replicas. These are whole-GPU
-# allocations (not soft-shared fractional GPUs like the single-L4 PoC).
-LLM_TENSOR_PARALLEL_SIZE = int(os.getenv("LLM_TENSOR_PARALLEL_SIZE", "2"))
+# 2x A10G (24 GB each) target: 1 whole GPU for the LLM, 1 whole GPU for
+# embedding. No tensor parallelism and no embedding replication.
+LLM_TENSOR_PARALLEL_SIZE = int(os.getenv("LLM_TENSOR_PARALLEL_SIZE", "1"))
+LLM_QUANTIZATION = os.getenv("LLM_QUANTIZATION", "awq_marlin")
 LLM_GPU_MEMORY_UTILIZATION = float(
     os.getenv("LLM_GPU_MEMORY_UTILIZATION", "0.90")
 )
-EMBED_NUM_REPLICAS = int(os.getenv("EMBED_NUM_REPLICAS", "2"))
+EMBED_NUM_REPLICAS = int(os.getenv("EMBED_NUM_REPLICAS", "1"))
 EMBED_GPU_PER_REPLICA = float(os.getenv("EMBED_GPU_PER_REPLICA", "1.0"))
 MAX_MODEL_LEN = int(os.getenv("MAX_MODEL_LEN", "8192"))
 MAX_NUM_SEQS = int(os.getenv("MAX_NUM_SEQS", "16"))
-DTYPE = os.getenv("DTYPE", "bfloat16")
+DTYPE = os.getenv("DTYPE", "auto")
 APP_PORT = int(os.getenv("CDSW_APP_PORT", "8080"))
 
 
@@ -113,9 +115,11 @@ class LLMDeployment:
         # tensor_parallel_size>1 makes vLLM spawn its own Ray worker actors
         # internally (distributed_executor_backend="ray") to shard the model
         # across LLM_TENSOR_PARALLEL_SIZE whole GPUs reserved by this deployment.
+        # At TP=1 (the 2-GPU AWQ target) no extra Ray workers are spawned.
         self.llm = LLM(
             model=model_path,
             dtype=DTYPE,
+            quantization=LLM_QUANTIZATION or None,
             tensor_parallel_size=LLM_TENSOR_PARALLEL_SIZE,
             distributed_executor_backend="ray" if LLM_TENSOR_PARALLEL_SIZE > 1 else None,
             max_model_len=MAX_MODEL_LEN,
@@ -298,8 +302,8 @@ def validate_configuration():
         raise ValueError("LLM_TENSOR_PARALLEL_SIZE must be greater than zero")
     if EMBED_NUM_REPLICAS <= 0 or EMBED_GPU_PER_REPLICA <= 0:
         raise ValueError("EMBED_NUM_REPLICAS and EMBED_GPU_PER_REPLICA must be greater than zero")
-    if total_gpu > 4.0001:
-        raise ValueError(f"Logical GPU allocation exceeds the 4 available GPUs: {total_gpu}")
+    if total_gpu > 2.0001:
+        raise ValueError(f"Logical GPU allocation exceeds the 2 available GPUs: {total_gpu}")
     if not 0 < LLM_GPU_MEMORY_UTILIZATION < 0.95:
         raise ValueError("LLM_GPU_MEMORY_UTILIZATION must be between 0 and 0.95")
 

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import logging
+import re
 import time
 import uuid
 from dataclasses import dataclass
@@ -8,6 +9,23 @@ from dataclasses import dataclass
 from .adapters import content_hash
 
 logger = logging.getLogger(__name__)
+
+_CANDIDATE_ENTITY_PATTERN = re.compile(r"^CAND-([A-Z0-9]+)-\d+$", re.IGNORECASE)
+
+
+def normalize_candidate_identity(profile, source_key: str) -> None:
+    """Fill stable candidate identity fields before writing any downstream sink."""
+    profile.candidate_id = profile.candidate_id.strip()
+    if profile.entity and profile.entity.strip():
+        profile.entity = profile.entity.strip().upper()
+        return
+
+    source_candidate_id = source_key.rsplit("/", 1)[-1].split("_", 1)[0]
+    for candidate_id in (profile.candidate_id, source_candidate_id):
+        match = _CANDIDATE_ENTITY_PATTERN.fullmatch(candidate_id.strip())
+        if match:
+            profile.entity = match.group(1).upper()
+            return
 
 
 @dataclass
@@ -51,6 +69,7 @@ class CvIngestionPipeline:
                 content = self.s3.read(item)
                 digest = content_hash(content)
                 profile = self.extractor.extract(item, content)
+                normalize_candidate_identity(profile, item.key)
                 candidate_id = profile.candidate_id
                 if dry_run:
                     result.processed += 1
@@ -59,6 +78,7 @@ class CvIngestionPipeline:
                         {
                             "ingestion_id": ingestion_id,
                             "candidate_id": candidate_id,
+                            "entity": profile.entity,
                             "skill_count": len(profile.skills),
                             "experience_count": len(profile.experiences),
                         },
@@ -85,6 +105,7 @@ class CvIngestionPipeline:
                     {
                         "ingestion_id": ingestion_id,
                         "candidate_id": candidate_id,
+                        "entity": profile.entity,
                         "skill_count": len(profile.skills),
                         "experience_count": len(profile.experiences),
                     },

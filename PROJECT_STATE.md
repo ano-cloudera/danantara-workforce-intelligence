@@ -51,6 +51,9 @@
 - The CAI CV Job supports a governed `datalake` storage mode through Hadoop/S3A so IDBroker and
   Ranger remain authoritative. Direct `boto3` access is retained only as a local or explicitly
   scoped workload-role fallback.
+- CV ingestion normalizes the final entity once before any sink write. An explicit extracted entity
+  is preserved; when absent, identifiers such as `CAND-BNS-*` and `CAND-ENP-*` provide the
+  deterministic fallback used by both Impala and Qdrant.
 
 ## Environment-specific tasks still required
 

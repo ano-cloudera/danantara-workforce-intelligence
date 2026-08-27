@@ -66,6 +66,7 @@ locked_decisions:
   - Policy conversation and feedback are Application state; policy documents and structured HR data remain governed sources.
   - The scheduled CAI CV ingestion Job is a PoC fallback, not a fifth Application or a replacement for NiFi/CDE.
   - The CAI CV Job uses governed Hadoop/S3A access in Workbench; boto3 is only a local or scoped-role fallback.
+  - CV entity normalization is shared across Impala and Qdrant; explicit values win and CAND entity codes are the deterministic fallback.
 pending_environment_tasks:
   - configure Gemini credentials
   - create CAI application URLs
