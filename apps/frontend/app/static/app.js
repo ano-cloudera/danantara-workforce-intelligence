@@ -244,13 +244,6 @@ async function runTalentMatch() {
   const container = $("#talent-results");
   const selectedTitle = $("#position").value;
   const selectedCompany = $("#talent-company").value;
-  const matchingEntities = [...new Set(
-    state.positions.filter(position => position.title === selectedTitle).map(position => position.entity).filter(Boolean)
-  )];
-  if (matchingEntities.length > 1 && !selectedCompany) {
-    notify(`"${selectedTitle}" exists in multiple entities (${matchingEntities.join(", ")}). Select a Company/Entity first.`, "error");
-    return;
-  }
   const button = $("#run-match");
   button.disabled = true;
   button.innerHTML = `${icon("send")} Matching...`;

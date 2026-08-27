@@ -90,6 +90,35 @@ def test_get_position_by_title_and_entity_resolves_uniquely():
     assert position.entity == "ENP"
 
 
+def test_ambiguous_title_with_no_entity_scores_each_candidate_against_their_own_entity_position():
+    gateway = DataGateway(Settings(_env_file=None, data_mode="demo"))
+    positions = gateway.get_positions_by_title("Senior Data Engineer")
+    assert {p.entity for p in positions} == {"BNS", "ENP"}
+    bns_position = next(p for p in positions if p.entity == "BNS")
+    enp_position = next(p for p in positions if p.entity == "ENP")
+    assert bns_position.required_skills != enp_position.required_skills
+
+    request = TalentMatchRequest(position_title="Senior Data Engineer", top_n=20)
+    flow = TalentMatchingFlow(request, gateway, gemini=None, guardrails=None, observability=_NullObservability())
+    flow.load_and_score()
+
+    assert flow.state.position["title"] == "Senior Data Engineer"
+    assert set(flow.state.position["matched_entities"]) == {"BNS", "ENP"}
+
+    scored_by_candidate = {item["candidate"]["candidate_id"]: item for item in flow.state.scored}
+    other_positions = [p for p in gateway.list_positions() if p.title != "Senior Data Engineer"]
+    for candidate in gateway.list_candidates():
+        item = scored_by_candidate.get(candidate.candidate_id)
+        if candidate.company == "BNS":
+            assert item is not None
+            assert item["position_id"] == bns_position.position_id
+        elif candidate.company == "ENP":
+            assert item is not None
+            assert item["position_id"] == enp_position.position_id
+        else:
+            assert item is None
+
+
 def test_impala_connection_uses_configured_http_transport(monkeypatch):
     captured = {}
     dbapi = ModuleType("impala.dbapi")

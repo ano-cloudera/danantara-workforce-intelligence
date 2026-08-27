@@ -245,6 +245,9 @@ class DataGateway:
             )
         raise ValueError("Position not found")
 
+    def get_positions_by_title(self, title: str) -> list[Position]:
+        return [p for p in self.list_positions() if p.title.lower() == title.lower()]
+
     def _connect(self):
         from impala.dbapi import connect
 
