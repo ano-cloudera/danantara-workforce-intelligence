@@ -97,10 +97,12 @@ pending_environment_tasks:
 completed_environment_tasks:
   - validated Ranger policy prefixes and the CAI policy ingestion Job from schema init through real run (Qdrant + Impala writes confirmed in CAI, 2026-08-27)
   - validated /api/v1/policy/query (with and without entity filters) and governed citation download against real ingested documents in CAI (2026-08-27)
-  - implemented Impala-backed dashboard/summary data path with demo-fixture fallback (2026-08-27); not yet validated against a live CDW table
+  - implemented Impala-backed dashboard/summary data path with demo-fixture fallback (2026-08-27)
+  - created and seeded danantara.recruitment_pipeline + v_recruitment_pipeline_api in the target CDW with 3 PoC rows (2026-08-27); live validation via GET /dashboard/summary after backend restart still pending
 next_backlog:
-  - run apps/backend/scripts/init_dashboard_schema.py against CDW/Impala and populate danantara.recruitment_pipeline with PoC rows to validate the dashboard path end-to-end
   - validate frontend candidate form and PDF uploads end-to-end
+  - full frontend QA pass confirming every page/action actually succeeds against the live backend, before CDV or NiFi/CDE work
+  - build a Cloudera Data Visualization dashboard against the shared governed views (v_recruitment_pipeline_api, v_candidates_api, curated_job_positions) and set CDV_DASHBOARD_URL on the frontend Application -- deferred until frontend QA is done
   - validate keyboard submit behavior for Talent Match and Policy chat
   - connect NiFi/CDE pipeline and hand off the policy ingestion Job's data contract to that team
   - run full PoC regression rehearsal

@@ -105,12 +105,20 @@
   `apps/backend/scripts/init_dashboard_schema.py` (DDL in `dashboard_schema.sql`); no ingestion Job
   populates it yet — see `config/data-contracts.md`.
 
+- `danantara.recruitment_pipeline` and `danantara.v_recruitment_pipeline_api` have been created in the
+  target CDW/Impala database and seeded with 3 PoC rows (2026-08-27). Dashboard summary path is
+  ready to validate live once the backend is restarted with `DATA_MODE=impala`.
+- Cloudera Data Visualization is intended to read the same governed views (`v_recruitment_pipeline_api`,
+  `v_candidates_api`, `curated_job_positions`) as the in-app dashboard — one shared source of truth,
+  no separate CDV-only schema. Deferred until frontend QA below is complete.
+
 ## Next implementation sequence
 
-1. Run `apps/backend/scripts/init_dashboard_schema.py` against CDW/Impala and populate
-   `danantara.recruitment_pipeline` with representative PoC rows to validate the new dashboard path.
-2. Validate frontend uploads for candidate forms and PDFs end-to-end.
+1. Validate frontend uploads for candidate forms and PDFs end-to-end.
+2. Full frontend QA pass: confirm every frontend page/action actually connects to and succeeds
+   against the live backend (not just renders) before moving on to CDV or NiFi/CDE.
 3. Connect NiFi/CDE pipeline and hand off the policy ingestion Job's data contract to that team.
-4. Connect Cloudera Data Visualization dashboard URL.
+4. Connect Cloudera Data Visualization dashboard URL (build CDV dashboard against the shared views
+   above, then set `CDV_DASHBOARD_URL` on the frontend Application).
 5. Turn on optional Langfuse forwarding.
 6. Execute full regression rehearsal and freeze configuration.
