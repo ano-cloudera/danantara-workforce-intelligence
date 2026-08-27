@@ -80,6 +80,10 @@ locked_decisions:
     without it, citation downloads 404 even though ingestion succeeded.
   - policy_query logs the full traceback server-side and returns a 502 with request_id and error
     detail on internal failure instead of a bare 500 (commit 4e2a0b1).
+  - GET /dashboard/summary reads recruitment-pipeline stage/status/match-score/salary-compliance
+    data from danantara.v_recruitment_pipeline_api when DATA_MODE=impala, falling back to the demo
+    recruitment_status.json fixture if the table is empty or unreachable. No ingestion Job populates
+    this table yet; it is a PoC placeholder pending an ATS/HRIS source.
 pending_environment_tasks:
   - configure Gemini credentials
   - create CAI application URLs
@@ -93,9 +97,9 @@ pending_environment_tasks:
 completed_environment_tasks:
   - validated Ranger policy prefixes and the CAI policy ingestion Job from schema init through real run (Qdrant + Impala writes confirmed in CAI, 2026-08-27)
   - validated /api/v1/policy/query (with and without entity filters) and governed citation download against real ingested documents in CAI (2026-08-27)
+  - implemented Impala-backed dashboard/summary data path with demo-fixture fallback (2026-08-27); not yet validated against a live CDW table
 next_backlog:
-  - populate dashboard-serving data in Impala
-  - add governed dashboard data tools for Impala-backed metrics
+  - run apps/backend/scripts/init_dashboard_schema.py against CDW/Impala and populate danantara.recruitment_pipeline with PoC rows to validate the dashboard path end-to-end
   - validate frontend candidate form and PDF uploads end-to-end
   - validate keyboard submit behavior for Talent Match and Policy chat
   - connect NiFi/CDE pipeline and hand off the policy ingestion Job's data contract to that team

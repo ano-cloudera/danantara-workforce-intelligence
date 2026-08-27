@@ -1,4 +1,5 @@
 from pathlib import Path
+from unittest.mock import MagicMock
 
 from app.config import Settings
 from app.services.data_gateway import DataGateway
@@ -57,6 +58,52 @@ def test_demo_dashboard_summary_uses_real_fixture_counts():
     assert summary["active_openings"] == 8
     assert summary["entities"] == 2
     assert summary["policy_documents"] == 6
+
+
+def _mock_impala_connection(rows: list[tuple]) -> MagicMock:
+    cursor = MagicMock()
+    cursor.fetchall.return_value = rows
+    connection = MagicMock()
+    connection.cursor.return_value = cursor
+    connection.__enter__.return_value = connection
+    connection.__exit__.return_value = False
+    return connection
+
+
+def test_impala_dashboard_summary_uses_recruitment_pipeline_table(monkeypatch):
+    settings = Settings(_env_file=None, data_mode="impala", impala_host="impala.example.com")
+    gateway = DataGateway(settings)
+    monkeypatch.setattr(gateway, "list_candidates", lambda: [])
+    monkeypatch.setattr(gateway, "list_positions", lambda: [])
+    monkeypatch.setattr(gateway, "list_documents", lambda policy_only=False: [])
+    connection = _mock_impala_connection(
+        [("APP-1", "CAND-1", "NSH", "REQ-1", "Screening", "Active", 91, "WITHIN_BAND")]
+    )
+    monkeypatch.setattr(gateway, "_connect", lambda: connection)
+
+    summary = gateway.dashboard_summary()
+
+    assert summary["recruitment_stages"] == [("Screening", 1)]
+    assert summary["salary_compliance"] == [("WITHIN_BAND", 1)]
+    assert summary["average_match_score"] == 91.0
+
+
+def test_impala_dashboard_summary_falls_back_to_demo_when_table_unreachable(monkeypatch):
+    settings = Settings(_env_file=None, data_mode="impala", impala_host="impala.example.com")
+    gateway = DataGateway(settings)
+    monkeypatch.setattr(gateway, "list_candidates", lambda: [])
+    monkeypatch.setattr(gateway, "list_positions", lambda: [])
+    monkeypatch.setattr(gateway, "list_documents", lambda policy_only=False: [])
+
+    def broken_connect():
+        raise RuntimeError("no route to host")
+
+    monkeypatch.setattr(gateway, "_connect", broken_connect)
+
+    summary = gateway.dashboard_summary()
+
+    assert summary["recruitment_stages"]
+    assert summary["average_match_score"] is not None
 
 
 def test_policy_fallback_uses_supplied_policy_documents():

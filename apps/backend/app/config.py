@@ -59,6 +59,7 @@ class Settings(BaseSettings):
     impala_candidate_table: str = "curated_candidate_profiles"
     impala_position_table: str = "curated_job_positions"
     impala_policy_document_table: str = "danantara.v_policy_documents_api"
+    impala_recruitment_table: str = "danantara.v_recruitment_pipeline_api"
     policy_source_access_mode: Literal["local", "datalake"] = "local"
     hadoop_fs_command: str = "hadoop fs"
     source_command_timeout_seconds: float = Field(

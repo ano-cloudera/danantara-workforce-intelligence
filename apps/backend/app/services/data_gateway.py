@@ -348,10 +348,58 @@ class DataGateway:
             ) in rows
         ]
 
+    def _impala_recruitment_pipeline(self) -> list[dict]:
+        table = self.settings.impala_recruitment_table
+        if not _TABLE_IDENTIFIER.fullmatch(table):
+            raise ValueError("Unsafe recruitment pipeline table identifier")
+        sql = (
+            "SELECT application_id,candidate_id,entity,position_id,stage,status,"
+            f"match_score,salary_compliance FROM {table}"
+        )
+        with self._connect() as con:
+            cur = con.cursor()
+            cur.execute(sql)
+            rows = cur.fetchall()
+        return [
+            {
+                "application_id": str(application_id),
+                "candidate_id": candidate_id,
+                "entity": entity,
+                "position_id": position_id,
+                "stage": stage,
+                "status": status,
+                "match_score_demo": str(match_score) if match_score is not None else None,
+                "salary_compliance_demo": salary_compliance,
+            }
+            for (
+                application_id,
+                candidate_id,
+                entity,
+                position_id,
+                stage,
+                status,
+                match_score,
+                salary_compliance,
+            ) in rows
+        ]
+
+    def _recruitment_pipeline(self) -> list[dict]:
+        if self.settings.data_mode == "impala":
+            try:
+                rows = self._impala_recruitment_pipeline()
+                if rows:
+                    return rows
+            except Exception as exc:
+                logger.warning(
+                    "Impala recruitment pipeline unavailable; using demo metadata: error_type=%s",
+                    type(exc).__name__,
+                )
+        return self._demo_json("recruitment_status.json")
+
     def dashboard_summary(self) -> dict:
         candidates = self.list_candidates()
         positions = self.list_positions()
-        applications = self._demo_json("recruitment_status.json")
+        applications = self._recruitment_pipeline()
         by_company: dict[str, int] = {}
         skills: dict[str, int] = {}
         for c in candidates:

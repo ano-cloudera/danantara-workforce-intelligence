@@ -38,3 +38,18 @@ observability metadata and the public candidate API.
 
 The original document remains the system of record in governed S3. Raw document text and
 credentials are excluded from observability events.
+
+## Dashboard recruitment-pipeline Iceberg table
+
+- `danantara.recruitment_pipeline`: one row per candidate application, with `application_id`,
+  `candidate_id`, `entity`, `position_id`, `stage`, `status`, `match_score`, `salary_compliance`,
+  `updated_at`.
+- `danantara.v_recruitment_pipeline_api`: safe serving view over the table above, used by
+  `GET /dashboard/summary`.
+
+Schema is created by `apps/backend/scripts/init_dashboard_schema.py` (run once against Impala; see
+`apps/backend/scripts/dashboard_schema.sql` for the DDL). No ingestion Job populates this table yet
+— it is a PoC placeholder for recruitment-pipeline stage/compliance/match-score metrics that would
+ultimately come from an ATS/HRIS source. When `DATA_MODE=impala` and the table is empty or
+unreachable, `dashboard_summary()` falls back to `data/workforce-app/demo/recruitment_status.json`
+so the Overview and Dashboard pages keep rendering.

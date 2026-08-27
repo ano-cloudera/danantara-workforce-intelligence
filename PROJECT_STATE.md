@@ -98,13 +98,19 @@
 - `policy_query` previously returned a bare 500 with no detail on any internal failure. It now logs
   the traceback server-side and returns a 502 with `request_id` and the error message
   (commit `4e2a0b1`).
+- `GET /dashboard/summary` now branches on `DATA_MODE`: in `impala` mode it reads recruitment-pipeline
+  stage/status/match-score/salary-compliance rows from `danantara.v_recruitment_pipeline_api`
+  (`IMPALA_RECRUITMENT_TABLE`), falling back to the demo `recruitment_status.json` fixture if the
+  table is empty or unreachable. Schema is created by
+  `apps/backend/scripts/init_dashboard_schema.py` (DDL in `dashboard_schema.sql`); no ingestion Job
+  populates it yet — see `config/data-contracts.md`.
 
 ## Next implementation sequence
 
-1. Populate dashboard-serving data in Impala for Overview and Dashboard.
-2. Add governed dashboard data tools/API paths for Impala-backed metrics.
-3. Validate frontend uploads for candidate forms and PDFs end-to-end.
-4. Connect NiFi/CDE pipeline and hand off the policy ingestion Job's data contract to that team.
-5. Connect Cloudera Data Visualization dashboard URL.
-6. Turn on optional Langfuse forwarding.
-7. Execute full regression rehearsal and freeze configuration.
+1. Run `apps/backend/scripts/init_dashboard_schema.py` against CDW/Impala and populate
+   `danantara.recruitment_pipeline` with representative PoC rows to validate the new dashboard path.
+2. Validate frontend uploads for candidate forms and PDFs end-to-end.
+3. Connect NiFi/CDE pipeline and hand off the policy ingestion Job's data contract to that team.
+4. Connect Cloudera Data Visualization dashboard URL.
+5. Turn on optional Langfuse forwarding.
+6. Execute full regression rehearsal and freeze configuration.
