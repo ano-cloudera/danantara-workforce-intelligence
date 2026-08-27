@@ -1,48 +1,10 @@
 #!/usr/bin/env python3
 import os
-import site
 import socket
-import sys
 import time
 import uuid
 from pathlib import Path
 from typing import List, Literal, Optional, Union
-
-
-PROJECT_DIR = Path("/home/cdsw/ray-l4-cai-poc")
-VENV_DIR = PROJECT_DIR / ".venv-ray-l4"
-SCRIPT_PATH = PROJECT_DIR / "multimodel_app.py"
-
-
-def activate_project_environment():
-    """Expose the project venv without replacing the CAI IPython engine."""
-    python_version = f"python{sys.version_info.major}.{sys.version_info.minor}"
-    site_packages = VENV_DIR / "lib" / python_version / "site-packages"
-    venv_bin = VENV_DIR / "bin"
-
-    if not site_packages.is_dir():
-        raise SystemExit(f"Project site-packages not found: {site_packages}")
-
-    site.addsitedir(str(site_packages))
-    site_path = str(site_packages)
-    while site_path in sys.path:
-        sys.path.remove(site_path)
-    sys.path.insert(0, site_path)
-
-    os.environ["VIRTUAL_ENV"] = str(VENV_DIR)
-    os.environ["PATH"] = f"{venv_bin}:{os.environ.get('PATH', '')}"
-    current_pythonpath = os.environ.get("PYTHONPATH", "")
-    os.environ["PYTHONPATH"] = (
-        f"{site_packages}:{current_pythonpath}"
-        if current_pythonpath
-        else str(site_packages)
-    )
-    os.environ["PYTHONUNBUFFERED"] = "1"
-    os.chdir(PROJECT_DIR)
-    print(f"Project environment activated: {site_packages}", flush=True)
-
-
-activate_project_environment()
 
 import ray
 from fastapi import FastAPI
@@ -51,7 +13,7 @@ from pydantic import BaseModel, Field
 from ray import serve
 
 
-BASE_DIR = Path(os.getenv("MODEL_BASE_DIR", "/home/cdsw/ray-l4-cai-poc/models"))
+BASE_DIR = Path(os.getenv("MODEL_BASE_DIR", str(Path(__file__).resolve().parent / "models")))
 LLM_MODEL_ID = os.getenv("LLM_MODEL_ID", "Qwen/Qwen3-14B")
 LLM_MODEL_DIR = Path(
     os.getenv("LLM_MODEL_DIR", str(BASE_DIR / "qwen3-14b"))
