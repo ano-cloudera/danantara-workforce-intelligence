@@ -51,6 +51,7 @@ class CandidateMatch(BaseModel):
     matched_skills: list[str]
     skill_gaps: list[str]
     preferred_skills_matched: list[str] = Field(default_factory=list)
+    keyword_matches: list[str] = Field(default_factory=list)
     reasoning: str = ""
 
 

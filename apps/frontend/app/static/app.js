@@ -175,8 +175,12 @@ function renderRecentMatches() {
   refreshIcons();
 }
 
+function positionLabel(position) {
+  return position.entity ? `${position.title} — ${position.entity}` : position.title;
+}
+
 function populateFilters() {
-  const positionOptions = state.positions.map(position => `<option value="${escapeHtml(position.position_id)}">${escapeHtml(position.title)}</option>`).join("");
+  const positionOptions = state.positions.map(position => `<option value="${escapeHtml(position.position_id)}">${escapeHtml(positionLabel(position))}</option>`).join("");
   $("#position").innerHTML = positionOptions || "<option value=''>No positions available</option>";
   $("#candidate-position").innerHTML = state.positions.map(position => `<option value="${escapeHtml(position.title)}">${escapeHtml(position.title)}</option>`).join("") || "<option value=''>No positions available</option>";
   const talentEntities = [...new Set(state.candidates.map(candidate => candidate.company).filter(Boolean))].sort();

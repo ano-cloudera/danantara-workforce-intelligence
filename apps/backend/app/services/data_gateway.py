@@ -286,7 +286,7 @@ class DataGateway:
         return result
 
     def _impala_positions(self) -> list[Position]:
-        sql = f"SELECT position_id,title,required_skills,preferred_skills,min_years_experience FROM {self.settings.impala_position_table}"
+        sql = f"SELECT position_id,title,entity,required_skills,preferred_skills,min_years_experience FROM {self.settings.impala_position_table}"
         with self._connect() as con:
             cur = con.cursor()
             cur.execute(sql)
@@ -298,7 +298,7 @@ class DataGateway:
             return [x.strip() for x in str(value or "").split(",") if x.strip()]
 
         out = []
-        for pid, title, req, pref, years in rows:
+        for pid, title, entity, req, pref, years in rows:
             if not title:
                 logger.warning(
                     "Skipping position row with missing title: position_id=%s", pid
@@ -308,6 +308,7 @@ class DataGateway:
                 Position(
                     position_id=str(pid),
                     title=title,
+                    entity=entity,
                     required_skills=parse_skills(req),
                     preferred_skills=parse_skills(pref),
                     min_years_experience=float(years or 0),

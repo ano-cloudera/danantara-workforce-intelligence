@@ -25,8 +25,7 @@ class TalentMatchingFlow(Flow[TalentState]):
     def load_and_score(self):
         req = TalentMatchRequest(**self.state.request)
         position = self.data_gateway.get_position(req.position_id, req.position_title)
-        if req.skills_keywords:
-            position.required_skills = list(dict.fromkeys(position.required_skills + req.skills_keywords))
+        keywords = [k.lower().strip() for k in req.skills_keywords if k.strip()]
         candidates = self.data_gateway.list_candidates(req.company)
         required = {s.lower(): s for s in position.required_skills}
         preferred = {s.lower(): s for s in position.preferred_skills}
@@ -39,8 +38,13 @@ class TalentMatchingFlow(Flow[TalentState]):
             skill_score = (len(matched) / max(1, len(required))) * 75
             experience_score = min(15, (c.years_experience / max(1, position.min_years_experience)) * 15)
             preferred_score = min(10, len(pref_match) * 5)
-            score = round(min(100, skill_score + experience_score + preferred_score), 1)
-            scored.append({"candidate": c.model_dump(), "match_score": score, "matched_skills": matched, "skill_gaps": gaps, "preferred_skills_matched": pref_match, "reasoning": ""})
+            keyword_matches = [
+                label for key, label in cskills.items()
+                if any(keyword in key for keyword in keywords)
+            ]
+            keyword_score = min(10, len(keyword_matches) * 5) if keywords else 0
+            score = round(min(100, skill_score + experience_score + preferred_score + keyword_score), 1)
+            scored.append({"candidate": c.model_dump(), "match_score": score, "matched_skills": matched, "skill_gaps": gaps, "preferred_skills_matched": pref_match, "keyword_matches": keyword_matches, "reasoning": ""})
         scored.sort(key=lambda x: x["match_score"], reverse=True)
         self.state.position = position.model_dump()
         self.state.scored = scored[: req.top_n]
