@@ -298,6 +298,13 @@ def build_router(services: dict, settings: Settings) -> APIRouter:
 
     @router.get("/dashboard/summary")
     def dashboard_summary():
-        return services["data"].dashboard_summary()
+        try:
+            return services["data"].dashboard_summary()
+        except Exception as exc:
+            logger.exception("dashboard_summary failed")
+            raise HTTPException(
+                502,
+                detail={"message": "Dashboard summary failed", "error": str(exc)},
+            ) from exc
 
     return router
