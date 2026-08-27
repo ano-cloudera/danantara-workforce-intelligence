@@ -28,6 +28,10 @@ Before demonstrating NiFi ingestion or Workforce retrieval:
 
 ## CAI application rehearsal check
 
+Before demonstrating a newly uploaded CV, run the scheduled ingestion Job once with
+`CV_JOB_MAX_OBJECTS=1`. Confirm a `cv-ingestion-completed` event, the Iceberg audit row, and the
+candidate point in `QDRANT_CANDIDATE_COLLECTION`; then refresh the backend candidate endpoint.
+
 1. Confirm all four Applications received `CDSW_APP_PORT` and bind to `127.0.0.1`.
 2. Confirm no fixed exposed port is configured in CAI Application variables.
 3. Verify `BACKEND_BASE_URL`, `QDRANT_BASE_URL`, and `OBSERVABILITY_BASE_URL` use the Application

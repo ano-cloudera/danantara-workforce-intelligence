@@ -13,6 +13,9 @@ required = [
     "apps/backend/run_cai.py",
     "apps/qdrant/run_cai.py",
     "apps/observability/run_cai.py",
+    "jobs/cv_ingestion/run_cai_job.py",
+    "jobs/cv_ingestion/schema.sql",
+    "jobs/cv_ingestion/requirements.txt",
     "skills/delivery-method-selector/SKILL.md",
     "data/nifi-demo",
     "data/workforce-app",
@@ -42,6 +45,16 @@ inter_app_url_vars = (
     "OBSERVABILITY_BASE_URL",
 )
 missing_inter_app_urls = [name for name in inter_app_url_vars if f"{name}=" not in env_example]
+cv_job_vars = (
+    "S3_CV_INPUT_URI",
+    "S3_CV_PROCESSED_URI",
+    "S3_CV_FAILED_URI",
+    "ICEBERG_CANDIDATE_MASTER_TABLE",
+    "ICEBERG_CANDIDATE_SKILLS_TABLE",
+    "ICEBERG_CANDIDATE_EXPERIENCE_TABLE",
+    "ICEBERG_INGESTION_AUDIT_TABLE",
+)
+missing_cv_job_vars = [name for name in cv_job_vars if f"{name}=" not in env_example]
 launchers = [
     ROOT / "apps/frontend/run_cai.py",
     ROOT / "apps/backend/run_cai.py",
@@ -100,6 +113,10 @@ print(
     "Inter-application URLs:",
     "OK" if not missing_inter_app_urls else "MISSING " + ",".join(missing_inter_app_urls),
 )
+print(
+    "CAI CV ingestion Job configuration:",
+    "OK" if not missing_cv_job_vars else "MISSING " + ",".join(missing_cv_job_vars),
+)
 print("CAI port precedence:", "OK" if port_precedence_ok else "FAILED")
 print("CAI launcher port policy:", "OK" if not launcher_errors else "; ".join(launcher_errors))
 print(
@@ -112,6 +129,7 @@ if (
     or missing_collection_vars
     or missing_qdrant_runtime_vars
     or missing_inter_app_urls
+    or missing_cv_job_vars
     or not port_precedence_ok
     or launcher_errors
 ):

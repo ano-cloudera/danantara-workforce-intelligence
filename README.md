@@ -152,6 +152,10 @@ Upload the complete repository to one Cloudera AI project. Create four Applicati
 | Qdrant | `apps/qdrant/run_cai.py` |
 | Observability | `apps/observability/run_cai.py` |
 
+The optional PoC CV ingestion fallback runs as a scheduled Workbench **Job**, not a fifth
+Application. Use `jobs/cv_ingestion/run_cai_job.py`; see `jobs/cv_ingestion/README.md` for its S3,
+Iceberg/Impala, Qdrant and observability configuration.
+
 Detailed settings are in `docs/CLOUDERA_AI_DEPLOYMENT.md`.
 
 ### CAI port and service URL standard

@@ -22,6 +22,11 @@ platform_services:
   structured_serving: Cloudera Data Warehouse / Impala
   management_analytics: Cloudera Data Visualization
   governance: Cloudera SDX / Ranger / Atlas
+platform_jobs:
+  cv_ingestion_poc_fallback:
+    entrypoint: jobs/cv_ingestion/run_cai_job.py
+    depends_on: [s3, gemini, cdw, qdrant, observability]
+    topology_effect: none
 cai_runtime:
   bind_host: 127.0.0.1
   port_precedence: [CDSW_APP_PORT, PORT, local_default]

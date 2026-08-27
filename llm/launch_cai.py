@@ -13,9 +13,10 @@ def find_package_dir() -> Path:
 
     candidates.extend(
         [
-            Path.cwd() / "ray-l4-cai-poc",
-            Path("/home/cdsw/ray-l4-cai-poc"),
             Path.cwd(),
+            Path.cwd() / "llm",
+            Path("/home/cdsw/llm"),
+            Path("/home/cdsw/danantara-workforce-intelligence/llm"),
         ]
     )
 
@@ -24,7 +25,7 @@ def find_package_dir() -> Path:
             return candidate.resolve()
 
     checked = "\n  - ".join(str(path) for path in candidates)
-    raise SystemExit(f"Cannot find ray-l4-cai-poc. Checked:\n  - {checked}")
+    raise SystemExit(f"Cannot find the llm project folder. Checked:\n  - {checked}")
 
 
 def main():
@@ -35,8 +36,8 @@ def main():
     if not python.is_file():
         raise SystemExit(
             f"Ray environment is missing at {python}. "
-            "Open a GPU CAI Session and run: "
-            "cd /home/cdsw/ray-l4-cai-poc && PIP_USER=0 bash setup.sh"
+            f"Open a GPU CAI Session and run: "
+            f"cd {package_dir} && PIP_USER=0 bash setup.sh"
         )
 
     env = os.environ.copy()

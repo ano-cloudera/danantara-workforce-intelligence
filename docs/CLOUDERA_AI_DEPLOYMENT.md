@@ -109,3 +109,21 @@ After each deployment, validate `/health` before continuing.
 
 For Qdrant, use its built-in `/healthz` and `/readyz` endpoints instead of the FastAPI `/health`
 route used by the other three Applications.
+
+## Scheduled CV ingestion Job
+
+The NiFi/CDE flow remains the target governed ingestion architecture. For a self-contained PoC
+simulation, create a Workbench Job with script `jobs/cv_ingestion/run_cai_job.py`. This is a batch
+Job and does not add a fifth Application.
+
+1. Provide the S3, non-interactive Impala, Gemini, Qdrant and observability variables documented in
+   `.env.example`.
+2. Run the Job once with `CV_JOB_INIT_SCHEMA=true` using an identity allowed to create Iceberg
+   tables/views in the existing `danantara` database, then restore it to `false`.
+3. Set `CV_JOB_DRY_RUN=true` and `CV_JOB_MAX_OBJECTS=1` for the first Job execution.
+4. Confirm extraction and sanitized observability events, then set `CV_JOB_DRY_RUN=false`.
+5. Schedule the one-shot Job at the minimum practical interval supported by the Workbench.
+
+A JDBC URL with `auth=browser` is suitable only for an interactive user. Scheduled execution needs
+the workload/service authentication mechanism approved for the CDW Virtual Warehouse. Qdrant
+remains complementary; Iceberg is the candidate system of record.

@@ -59,6 +59,10 @@ For all four CAI Applications, the platform-provided `CDSW_APP_PORT` is authorit
 bind to `127.0.0.1` and resolve ports as `CDSW_APP_PORT -> PORT -> local default`. Cross-Application
 calls use `BACKEND_BASE_URL`, `QDRANT_BASE_URL`, and `OBSERVABILITY_BASE_URL` assigned by CAI.
 
+While the governed NiFi/CDE pipeline is being completed, `jobs/cv_ingestion/run_cai_job.py`
+provides a one-shot scheduled PoC fallback for S3 CVs. It is a Job, not a fifth Application;
+Iceberg/Impala remains the system of record and Qdrant receives only a sanitized projection.
+
 ## Gemini
 
 The backend uses the current Google Gen AI SDK:

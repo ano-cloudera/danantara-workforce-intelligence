@@ -4,9 +4,9 @@ This package supplements the existing PoC source files with structured sample da
 
 ## Files
 
-- `candidate_master.csv` -> `talent_profile.candidate_master`
-- `candidate_skills.csv` -> `talent_profile.candidate_skills`
-- `candidate_experience.csv` -> `talent_profile.candidate_experience`
+- `candidate_master.csv` -> `danantara.candidate_master`
+- `candidate_skills.csv` -> `danantara.candidate_skills`
+- `candidate_experience.csv` -> `danantara.candidate_experience`
 - `recruitment_status.csv` -> `recruitment.recruitment_status`
 - `policy_rules.csv` -> `policy_regulation.policy_rules`
 - `manifest.json` -> dataset-to-table mapping and implementation notes

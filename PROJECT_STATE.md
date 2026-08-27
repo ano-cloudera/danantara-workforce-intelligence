@@ -44,6 +44,10 @@
   in CDW.
 - Global search groups candidates, positions, skills, and policy documents and remains accessible
   through a responsive overlay on compact layouts.
+- A one-shot scheduled CAI CV ingestion Job is available as a PoC fallback while the NiFi/CDE flow
+  is completed. It uses S3 URI plus ETag idempotency, writes Iceberg through Impala, indexes only a
+  sanitized professional projection in `QDRANT_CANDIDATE_COLLECTION`, and emits PII-free pipeline
+  events. It is not a fifth Application and does not replace NiFi/CDE as the target architecture.
 
 ## Environment-specific tasks still required
 
@@ -56,6 +60,7 @@
 - [ ] Run `apps/backend/scripts/init_qdrant_collections.py` and verify all three collections.
 - [ ] Validate Qdrant binary download from the target CAI runtime, or upload binary manually.
 - [ ] Configure CDW Impala connection and change `DATA_MODE=impala`.
+- [ ] Validate non-interactive CDW authentication and execute the CAI CV ingestion Job dry-run.
 - [ ] Configure NiFi webhook/landing integration and change `INGEST_MODE=nifi` if required.
 - [ ] Configure optional Langfuse credentials if enterprise LLM tracing is required.
 - [ ] Replace demo candidate/policy data with customer-provided PoC data.

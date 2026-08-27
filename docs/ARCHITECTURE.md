@@ -9,6 +9,11 @@
 5. Qdrant stores vector representations for semantic retrieval.
 6. Cloudera AI Applications host the custom UX, backend orchestration, vector service and observability service.
 
+For isolated PoC testing while the NiFi/CDE implementation is being completed, a scheduled CAI CV
+ingestion Job can poll S3, perform idempotent Iceberg DML through Impala, and index a sanitized
+professional projection in the Workforce candidate Qdrant collection. This Job is a fallback
+simulation, not a fifth Application and not a replacement for the governed NiFi/CDE path.
+
 ## CAI application networking
 
 All application entrypoints bind to loopback (`127.0.0.1`) in Cloudera AI Workbench. Listener

@@ -2,9 +2,9 @@
   "package": "Danantara additional structured sample sources",
   "purpose": "Supplement the existing 15 PoC source files with structured datasets suitable for NiFi ingestion and Iceberg curated tables.",
   "target_tables": {
-    "candidate_master.csv": "talent_profile.candidate_master",
-    "candidate_skills.csv": "talent_profile.candidate_skills",
-    "candidate_experience.csv": "talent_profile.candidate_experience",
+    "candidate_master.csv": "danantara.candidate_master",
+    "candidate_skills.csv": "danantara.candidate_skills",
+    "candidate_experience.csv": "danantara.candidate_experience",
     "recruitment_status.csv": "recruitment.recruitment_status",
     "policy_rules.csv": "policy_regulation.policy_rules"
   },

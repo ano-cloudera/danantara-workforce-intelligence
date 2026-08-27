@@ -41,6 +41,7 @@ architecture:
   app_state: sqlite
   structured_data: cloudera-data-warehouse-impala
   transformation: cloudera-data-engineering
+  cai_cv_ingestion_fallback: jobs/cv_ingestion/run_cai_job.py
   dashboard: cloudera-data-visualization
   frontend_experience: responsive-six-page-enterprise-shell
   frontend_icons: lucide-react-named-imports
@@ -60,6 +61,7 @@ locked_decisions:
   - CAI Applications use CDSW_APP_PORT and CAI-assigned service URLs; exposed ports are not fixed.
   - BMAD is used selectively; existing BMAD artifacts do not force all changes through BMAD.
   - Policy conversation and feedback are Application state; policy documents and structured HR data remain governed sources.
+  - The scheduled CAI CV ingestion Job is a PoC fallback, not a fifth Application or a replacement for NiFi/CDE.
 pending_environment_tasks:
   - configure Gemini credentials
   - create CAI application URLs
@@ -69,3 +71,4 @@ pending_environment_tasks:
   - configure NiFi ingestion URL
   - configure optional Langfuse
   - validate Ranger policies
+  - validate non-interactive CDW authentication and CAI CV ingestion Job dry-run
