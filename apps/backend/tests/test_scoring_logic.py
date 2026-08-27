@@ -119,6 +119,27 @@ def test_ambiguous_title_with_no_entity_scores_each_candidate_against_their_own_
             assert item is None
 
 
+def test_ambiguous_title_response_validates_as_talent_match_response():
+    from app.models import TalentMatchResponse, GuardrailResult
+
+    gateway = DataGateway(Settings(_env_file=None, data_mode="demo"))
+    request = TalentMatchRequest(position_title="Senior Data Engineer", top_n=20)
+    flow = TalentMatchingFlow(request, gateway, gemini=None, guardrails=None, observability=_NullObservability())
+    flow.load_and_score()
+    flow.state.final = flow.state.scored
+
+    # This is exactly what api.py's talent_match endpoint constructs; FastAPI's
+    # response_model=TalentMatchResponse would 500 with no detail if this raises.
+    response = TalentMatchResponse(
+        request_id="req-1",
+        session_id="sess-1",
+        position=flow.state.position,
+        matches=flow.state.final,
+        guardrail=GuardrailResult(allowed=True, reasons=[]),
+    )
+    assert response.position.matched_entities == ["BNS", "ENP"]
+
+
 def test_impala_connection_uses_configured_http_transport(monkeypatch):
     captured = {}
     dbapi = ModuleType("impala.dbapi")

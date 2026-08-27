@@ -43,6 +43,7 @@ class Position(BaseModel):
     openings: int = 1
     status: str = "Open"
     open_date: str | None = None
+    matched_entities: list[str] = Field(default_factory=list)
 
 
 class CandidateMatch(BaseModel):

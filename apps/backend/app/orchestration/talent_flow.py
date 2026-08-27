@@ -71,14 +71,12 @@ class TalentMatchingFlow(Flow[TalentState]):
                 scored.append(score_candidate(c, position, keywords))
 
         scored.sort(key=lambda x: x["match_score"], reverse=True)
-        self.state.position = (
-            positions[0].model_dump()
-            if len(positions) == 1
-            else {
-                "title": positions[0].title,
-                "matched_entities": sorted({p.entity for p in positions if p.entity}),
-            }
-        )
+        if len(positions) == 1:
+            self.state.position = positions[0].model_dump()
+        else:
+            representative = positions[0].model_dump()
+            representative["matched_entities"] = sorted({p.entity for p in positions if p.entity})
+            self.state.position = representative
         self.state.scored = scored[: req.top_n]
         self.observability.emit(
             "tool",
