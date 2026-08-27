@@ -263,6 +263,11 @@ class DataGateway:
             rows = cur.fetchall()
         result = []
         for candidate_id, name, company, years, skills, summary in rows:
+            if not name:
+                logger.warning(
+                    "Skipping candidate row with missing name: candidate_id=%s", candidate_id
+                )
+                continue
             parsed_skills = (
                 skills
                 if isinstance(skills, list)
@@ -294,6 +299,11 @@ class DataGateway:
 
         out = []
         for pid, title, req, pref, years in rows:
+            if not title:
+                logger.warning(
+                    "Skipping position row with missing title: position_id=%s", pid
+                )
+                continue
             out.append(
                 Position(
                     position_id=str(pid),
