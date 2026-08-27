@@ -339,15 +339,22 @@ Document excerpt:
     def embed(self, texts: list[str]) -> list[list[float]]:
         from google.genai import types
 
-        response = self.client.models.embed_content(
-            model=self.settings.gemini_embedding_model,
-            contents=texts,
-            config=types.EmbedContentConfig(
-                output_dimensionality=self.settings.gemini_embed_dim,
-                task_type="RETRIEVAL_DOCUMENT",
-            ),
+        config = types.EmbedContentConfig(
+            output_dimensionality=self.settings.gemini_embed_dim,
+            task_type="RETRIEVAL_DOCUMENT",
         )
-        return [list(item.values) for item in (response.embeddings or [])]
+        vectors = []
+        for text in texts:
+            response = self.client.models.embed_content(
+                model=self.settings.gemini_embedding_model,
+                contents=text,
+                config=config,
+            )
+            embeddings = response.embeddings or []
+            if len(embeddings) != 1:
+                raise RuntimeError("embedding_response_count_mismatch")
+            vectors.append(list(embeddings[0].values))
+        return vectors
 
 
 class QdrantPolicyAdapter:
