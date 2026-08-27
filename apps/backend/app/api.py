@@ -8,6 +8,7 @@ from fastapi.responses import Response
 from app.config import Settings
 from app.models import (
     CandidateForm,
+    ChartData,
     FeedbackRequest,
     PolicyChatRequest,
     PolicyExportRequest,
@@ -18,6 +19,7 @@ from app.models import (
     TalentMatchRequest,
     TalentMatchResponse,
 )
+from app.orchestration.data_query_flow import DataQueryFlow
 from app.orchestration.policy_flow import PolicyRAGFlow
 from app.orchestration.talent_flow import TalentMatchingFlow
 from app.services.pdf_export import build_policy_pdf
@@ -131,6 +133,33 @@ def build_router(services: dict, settings: Settings) -> APIRouter:
             human_review_required=True,
         )
 
+    def _try_data_query(payload: PolicyQueryRequest, sid: str, request_id: str) -> PolicyQueryResponse | None:
+        entity = payload.entities[0] if len(payload.entities) == 1 else None
+        flow = DataQueryFlow(payload.question, entity, services["data"], services["gemini"], services["obs"])
+        try:
+            flow.kickoff()
+        except Exception:
+            logger.exception("data_query flow failed request_id=%s", request_id)
+            return None
+        if not flow.state.result or not flow.state.result.get("summary"):
+            return None
+        chart = flow.state.result.get("chart")
+        message_id = services["store"].add_policy_message(
+            sid, "assistant", flow.state.answer, request_id=request_id, sources=[]
+        )
+        return PolicyQueryResponse(
+            request_id=request_id,
+            session_id=sid,
+            answer=flow.state.answer,
+            sources=[],
+            citations=[],
+            guardrail=services["guardrails"].validate_policy_output(flow.state.answer, 1),
+            human_review_required=True,
+            message_id=message_id,
+            suggested_questions=[],
+            chart=ChartData(**chart) if chart else None,
+        )
+
     def execute_policy_query(payload: PolicyQueryRequest, uid: str) -> PolicyQueryResponse:
         sid = services["store"].ensure_session(payload.session_id, uid)
         request_id = str(uuid.uuid4())
@@ -146,6 +175,11 @@ def build_router(services: dict, settings: Settings) -> APIRouter:
             )
         history = services["store"].list_policy_messages(sid)[-8:]
         services["store"].add_policy_message(sid, "user", payload.question, request_id=request_id)
+
+        data_response = _try_data_query(payload, sid, request_id)
+        if data_response:
+            return data_response
+
         flow = PolicyRAGFlow(
             payload,
             services["qdrant"],

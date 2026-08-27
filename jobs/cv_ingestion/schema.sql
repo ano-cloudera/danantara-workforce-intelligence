@@ -73,7 +73,8 @@ SELECT
   master.education_level,
   master.education_institution,
   GROUP_CONCAT(skills.skill_name, ',') AS skills,
-  master.professional_summary AS summary
+  master.professional_summary AS summary,
+  master.created_at
 FROM danantara.candidate_master master
 LEFT JOIN danantara.candidate_skills skills
   ON master.candidate_id = skills.candidate_id
@@ -86,4 +87,5 @@ GROUP BY
   master.city,
   master.education_level,
   master.education_institution,
-  master.professional_summary;
+  master.professional_summary,
+  master.created_at;

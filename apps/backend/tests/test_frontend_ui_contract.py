@@ -177,7 +177,7 @@ def test_get_candidate_enriches_impala_result_with_skills_and_experience(monkeyp
             }
         ],
     )
-    monkeypatch.setattr(gateway, "_recruitment_pipeline", lambda: [])
+    monkeypatch.setattr(gateway, "recruitment_pipeline", lambda: [])
 
     candidate = gateway.get_candidate("CAND-1")
 
@@ -197,7 +197,7 @@ def test_get_candidate_fills_application_fields_from_recruitment_pipeline(monkey
     monkeypatch.setattr(gateway, "_impala_candidate_experiences", lambda candidate_id: [])
     monkeypatch.setattr(
         gateway,
-        "_recruitment_pipeline",
+        "recruitment_pipeline",
         lambda: [
             {
                 "application_id": "APP-1",

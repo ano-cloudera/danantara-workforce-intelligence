@@ -54,7 +54,7 @@ class DataGateway:
                             type(exc).__name__,
                         )
                 application = next(
-                    (row for row in self._recruitment_pipeline() if row.get("candidate_id") == candidate_id),
+                    (row for row in self.recruitment_pipeline() if row.get("candidate_id") == candidate_id),
                     None,
                 )
                 if application:
@@ -288,9 +288,12 @@ class DataGateway:
         return connect(**kwargs)
 
     def _impala_candidates(self, company: str | None) -> list[Candidate]:
+        table = self.settings.impala_candidate_table
+        if not _TABLE_IDENTIFIER.fullmatch(table):
+            raise ValueError("Unsafe candidate table identifier")
         sql = (
             "SELECT candidate_id,name,company,current_title,years_experience,city,"
-            f"education_level,education_institution,skills,summary FROM {self.settings.impala_candidate_table}"
+            f"education_level,education_institution,skills,summary FROM {table}"
         )
         params: tuple = ()
         if company:
@@ -339,6 +342,32 @@ class DataGateway:
             )
         return result
 
+    def _impala_candidates_by_month(self) -> list[tuple[str, int]]:
+        table = self.settings.impala_candidate_table
+        if not _TABLE_IDENTIFIER.fullmatch(table):
+            raise ValueError("Unsafe candidate table identifier")
+        sql = (
+            "SELECT SUBSTR(CAST(created_at AS STRING), 1, 7) AS month, COUNT(*) "
+            f"FROM {table} WHERE created_at IS NOT NULL GROUP BY 1 ORDER BY 1"
+        )
+        with self._connect() as con:
+            cur = con.cursor()
+            cur.execute(sql)
+            rows = cur.fetchall()
+        return [(str(month), int(count)) for month, count in rows if month]
+
+    def candidates_by_month(self) -> list[tuple[str, int]]:
+        if self.settings.data_mode == "impala":
+            try:
+                rows = self._impala_candidates_by_month()
+                if rows:
+                    return rows
+            except Exception as exc:
+                logger.warning(
+                    "Impala candidates-by-month unavailable: error_type=%s", type(exc).__name__
+                )
+        return []
+
     def _impala_candidate_skill_proficiency(self, candidate_id: str) -> dict[str, int]:
         sql = "SELECT skill_name,proficiency_score FROM danantara.candidate_skills WHERE candidate_id=%s"
         with self._connect() as con:
@@ -369,7 +398,10 @@ class DataGateway:
         ]
 
     def _impala_positions(self) -> list[Position]:
-        sql = f"SELECT position_id,title,entity,required_skills,preferred_skills,min_years_experience FROM {self.settings.impala_position_table}"
+        table = self.settings.impala_position_table
+        if not _TABLE_IDENTIFIER.fullmatch(table):
+            raise ValueError("Unsafe position table identifier")
+        sql = f"SELECT position_id,title,entity,required_skills,preferred_skills,min_years_experience FROM {table}"
         with self._connect() as con:
             cur = con.cursor()
             cur.execute(sql)
@@ -477,7 +509,7 @@ class DataGateway:
             ) in rows
         ]
 
-    def _recruitment_pipeline(self) -> list[dict]:
+    def recruitment_pipeline(self) -> list[dict]:
         if self.settings.data_mode == "impala":
             try:
                 rows = self._impala_recruitment_pipeline()
@@ -493,7 +525,7 @@ class DataGateway:
     def dashboard_summary(self) -> dict:
         candidates = self.list_candidates()
         positions = self.list_positions()
-        applications = self._recruitment_pipeline()
+        applications = self.recruitment_pipeline()
         by_company: dict[str, int] = {}
         skills: dict[str, int] = {}
         for c in candidates:

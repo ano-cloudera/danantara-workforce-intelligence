@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Any, Literal
 from pydantic import BaseModel, Field
 
 
@@ -114,6 +114,12 @@ class PolicySource(BaseModel):
     download_url: str | None = None
 
 
+class ChartData(BaseModel):
+    title: str
+    items: list[tuple[str, float]] = Field(default_factory=list)
+    kind: Literal["bar"] = "bar"
+
+
 class PolicyQueryResponse(BaseModel):
     request_id: str
     session_id: str
@@ -124,6 +130,7 @@ class PolicyQueryResponse(BaseModel):
     human_review_required: bool = True
     message_id: str | None = None
     suggested_questions: list[str] = Field(default_factory=list)
+    chart: ChartData | None = None
 
 
 class PolicyExportRequest(BaseModel):

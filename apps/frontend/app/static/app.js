@@ -309,7 +309,10 @@ function appendPolicyMessage(role, content, data = null) {
     article.innerHTML = `<div class="message-label">Policy Intelligence</div><div class="message-body"><div class="typing"><i></i><i></i><i></i></div></div>`;
   } else {
     const sources = data?.sources || [];
+    const chart = data?.chart;
     const citationLinks = sources.map((source, index) => `<a href="#citation-${index + 1}" class="citation-chip">[${index + 1}] ${escapeHtml(source.entity || "Source")}</a>`).join("");
+    const chartBlock = chart?.items?.length ? `<div class="message-chart"><h4>${escapeHtml(chart.title)}</h4><div class="bar-chart">${bars(chart.items)}</div></div>` : "";
+    const citationsBlock = (sources.length || !chart) ? `<div class="message-citations">${citationLinks || "<span class='muted'>No citations returned</span>"}</div>` : "";
     const suggestions = (data?.suggested_questions || []).map(question => `<button type="button" class="follow-up" data-question="${escapeHtml(question)}">${escapeHtml(question)}</button>`).join("");
     const actions = data?.request_id ? `<div class="message-actions">
         <button type="button" data-action="copy" aria-label="Copy answer">${icon("copy")} Copy</button>
@@ -321,7 +324,8 @@ function appendPolicyMessage(role, content, data = null) {
     row.innerHTML = `<span class="chat-avatar assistant">${icon("book-open-check")}</span>`;
     article.innerHTML = `<div class="message-label">Policy Intelligence <span class="badge success">Grounded response</span></div>
       <div class="message-body answer-text">${escapeHtml(content)}</div>
-      <div class="message-citations">${citationLinks || "<span class='muted'>No citations returned</span>"}</div>
+      ${chartBlock}
+      ${citationsBlock}
       ${actions}
       ${suggestions ? `<div class="follow-ups"><small>Suggested follow-ups</small>${suggestions}</div>` : ""}`;
   }
