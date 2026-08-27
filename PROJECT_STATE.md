@@ -81,16 +81,25 @@
 - [ ] Replace demo candidate/policy data with customer-provided PoC data.
 - [x] Create and synchronize the scoped Ranger/IDBroker mapping for CAI CV prefixes.
 - [ ] Validate the CAI CV dry-run through the governed S3A adapter.
-- [ ] Create/synchronize Ranger access for the four policy prefixes and validate policy Job schema
-  init, single-file dry-run, real run, citation query, and governed download.
+- [x] Create/synchronize Ranger access for the four policy prefixes and validate policy Job schema
+  init, single-file dry-run, real run, and Qdrant/Impala writes end-to-end in CAI.
+- [ ] Validate policy citation query (`/api/v1/policy/query`) and governed download against a real
+  ingested document.
+
+- The Gemini policy embedding call (`GeminiEmbedder.embed`) sends chunks to `embed_content`
+  individually instead of batching them in one `batchEmbedContents` call. Batching could return
+  fewer embeddings than input chunks for multi-chunk documents, tripping the pipeline's
+  `embedding_count_mismatch` guardrail and failing real ingestion runs. Per-chunk calls guarantee a
+  1:1 vector-to-chunk mapping by construction (commit `f3574ae`).
 
 ## Next implementation sequence
 
-1. Populate dashboard-serving data in Impala for Overview and Dashboard.
-2. Validate the policy ingestion Job in CAI and hand its data contract to the NiFi/CDE team.
+1. Validate `/api/v1/policy/query` citation query and governed download against a real ingested
+   policy document in CAI.
+2. Populate dashboard-serving data in Impala for Overview and Dashboard.
 3. Add governed dashboard data tools/API paths for Impala-backed metrics.
 4. Validate frontend uploads for candidate forms and PDFs end-to-end.
-5. Connect NiFi/CDE pipeline.
+5. Connect NiFi/CDE pipeline and hand off the policy ingestion Job's data contract to that team.
 6. Connect Cloudera Data Visualization dashboard URL.
 7. Turn on optional Langfuse forwarding.
 8. Execute full regression rehearsal and freeze configuration.
