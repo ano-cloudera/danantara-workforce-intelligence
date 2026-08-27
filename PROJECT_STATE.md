@@ -116,6 +116,14 @@
 - Cloudera Data Visualization is intended to read the same governed views (`v_recruitment_pipeline_api`,
   `v_candidates_api`, `curated_job_positions`) as the in-app dashboard — one shared source of truth,
   no separate CDV-only schema. Deferred until frontend QA below is complete.
+- Talent Intelligence QA in CAI found two issues, both fixed (commit `6d496d0`): (1) the free-text
+  "Skills / Keywords" box was merged verbatim into `position.required_skills`, so any keyword phrase
+  always showed as a false "Skill Gap" and inflated the scoring denominator, mechanically lowering
+  every match score — keywords are now a separate substring-matched boost (up to 10 pts) that never
+  touches required/matched/gap skills. (2) Two distinct positions sharing a title (e.g. "Senior Data
+  Engineer" for both BNS and ENP) looked like a duplicate in the position dropdown because it rendered
+  title only — `_impala_positions()` now selects `entity` and the dropdown label is `Title — Entity`.
+  Not yet re-validated live in CAI after this fix — do that before considering Talent Intelligence QA closed.
 
 ## Next implementation sequence
 
