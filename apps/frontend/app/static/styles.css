@@ -214,6 +214,8 @@ legend { margin-bottom: 6px; color: #344054; font-size: 12px; font-weight: 650; 
 .policy-conversation { display: grid; align-content: start; gap: 22px; min-height: 460px; max-height: calc(100vh - 325px); overflow-y: auto; padding: 28px 26px; scroll-behavior: smooth; background: var(--canvas); }
 .policy-welcome { max-width: 620px; margin: auto; text-align: center; }
 .policy-welcome .stat-icon { margin-bottom: 12px; }
+.policy-welcome p { color: var(--muted); font-size: 13.5px; line-height: 1.6; }
+.policy-welcome-hint { margin-top: 14px; color: var(--ink); font-size: 12.5px; font-weight: 600; }
 .suggested-prompts { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-top: 16px; }
 .suggested-prompts button, .follow-up { padding: 8px 12px; border: 1px solid var(--line); border-radius: 999px; color: #344054; background: #fff; font-size: 12px; cursor: pointer; transition: border-color .12s ease, color .12s ease, background .12s ease; }
 .suggested-prompts button:hover, .follow-up:hover { border-color: var(--purple); color: var(--purple); background: var(--purple-soft); }

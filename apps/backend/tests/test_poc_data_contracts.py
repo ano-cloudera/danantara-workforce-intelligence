@@ -71,13 +71,18 @@ def test_policy_messages_persist_and_export_as_readable_pdf(tmp_path: Path):
     )
 
     answer = store.get_policy_answer(request_id)
-    pdf = build_policy_pdf("Policy analysis", answer["content"], answer["sources"])
+    messages = store.list_policy_messages(answer["session_id"])
+    pdf = build_policy_pdf("Policy conversation", messages)
     pdf_path = tmp_path / "policy.pdf"
     pdf_path.write_bytes(pdf)
 
     assert len(store.list_policy_messages(session_id)) == 2
     assert pdf.startswith(b"%PDF-1.4")
-    assert len(PdfReader(str(pdf_path)).pages) >= 1
+    reader = PdfReader(str(pdf_path))
+    assert len(reader.pages) >= 1
+    full_text = "".join(page.extract_text() or "" for page in reader.pages)
+    assert "Compare annual leave" in full_text
+    assert "BNS provides 16 days" in full_text
 
 
 def test_missing_gemini_credentials_degrade_without_startup_failure():

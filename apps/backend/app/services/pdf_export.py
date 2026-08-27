@@ -7,17 +7,23 @@ def _pdf_escape(value: str) -> str:
     return value.replace("\\", "\\\\").replace("(", "\\(").replace(")", "\\)")
 
 
-def _lines(title: str, answer: str, sources: list[dict]) -> list[str]:
-    lines = [title, "", answer, "", "Sources"]
+def _message_lines(role: str, content: str, sources: list[dict]) -> list[str]:
+    speaker = "You" if role == "user" else "Policy Intelligence"
+    lines = [f"{speaker}:", content]
     for index, source in enumerate(sources, start=1):
         location = f'page {source.get("page")}' if source.get("page") else "section unavailable"
         lines.append(
-            f'[{index}] {source.get("title", "Policy source")} '
+            f'  [{index}] {source.get("title", "Policy source")} '
             f'({source.get("entity") or "Entity unavailable"}, {location})'
         )
-        excerpt = str(source.get("text_excerpt") or "").strip()
-        if excerpt:
-            lines.append(excerpt)
+    return lines
+
+
+def _lines(title: str, messages: list[dict]) -> list[str]:
+    lines = [title, ""]
+    for message in messages:
+        lines.extend(_message_lines(message.get("role", ""), message.get("content", ""), message.get("sources") or []))
+        lines.append("")
     wrapped = []
     for line in lines:
         if not line:
@@ -27,9 +33,9 @@ def _lines(title: str, answer: str, sources: list[dict]) -> list[str]:
     return wrapped
 
 
-def build_policy_pdf(title: str, answer: str, sources: list[dict]) -> bytes:
-    """Create a dependency-free, text-only PDF suitable for the PoC export action."""
-    lines = _lines(title, answer, sources)
+def build_policy_pdf(title: str, messages: list[dict]) -> bytes:
+    """Create a dependency-free, text-only PDF transcript of a policy chat session."""
+    lines = _lines(title, messages)
     pages = [lines[index : index + 54] for index in range(0, len(lines), 54)] or [[title]]
     font_id = 3
     objects: dict[int, bytes] = {

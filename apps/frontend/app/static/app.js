@@ -288,7 +288,7 @@ function renderPolicySources(sources) {
         <div><em>${index + 1}</em><span><strong>${escapeHtml(source.title)}</strong><small>${escapeHtml(source.entity || "Entity unavailable")} · ${escapeHtml(source.document_type || "Policy source")} · ${source.page ? `page ${escapeHtml(source.page)}` : "section unavailable"}</small></span></div>
         ${source.section ? `<p class="source-section">${escapeHtml(source.section)}</p>` : ""}
         <p>${escapeHtml(source.text_excerpt || "No excerpt returned.")}</p>
-        <div class="source-actions">${source.view_url ? `<a class="text-button" href="${escapeHtml(policyApiPath(source.view_url))}" target="_blank" rel="noopener">View metadata ${icon("external-link")}</a>` : ""}${source.download_url ? `<a class="text-button" href="${escapeHtml(policyApiPath(source.download_url))}" target="_blank" rel="noopener">Download source ${icon("download")}</a>` : ""}</div>
+        <div class="source-actions">${source.download_url ? `<a class="text-button" href="${escapeHtml(policyApiPath(source.download_url))}" target="_blank" rel="noopener">Download source ${icon("download")}</a>` : ""}</div>
       </article>`).join("")
     : "No grounded sources were returned. Check Qdrant indexing or the supplied fallback documents.";
   refreshIcons();
@@ -391,7 +391,7 @@ function resetPolicyChat() {
   state.policySessionId = null;
   state.policyRequestId = null;
   state.policySources = [];
-  $("#policy-conversation").innerHTML = `<div class="policy-welcome"><span class="stat-icon purple">${icon("book-open-check", "stat")}</span><h2>Start a new grounded conversation</h2><p>Choose source filters, then ask about the supplied workforce policies.</p></div>`;
+  $("#policy-conversation").innerHTML = `<div class="policy-welcome"><span class="stat-icon purple">${icon("book-open-check", "stat")}</span><h2>Hi, I'm Policy Intelligence</h2><p>I answer workforce-policy questions grounded in the Group policy, PKB, and salary framework documents supplied for this PoC — every answer cites the source section it came from, and I flag anything that needs human review before you act on it.</p><p class="policy-welcome-hint">Pick a source filter above, then ask a question.</p></div>`;
   renderPolicySources([]);
   refreshIcons();
 }
@@ -541,7 +541,7 @@ function bindEvents() {
     } else if (action.dataset.action === "up" || action.dataset.action === "down") {
       submitPolicyFeedback(requestId, action.dataset.action === "up" ? 1 : -1, action);
     } else if (action.dataset.action === "export") {
-      api.download("policy/export", { request_id: requestId }, "policy-analysis.pdf")
+      api.download("policy/export", { request_id: requestId }, "policy-conversation.pdf")
         .then(() => notify("Policy PDF exported."))
         .catch(error => notify(error.message, "error"));
     }

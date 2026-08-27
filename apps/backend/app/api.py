@@ -231,12 +231,13 @@ def build_router(services: dict, settings: Settings) -> APIRouter:
         answer = services["store"].get_policy_answer(payload.request_id)
         if not answer:
             raise HTTPException(404, "Policy answer not found")
-        title = payload.title or "Danantara Workforce Intelligence - Policy Analysis"
-        pdf = build_policy_pdf(title, answer["content"], answer["sources"])
+        messages = services["store"].list_policy_messages(answer["session_id"])
+        title = payload.title or "Danantara Workforce Intelligence - Policy Conversation"
+        pdf = build_policy_pdf(title, messages)
         return Response(
             content=pdf,
             media_type="application/pdf",
-            headers={"Content-Disposition": 'attachment; filename="policy-analysis.pdf"'},
+            headers={"Content-Disposition": 'attachment; filename="policy-conversation.pdf"'},
         )
 
     @router.get("/documents/{document_id}")
