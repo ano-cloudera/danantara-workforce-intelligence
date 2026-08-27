@@ -297,12 +297,16 @@ function renderPolicySources(sources) {
 function appendPolicyMessage(role, content, data = null) {
   const conversation = $("#policy-conversation");
   conversation.querySelector(".policy-welcome")?.remove();
+  const row = document.createElement("div");
+  row.className = `chat-row ${role}-row`;
   const article = document.createElement("article");
   article.className = `chat-message ${role}`;
   if (role === "user") {
+    row.innerHTML = `<span class="chat-avatar user">AP</span>`;
     article.innerHTML = `<div class="message-label">You</div><div class="message-body">${escapeHtml(content)}</div>`;
   } else if (role === "loading") {
-    article.innerHTML = `<div class="message-label">Policy Intelligence</div><div class="message-body"><div class="typing"><i></i><i></i><i></i></div>Retrieving governed policy context...</div>`;
+    row.innerHTML = `<span class="chat-avatar assistant">${icon("book-open-check")}</span>`;
+    article.innerHTML = `<div class="message-label">Policy Intelligence</div><div class="message-body"><div class="typing"><i></i><i></i><i></i></div></div>`;
   } else {
     const sources = data?.sources || [];
     const citationLinks = sources.map((source, index) => `<a href="#citation-${index + 1}" class="citation-chip">[${index + 1}] ${escapeHtml(source.entity || "Source")}</a>`).join("");
@@ -314,16 +318,18 @@ function appendPolicyMessage(role, content, data = null) {
         <button type="button" data-action="export" aria-label="Export answer to PDF">${icon("download")} Export PDF</button>
       </div>` : "";
     article.dataset.requestId = data?.request_id || "";
-    article.innerHTML = `<div class="message-label">${icon("book-open-check")} Policy Intelligence <span class="badge success">Grounded response</span></div>
+    row.innerHTML = `<span class="chat-avatar assistant">${icon("book-open-check")}</span>`;
+    article.innerHTML = `<div class="message-label">Policy Intelligence <span class="badge success">Grounded response</span></div>
       <div class="message-body answer-text">${escapeHtml(content)}</div>
       <div class="message-citations">${citationLinks || "<span class='muted'>No citations returned</span>"}</div>
       ${actions}
       ${suggestions ? `<div class="follow-ups"><small>Suggested follow-ups</small>${suggestions}</div>` : ""}`;
   }
-  conversation.appendChild(article);
+  row.appendChild(article);
+  conversation.appendChild(row);
   conversation.scrollTop = conversation.scrollHeight;
   refreshIcons();
-  return article;
+  return row;
 }
 
 async function submitPolicyFeedback(requestId, rating, button) {
