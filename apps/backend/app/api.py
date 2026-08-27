@@ -110,6 +110,16 @@ def build_router(services: dict, settings: Settings) -> APIRouter:
             flow.kickoff()
         except ValueError as exc:
             raise HTTPException(404, detail=str(exc)) from exc
+        except Exception as exc:
+            logger.exception("talent_match flow failed request_id=%s", request_id)
+            raise HTTPException(
+                502,
+                detail={
+                    "message": "Talent match failed",
+                    "request_id": request_id,
+                    "error": str(exc),
+                },
+            ) from exc
         matches = flow.state.final
         output_guard = services["guardrails"].validate_talent_output(len(matches))
         return TalentMatchResponse(
