@@ -27,6 +27,10 @@ platform_jobs:
     entrypoint: jobs/cv_ingestion/run_cai_job.py
     depends_on: [s3, gemini, cdw, qdrant, observability]
     topology_effect: none
+  policy_ingestion_poc_fallback:
+    entrypoint: jobs/policy_ingestion/run_cai_job.py
+    depends_on: [s3, gemini, cdw, qdrant, observability]
+    topology_effect: none
 cai_runtime:
   bind_host: 127.0.0.1
   port_precedence: [CDSW_APP_PORT, PORT, local_default]

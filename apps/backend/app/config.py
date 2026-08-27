@@ -58,6 +58,15 @@ class Settings(BaseSettings):
     impala_http_path: str = "cliservice"
     impala_candidate_table: str = "curated_candidate_profiles"
     impala_position_table: str = "curated_job_positions"
+    impala_policy_document_table: str = "danantara.v_policy_documents_api"
+    policy_source_access_mode: Literal["local", "datalake"] = "local"
+    hadoop_fs_command: str = "hadoop fs"
+    source_command_timeout_seconds: float = Field(
+        default=120.0,
+        gt=0,
+        le=600,
+        validation_alias=AliasChoices("SOURCE_COMMAND_TIMEOUT_SECONDS", "S3_COMMAND_TIMEOUT_SECONDS"),
+    )
 
     nifi_ingest_url: str | None = None
     nifi_bearer_token: str | None = None

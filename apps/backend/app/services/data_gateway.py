@@ -1,7 +1,16 @@
 import json
+import logging
+import re
+import shlex
+import subprocess
+from pathlib import Path
+from urllib.parse import urlsplit
 
 from app.config import Settings
 from app.models import Candidate, Position
+
+logger = logging.getLogger(__name__)
+_TABLE_IDENTIFIER = re.compile(r"^[A-Za-z_][A-Za-z0-9_]*(\.[A-Za-z_][A-Za-z0-9_]*)?$")
 
 
 class DataGateway:
@@ -38,7 +47,17 @@ class DataGateway:
         raise ValueError("Candidate not found")
 
     def list_documents(self, policy_only: bool = False) -> list[dict]:
-        documents = self._demo_json("documents.json")
+        if self.settings.data_mode == "impala":
+            try:
+                documents = self._impala_documents()
+            except Exception as exc:
+                logger.warning(
+                    "Impala policy metadata unavailable; using demo metadata: error_type=%s",
+                    type(exc).__name__,
+                )
+                documents = self._demo_json("documents.json")
+        else:
+            documents = self._demo_json("documents.json")
         if policy_only:
             allowed = {"PKB", "Group Policy", "Salary Policy"}
             documents = [item for item in documents if item.get("document_type") in allowed]
@@ -57,6 +76,35 @@ class DataGateway:
         if sample_root not in path.parents or not path.is_file():
             raise ValueError("Document file is unavailable")
         return path
+
+    def read_document(self, document_id: str) -> tuple[str, bytes]:
+        document = self.get_document(document_id)
+        if document.get("relative_path"):
+            path = self.document_path(document_id)
+            return path.name, path.read_bytes()
+        source_uri = document.get("source_s3_uri")
+        if not source_uri or self.settings.policy_source_access_mode != "datalake":
+            raise ValueError("Document source is unavailable")
+        parsed = urlsplit(source_uri)
+        if parsed.scheme not in {"s3", "s3a"} or not parsed.netloc:
+            raise ValueError("Document source URI is invalid")
+        governed_uri = f"s3a://{parsed.netloc}/{parsed.path.lstrip('/')}"
+        try:
+            completed = subprocess.run(
+                [*shlex.split(self.settings.hadoop_fs_command), "-cat", governed_uri],
+                check=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                timeout=self.settings.source_command_timeout_seconds,
+            )
+        except (subprocess.SubprocessError, OSError) as exc:
+            logger.warning(
+                "Governed document read failed: document_id=%s error_type=%s",
+                document_id,
+                type(exc).__name__,
+            )
+            raise ValueError("Document file is unavailable") from exc
+        return Path(document.get("file_name") or parsed.path).name, completed.stdout
 
     def search(self, query: str, types: set[str] | None = None, limit: int = 5) -> dict:
         needle = query.strip().lower()
@@ -256,6 +304,49 @@ class DataGateway:
                 )
             )
         return out
+
+    def _impala_documents(self) -> list[dict]:
+        table = self.settings.impala_policy_document_table
+        if not _TABLE_IDENTIFIER.fullmatch(table):
+            raise ValueError("Unsafe policy document table identifier")
+        sql = (
+            "SELECT document_id,title,entity,document_type,version,file_name,source_s3_uri,"
+            f"extraction_status,guardrail_status,page_count,chunk_count,updated_at FROM {table}"
+        )
+        with self._connect() as con:
+            cur = con.cursor()
+            cur.execute(sql)
+            rows = cur.fetchall()
+        return [
+            {
+                "document_id": str(document_id),
+                "title": title,
+                "entity": entity,
+                "document_type": document_type,
+                "version": version,
+                "file_name": file_name,
+                "source_s3_uri": source_s3_uri,
+                "extraction_status": extraction_status,
+                "guardrail_status": guardrail_status,
+                "page_count": int(page_count or 0),
+                "chunk_count": int(chunk_count or 0),
+                "updated_at": updated_at.isoformat() if hasattr(updated_at, "isoformat") else updated_at,
+            }
+            for (
+                document_id,
+                title,
+                entity,
+                document_type,
+                version,
+                file_name,
+                source_s3_uri,
+                extraction_status,
+                guardrail_status,
+                page_count,
+                chunk_count,
+                updated_at,
+            ) in rows
+        ]
 
     def dashboard_summary(self) -> dict:
         candidates = self.list_candidates()

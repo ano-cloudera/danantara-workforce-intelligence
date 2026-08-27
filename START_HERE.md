@@ -63,6 +63,11 @@ While the governed NiFi/CDE pipeline is being completed, `jobs/cv_ingestion/run_
 provides a one-shot scheduled PoC fallback for S3 CVs. It is a Job, not a fifth Application;
 Iceberg/Impala remains the system of record and Qdrant receives only a sanitized projection.
 
+`jobs/policy_ingestion/run_cai_job.py` provides the equivalent bounded policy fallback for PDF,
+DOCX, and XLSX sources. It uses governed S3A access, review/failed routing, pre/post-index
+guardrails, Iceberg metadata/audit tables, and the environment-configured Workforce policy
+collection. Original policy files remain authoritative in S3.
+
 ## Gemini
 
 The backend uses the current Google Gen AI SDK:

@@ -20,3 +20,5 @@ Implement vector indexing and retrieval safely.
 - Use the Qdrant REST adapter through `httpx` for backend health, collection management, indexing,
   and retrieval so CAI Istio/Envoy transport behavior is consistent. Do not make SDK health the
   production readiness signal.
+- Policy ingestion must delete existing points by `document_id` before upserting stable chunk IDs
+  into the configured `QDRANT_POLICY_COLLECTION`; every chunk carries governed citation metadata.

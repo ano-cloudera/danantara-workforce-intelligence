@@ -14,6 +14,13 @@ ingestion Job can poll S3, perform idempotent Iceberg DML through Impala, and in
 professional projection in the Workforce candidate Qdrant collection. This Job is a fallback
 simulation, not a fifth Application and not a replacement for the governed NiFi/CDE path.
 
+The parallel policy fallback Job accepts PDF, DOCX and XLSX from a governed landing prefix. It
+preserves PDF pages, DOCX headings and XLSX sheet names, applies pre/post-index guardrails, stores
+metadata/audit state in Iceberg through Impala, and replaces citation chunks in the configured
+Workforce policy collection. Accepted, review-required and corrupt inputs are routed to separate
+governed prefixes. The source file remains authoritative in S3 and service failures retain the
+landing object for idempotent retry.
+
 ## CAI application networking
 
 All application entrypoints bind to loopback (`127.0.0.1`) in Cloudera AI Workbench. Listener
@@ -31,6 +38,9 @@ Frontend conversational workspace -> Backend session state -> input guardrail ->
 -> Gemini query embedding -> Qdrant retrieval -> Gemini grounded generation -> citation validation
 -> output guardrail -> response/feedback/PDF export -> observability. Original source files remain
 governed artifacts; Qdrant stores chunks and source metadata, not the policy system of record.
+When `DATA_MODE=impala`, the backend reads policy metadata from
+`IMPALA_POLICY_DOCUMENT_TABLE`. Citation downloads use Hadoop/S3A with IDBroker/Ranger rather than
+exposing a customer S3 location or using static AWS credentials.
 
 ### Global search
 

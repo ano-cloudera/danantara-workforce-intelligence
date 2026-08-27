@@ -35,6 +35,11 @@ candidate point in `QDRANT_CANDIDATE_COLLECTION`; then refresh the backend candi
 For the governed CAI path, verify `S3_ACCESS_MODE=datalake`, `s3a://` CV URIs, a completed IDBroker
 mapping sync, the scoped Ranger `cm_s3` policy, and the Spark 3 runtime add-on before the dry-run.
 
+Before demonstrating a newly ingested policy, run the policy Job with
+`POLICY_JOB_MAX_OBJECTS=1`. Confirm a `policy-ingestion-completed` event, a `COMPLETED` Iceberg audit
+row, citation-complete points in `QDRANT_POLICY_COLLECTION`, and a governed source download through
+the backend. A suspicious document must instead produce `REVIEW_REQUIRED` and no Qdrant points.
+
 1. Confirm all four Applications received `CDSW_APP_PORT` and bind to `127.0.0.1`.
 2. Confirm no fixed exposed port is configured in CAI Application variables.
 3. Verify `BACKEND_BASE_URL`, `QDRANT_BASE_URL`, and `OBSERVABILITY_BASE_URL` use the Application

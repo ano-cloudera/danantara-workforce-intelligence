@@ -56,6 +56,13 @@
   deterministic fallback used by both Impala and Qdrant.
 - Backend Impala connectivity uses the same configurable HTTP transport and `cliservice` path as
   the CAI ingestion Job, allowing CDW port 443 without embedding customer endpoints.
+- A separate one-shot CAI policy ingestion Job is implemented at
+  `jobs/policy_ingestion/run_cai_job.py`. It accepts PDF/DOCX/XLSX, uses governed S3A prefixes,
+  writes policy metadata/audit to Iceberg, applies pre/post-index guardrails, and replaces stable
+  chunks only in `QDRANT_POLICY_COLLECTION`. It remains a PoC fallback for NiFi/CDE, not a fifth
+  Application.
+- Dynamic policy metadata is served from `danantara.v_policy_documents_api` in Impala mode.
+  Citation downloads use governed Hadoop/S3A access and do not expose source S3 URIs publicly.
 
 ## Environment-specific tasks still required
 
@@ -74,16 +81,16 @@
 - [ ] Replace demo candidate/policy data with customer-provided PoC data.
 - [x] Create and synchronize the scoped Ranger/IDBroker mapping for CAI CV prefixes.
 - [ ] Validate the CAI CV dry-run through the governed S3A adapter.
+- [ ] Create/synchronize Ranger access for the four policy prefixes and validate policy Job schema
+  init, single-file dry-run, real run, citation query, and governed download.
 
 ## Next implementation sequence
 
-1. Validate backend Gemini health.
-2. Validate frontend to backend proxy.
-3. Run the sample importer, validate Qdrant, and index supplied policy chunks.
-4. Validate Policy chat, citations, source download, feedback, and PDF export end-to-end.
-5. Configure CDW and validate candidate query.
-6. Validate Talent Intelligence end-to-end.
-7. Connect NiFi/CDE pipeline.
-8. Connect Cloudera Data Visualization dashboard URL.
-9. Turn on optional Langfuse forwarding.
-10. Execute demo rehearsal and freeze configuration.
+1. Populate dashboard-serving data in Impala for Overview and Dashboard.
+2. Validate the policy ingestion Job in CAI and hand its data contract to the NiFi/CDE team.
+3. Add governed dashboard data tools/API paths for Impala-backed metrics.
+4. Validate frontend uploads for candidate forms and PDFs end-to-end.
+5. Connect NiFi/CDE pipeline.
+6. Connect Cloudera Data Visualization dashboard URL.
+7. Turn on optional Langfuse forwarding.
+8. Execute full regression rehearsal and freeze configuration.

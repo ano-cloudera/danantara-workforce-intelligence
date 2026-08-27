@@ -315,8 +315,11 @@ def main():
 
     ray.init(
         namespace="cai-ray-multimodel",
-        include_dashboard=True,
-        dashboard_host="127.0.0.1",
+        # The dashboard pulls in opencensus/google-api-core, whose generated
+        # _pb2 files require protobuf>=6.33.5, which conflicts with the
+        # protobuf<5 pin Ray Serve itself needs (ray-project/ray#54849).
+        # The dashboard is monitoring-only and not required for serving.
+        include_dashboard=False,
         ignore_reinit_error=True,
     )
     print("Ray cluster resources:", ray.cluster_resources(), flush=True)

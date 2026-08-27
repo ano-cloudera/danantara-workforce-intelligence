@@ -87,6 +87,20 @@ def test_python_launcher_disables_cai_user_pip_mode(launcher):
     assert '"--no-user"' in source
 
 
+def test_policy_job_launcher_loads_without_dunder_file(monkeypatch, tmp_path):
+    launcher = ROOT / "jobs/policy_ingestion/run_cai_job.py"
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.setenv("CDSW_PROJECT_DIR", str(ROOT))
+    namespace = {"__name__": "cai_entrypoint_test"}
+
+    exec(compile(launcher.read_text(), launcher.name, "exec"), namespace)
+
+    assert namespace["HERE"] == launcher.parent
+    source = launcher.read_text()
+    assert 'pip_env.pop("PIP_USER", None)' in source
+    assert '"--isolated"' in source and '"--no-user"' in source
+
+
 def test_qdrant_launcher_is_standalone_in_cai_interpreter(monkeypatch, tmp_path):
     launcher = ROOT / "apps/qdrant/run_cai.py"
     monkeypatch.chdir(tmp_path)

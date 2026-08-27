@@ -42,6 +42,7 @@ architecture:
   structured_data: cloudera-data-warehouse-impala
   transformation: cloudera-data-engineering
   cai_cv_ingestion_fallback: jobs/cv_ingestion/run_cai_job.py
+  cai_policy_ingestion_fallback: jobs/policy_ingestion/run_cai_job.py
   cai_cv_storage_access:
     governed: idbroker-ranger-s3a
     local_fallback: boto3
@@ -68,6 +69,8 @@ locked_decisions:
   - The CAI CV Job uses governed Hadoop/S3A access in Workbench; boto3 is only a local or scoped-role fallback.
   - CV entity normalization is shared across Impala and Qdrant; explicit values win and CAND entity codes are the deterministic fallback.
   - Backend and CAI Job Impala clients share configurable HTTP transport and HTTP path settings for CDW port 443.
+  - The CAI policy Job is a governed PDF/DOCX/XLSX PoC fallback with review routing, Iceberg metadata/audit, stable Qdrant replacement, and no fifth Application.
+  - Dynamic policy downloads use IDBroker/Ranger S3A access and do not expose governed S3 URIs.
 pending_environment_tasks:
   - configure Gemini credentials
   - create CAI application URLs
@@ -78,3 +81,11 @@ pending_environment_tasks:
   - configure optional Langfuse
   - validate the synchronized Ranger/IDBroker CV policy with a CAI S3A dry-run
   - validate non-interactive CDW authentication and CAI CV ingestion Job dry-run
+  - validate Ranger policy prefixes and the CAI policy ingestion Job from schema init through citation download
+next_backlog:
+  - populate dashboard-serving data in Impala
+  - validate the policy ingestion fallback and align its contract with NiFi/CDE
+  - add governed dashboard data tools for Impala-backed metrics
+  - validate frontend candidate form and PDF uploads end-to-end
+  - validate keyboard submit behavior for Talent Match and Policy chat
+  - run full PoC regression rehearsal

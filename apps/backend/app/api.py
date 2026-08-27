@@ -1,7 +1,8 @@
 import uuid
+from urllib.parse import quote
 
 from fastapi import APIRouter, File, Form, Header, HTTPException, Query, UploadFile
-from fastapi.responses import FileResponse, Response
+from fastapi.responses import Response
 
 from app.config import Settings
 from app.models import (
@@ -101,7 +102,10 @@ def build_router(services: dict, settings: Settings) -> APIRouter:
         flow = TalentMatchingFlow(
             payload, services["data"], services["gemini"], services["guardrails"], services["obs"]
         )
-        flow.kickoff()
+        try:
+            flow.kickoff()
+        except ValueError as exc:
+            raise HTTPException(404, detail=str(exc)) from exc
         matches = flow.state.final
         output_guard = services["guardrails"].validate_talent_output(len(matches))
         return TalentMatchResponse(
@@ -216,15 +220,26 @@ def build_router(services: dict, settings: Settings) -> APIRouter:
             document = services["data"].get_document(document_id)
         except ValueError as exc:
             raise HTTPException(404, str(exc)) from exc
-        return {key: value for key, value in document.items() if key != "relative_path"}
+        private_fields = {"relative_path", "source_s3_uri"}
+        return {key: value for key, value in document.items() if key not in private_fields}
 
     @router.get("/documents/{document_id}/download")
     def document_download(document_id: str):
         try:
-            path = services["data"].document_path(document_id)
+            filename, content = services["data"].read_document(document_id)
         except ValueError as exc:
             raise HTTPException(404, str(exc)) from exc
-        return FileResponse(path, filename=path.name)
+        suffix = filename.rsplit(".", 1)[-1].lower() if "." in filename else ""
+        media_types = {
+            "pdf": "application/pdf",
+            "docx": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+            "xlsx": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        }
+        return Response(
+            content=content,
+            media_type=media_types.get(suffix, "application/octet-stream"),
+            headers={"Content-Disposition": f"attachment; filename*=UTF-8''{quote(filename)}"},
+        )
 
     @router.post("/sources/candidate")
     def candidate_form(payload: CandidateForm):
@@ -239,7 +254,8 @@ def build_router(services: dict, settings: Settings) -> APIRouter:
     def source_inventory():
         documents = []
         for item in services["data"].list_documents():
-            documents.append({key: value for key, value in item.items() if key != "relative_path"})
+            private_fields = {"relative_path", "source_s3_uri"}
+            documents.append({key: value for key, value in item.items() if key not in private_fields})
         return {"documents": documents, "uploads": services["store"].list_uploads()}
 
     @router.post("/sources/upload")

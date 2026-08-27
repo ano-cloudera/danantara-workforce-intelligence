@@ -503,7 +503,19 @@ function bindEvents() {
   $("#mobile-menu").onclick = () => $("#sidebar").classList.toggle("open");
   $("#candidate-dialog-close").onclick = () => $("#candidate-dialog").close();
   $("#run-match").onclick = runTalentMatch;
+  $("#skills").addEventListener("keydown", event => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      runTalentMatch();
+    }
+  });
   $("#policy-form").onsubmit = runPolicy;
+  $("#policy-question").addEventListener("keydown", event => {
+    if (event.key === "Enter" && !event.shiftKey) {
+      event.preventDefault();
+      $("#policy-form").requestSubmit();
+    }
+  });
   $("#new-policy-chat").onclick = resetPolicyChat;
   $("#policy-conversation").onclick = event => {
     const followUp = event.target.closest(".follow-up, .suggested-prompts button");

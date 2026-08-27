@@ -16,6 +16,9 @@ required = [
     "jobs/cv_ingestion/run_cai_job.py",
     "jobs/cv_ingestion/schema.sql",
     "jobs/cv_ingestion/requirements.txt",
+    "jobs/policy_ingestion/run_cai_job.py",
+    "jobs/policy_ingestion/schema.sql",
+    "jobs/policy_ingestion/requirements.txt",
     "skills/delivery-method-selector/SKILL.md",
     "data/nifi-demo",
     "data/workforce-app",
@@ -56,6 +59,40 @@ cv_job_vars = (
     "ICEBERG_INGESTION_AUDIT_TABLE",
 )
 missing_cv_job_vars = [name for name in cv_job_vars if f"{name}=" not in env_example]
+policy_job_vars = (
+    "S3_POLICY_INPUT_URI",
+    "S3_POLICY_PROCESSED_URI",
+    "S3_POLICY_REVIEW_URI",
+    "S3_POLICY_FAILED_URI",
+    "POLICY_JOB_MAX_OBJECTS",
+    "POLICY_JOB_DRY_RUN",
+    "POLICY_JOB_INIT_SCHEMA",
+    "ICEBERG_POLICY_DOCUMENT_TABLE",
+    "ICEBERG_POLICY_AUDIT_TABLE",
+)
+missing_policy_job_vars = [
+    name for name in policy_job_vars if f"{name}=" not in env_example
+]
+policy_launcher = ROOT / "jobs/policy_ingestion/run_cai_job.py"
+policy_job_errors = []
+if policy_launcher.exists():
+    policy_launcher_source = policy_launcher.read_text()
+    if 'globals().get("__file__")' not in policy_launcher_source:
+        policy_job_errors.append("launcher cannot resolve paths in CAI cell execution")
+    if "CDSW_PROJECT_DIR" not in policy_launcher_source:
+        policy_job_errors.append("launcher does not use CDSW_PROJECT_DIR")
+    if (
+        'pip_env.pop("PIP_USER", None)' not in policy_launcher_source
+        or '"--no-user"' not in policy_launcher_source
+        or '"--isolated"' not in policy_launcher_source
+    ):
+        policy_job_errors.append("launcher does not neutralize CAI pip user-install mode")
+
+policy_adapter = ROOT / "jobs/policy_ingestion/adapters.py"
+if policy_adapter.exists():
+    policy_adapter_source = policy_adapter.read_text()
+    if "settings.qdrant_policy_collection" not in policy_adapter_source:
+        policy_job_errors.append("Qdrant policy collection is not configuration-driven")
 launchers = [
     ROOT / "apps/frontend/run_cai.py",
     ROOT / "apps/backend/run_cai.py",
@@ -118,6 +155,16 @@ print(
     "CAI CV ingestion Job configuration:",
     "OK" if not missing_cv_job_vars else "MISSING " + ",".join(missing_cv_job_vars),
 )
+print(
+    "CAI policy ingestion Job configuration:",
+    "OK"
+    if not missing_policy_job_vars and not policy_job_errors
+    else "FAILED "
+    + "; ".join(
+        (["missing " + ",".join(missing_policy_job_vars)] if missing_policy_job_vars else [])
+        + policy_job_errors
+    ),
+)
 print("CAI port precedence:", "OK" if port_precedence_ok else "FAILED")
 print("CAI launcher port policy:", "OK" if not launcher_errors else "; ".join(launcher_errors))
 print(
@@ -131,6 +178,8 @@ if (
     or missing_qdrant_runtime_vars
     or missing_inter_app_urls
     or missing_cv_job_vars
+    or missing_policy_job_vars
+    or policy_job_errors
     or not port_precedence_ok
     or launcher_errors
 ):

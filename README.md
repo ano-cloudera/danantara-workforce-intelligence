@@ -152,14 +152,17 @@ Upload the complete repository to one Cloudera AI project. Create four Applicati
 | Qdrant | `apps/qdrant/run_cai.py` |
 | Observability | `apps/observability/run_cai.py` |
 
-The optional PoC CV ingestion fallback runs as a scheduled Workbench **Job**, not a fifth
-Application. Use `jobs/cv_ingestion/run_cai_job.py`; see `jobs/cv_ingestion/README.md` for its S3,
-Iceberg/Impala, Qdrant and observability configuration.
+The optional PoC CV and policy ingestion fallbacks run as scheduled Workbench **Jobs**, not extra
+Applications. Use `jobs/cv_ingestion/run_cai_job.py` for CVs and
+`jobs/policy_ingestion/run_cai_job.py` for PDF/DOCX/XLSX policies. Each Job documents its S3,
+Iceberg/Impala, Qdrant, guardrail and observability configuration in its local README.
 
 In Cloudera AI, set `S3_ACCESS_MODE=datalake`, use `s3a://` CV prefixes, and enable the Spark 3
 runtime add-on so object access follows the synchronized IDBroker mapping and Ranger `cm_s3`
-policy. `S3_ACCESS_MODE=boto3` remains available for local development or a separately scoped AWS
-workload role.
+policy. The policy Job uses separate `policy-collect`, `policy-processed`, `policy-review`, and
+`policy-failed` prefixes and indexes only accepted chunks in `QDRANT_POLICY_COLLECTION`.
+`S3_ACCESS_MODE=boto3` remains available for local development or a separately scoped AWS workload
+role.
 
 Detailed settings are in `docs/CLOUDERA_AI_DEPLOYMENT.md`.
 

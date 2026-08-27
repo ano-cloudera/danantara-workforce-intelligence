@@ -20,3 +20,6 @@ Deploy and troubleshoot the four Cloudera AI Applications.
   with `--no-user`; some CAI runtimes otherwise force an invalid user install inside the venv.
 - Keep secrets in hidden Application environment variables.
 - Verify `/health` before wiring another app.
+- One-shot ingestion entrypoints are Workbench Jobs, not additional Applications. Validate policy
+  ingestion in this order: schema init, one-file dry-run, one-file real run, citation/download,
+  then bounded scheduling.

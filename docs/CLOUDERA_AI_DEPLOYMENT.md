@@ -130,3 +130,25 @@ Job and does not add a fifth Application.
 A JDBC URL with `auth=browser` is suitable only for an interactive user. Scheduled execution needs
 the workload/service authentication mechanism approved for the CDW Virtual Warehouse. Qdrant
 remains complementary; Iceberg is the candidate system of record.
+
+## Scheduled policy ingestion Job
+
+Create a separate Workbench Job using `jobs/policy_ingestion/run_cai_job.py`. It shares the same
+four-Application topology and is a fallback for the target NiFi/CDE policy flow.
+
+1. Grant the Job identity recursive Ranger `cm_s3` read/write access to the governed
+   `policy-collect`, `policy-processed`, `policy-review`, and `policy-failed` prefixes.
+2. Set `S3_ACCESS_MODE=datalake`, all four `S3_POLICY_*` URIs, Gemini/Qdrant/Impala/observability
+   variables, and keep `QDRANT_POLICY_COLLECTION` aligned with the backend.
+3. Run once with `POLICY_JOB_INIT_SCHEMA=true`, then restore it to `false`.
+4. Run with `POLICY_JOB_DRY_RUN=true` and `POLICY_JOB_MAX_OBJECTS=1`; verify extraction and safe
+   observability events without any S3, Impala, or Qdrant mutation.
+5. Set dry-run to `false`, process one document, then validate the Iceberg audit/document rows,
+   Qdrant citation payload, Policy Intelligence query, View Metadata, and Download Source.
+6. Raise the bounded batch limit to at most 20 and schedule it only after the single-file path is
+   validated.
+
+The backend Application needs `IMPALA_POLICY_DOCUMENT_TABLE=danantara.v_policy_documents_api` and
+`POLICY_SOURCE_ACCESS_MODE=datalake` for dynamic metadata and governed source downloads. Files with
+uncertain metadata or prompt-injection patterns go to review without indexing; corrupt files go to
+failed; partial Impala/Qdrant failures leave the landing object retryable.
