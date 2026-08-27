@@ -44,7 +44,7 @@ code { padding: 1px 5px; border-radius: 4px; background: #f2f4f7; font-size: 12p
 .brand-logo.small { width: 32px; height: 32px; border-radius: 8px; }
 .brand-copy { display: flex; gap: 5px; align-items: baseline; white-space: nowrap; font-size: 18px; }
 .brand-copy b { color: var(--red); font-weight: 650; }
-.global-search-wrap { position: relative; min-width: 0; }
+.global-search-wrap { position: relative; min-width: 0; justify-self: center; width: 100%; }
 .global-search { height: 42px; display: flex; align-items: center; gap: 10px; padding: 0 13px; border: 1px solid var(--line-strong); border-radius: 9px; color: var(--subtle); background: #fff; }
 .global-search input { min-width: 0; flex: 1; border: 0; outline: 0; background: transparent; color: var(--ink); }
 .global-search kbd { padding: 1px 5px; border: 0; color: var(--muted); background: transparent; font: 12px inherit; }

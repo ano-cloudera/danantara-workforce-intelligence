@@ -507,11 +507,13 @@ function bindEvents() {
   $("#mobile-menu").onclick = () => $("#sidebar").classList.toggle("open");
   $("#candidate-dialog-close").onclick = () => $("#candidate-dialog").close();
   $("#run-match").onclick = runTalentMatch;
-  $("#skills").addEventListener("keydown", event => {
-    if (event.key === "Enter") {
-      event.preventDefault();
-      runTalentMatch();
-    }
+  ["#skills", "#position", "#talent-company"].forEach(selector => {
+    $(selector).addEventListener("keydown", event => {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        runTalentMatch();
+      }
+    });
   });
   $("#policy-form").onsubmit = runPolicy;
   $("#policy-question").addEventListener("keydown", event => {
