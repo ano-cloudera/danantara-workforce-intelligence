@@ -1,3 +1,4 @@
+import logging
 import uuid
 from urllib.parse import quote
 
@@ -20,6 +21,9 @@ from app.models import (
 from app.orchestration.policy_flow import PolicyRAGFlow
 from app.orchestration.talent_flow import TalentMatchingFlow
 from app.services.pdf_export import build_policy_pdf
+
+
+logger = logging.getLogger(__name__)
 
 
 def build_router(services: dict, settings: Settings) -> APIRouter:
@@ -140,7 +144,18 @@ def build_router(services: dict, settings: Settings) -> APIRouter:
             services["obs"],
             history=history,
         )
-        flow.kickoff()
+        try:
+            flow.kickoff()
+        except Exception as exc:
+            logger.exception("policy_query flow failed request_id=%s", request_id)
+            raise HTTPException(
+                502,
+                detail={
+                    "message": "Policy retrieval or generation failed",
+                    "request_id": request_id,
+                    "error": str(exc),
+                },
+            ) from exc
         sources = [PolicySource(**s) for s in flow.state.sources]
         output_guard = services["guardrails"].validate_policy_output(
             flow.state.answer, len(sources)
