@@ -53,6 +53,16 @@ class DataGateway:
                             candidate_id,
                             type(exc).__name__,
                         )
+                application = next(
+                    (row for row in self._recruitment_pipeline() if row.get("candidate_id") == candidate_id),
+                    None,
+                )
+                if application:
+                    candidate.application_id = application.get("application_id")
+                    candidate.position_id = application.get("position_id")
+                    candidate.application_stage = application.get("stage")
+                    candidate.application_status = application.get("status")
+                    candidate.salary_compliance = application.get("salary_compliance_demo")
                 return candidate
         raise ValueError("Candidate not found")
 
@@ -335,7 +345,7 @@ class DataGateway:
             cur = con.cursor()
             cur.execute(sql, (candidate_id,))
             rows = cur.fetchall()
-        return {name: int(score) for name, score in rows if name and score is not None}
+        return {name: (int(score) if score is not None else 0) for name, score in rows if name}
 
     def _impala_candidate_experiences(self, candidate_id: str) -> list[dict]:
         sql = (

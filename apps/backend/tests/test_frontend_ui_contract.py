@@ -107,6 +107,19 @@ def test_impala_dashboard_summary_falls_back_to_demo_when_table_unreachable(monk
     assert summary["average_match_score"] is not None
 
 
+def test_impala_candidate_skill_proficiency_keeps_skills_with_null_score(monkeypatch):
+    settings = Settings(_env_file=None, data_mode="impala", impala_host="impala.example.com")
+    gateway = DataGateway(settings)
+    connection = _mock_impala_connection(
+        [("Apache Kafka", None), ("Python", 80)]
+    )
+    monkeypatch.setattr(gateway, "_connect", lambda: connection)
+
+    proficiency = gateway._impala_candidate_skill_proficiency("CAND-1")
+
+    assert proficiency == {"Apache Kafka": 0, "Python": 80}
+
+
 def test_impala_candidates_include_profile_detail_columns(monkeypatch):
     settings = Settings(_env_file=None, data_mode="impala", impala_host="impala.example.com")
     gateway = DataGateway(settings)
@@ -164,11 +177,46 @@ def test_get_candidate_enriches_impala_result_with_skills_and_experience(monkeyp
             }
         ],
     )
+    monkeypatch.setattr(gateway, "_recruitment_pipeline", lambda: [])
 
     candidate = gateway.get_candidate("CAND-1")
 
     assert candidate.skill_proficiency == {"Python": 90}
     assert candidate.experiences[0]["employer"] == "Bank Nusantara"
+
+
+def test_get_candidate_fills_application_fields_from_recruitment_pipeline(monkeypatch):
+    settings = Settings(_env_file=None, data_mode="impala", impala_host="impala.example.com")
+    gateway = DataGateway(settings)
+    monkeypatch.setattr(
+        gateway,
+        "list_candidates",
+        lambda: [Candidate(candidate_id="CAND-1", name="Aditya Nugraha", company="BNS")],
+    )
+    monkeypatch.setattr(gateway, "_impala_candidate_skill_proficiency", lambda candidate_id: {})
+    monkeypatch.setattr(gateway, "_impala_candidate_experiences", lambda candidate_id: [])
+    monkeypatch.setattr(
+        gateway,
+        "_recruitment_pipeline",
+        lambda: [
+            {
+                "application_id": "APP-1",
+                "candidate_id": "CAND-1",
+                "position_id": "REQ-BNS-003",
+                "stage": "Final Interview",
+                "status": "Active",
+                "salary_compliance_demo": "WITHIN_BAND",
+            }
+        ],
+    )
+
+    candidate = gateway.get_candidate("CAND-1")
+
+    assert candidate.application_id == "APP-1"
+    assert candidate.position_id == "REQ-BNS-003"
+    assert candidate.application_stage == "Final Interview"
+    assert candidate.application_status == "Active"
+    assert candidate.salary_compliance == "WITHIN_BAND"
 
 
 def test_policy_fallback_uses_supplied_policy_documents():
