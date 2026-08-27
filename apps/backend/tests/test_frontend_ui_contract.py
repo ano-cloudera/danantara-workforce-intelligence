@@ -2,6 +2,7 @@ from pathlib import Path
 from unittest.mock import MagicMock
 
 from app.config import Settings
+from app.models import Candidate
 from app.services.data_gateway import DataGateway
 from app.services.policy_fallback import PolicyFallback
 
@@ -104,6 +105,70 @@ def test_impala_dashboard_summary_falls_back_to_demo_when_table_unreachable(monk
 
     assert summary["recruitment_stages"]
     assert summary["average_match_score"] is not None
+
+
+def test_impala_candidates_include_profile_detail_columns(monkeypatch):
+    settings = Settings(_env_file=None, data_mode="impala", impala_host="impala.example.com")
+    gateway = DataGateway(settings)
+    connection = _mock_impala_connection(
+        [
+            (
+                "CAND-1",
+                "Aditya Nugraha",
+                "BNS",
+                "Senior Data Engineer",
+                7.0,
+                "Jakarta",
+                "S1",
+                "Universitas Indonesia",
+                "Python,SQL",
+                "Data engineer",
+            )
+        ]
+    )
+    monkeypatch.setattr(gateway, "_connect", lambda: connection)
+
+    candidates = gateway.list_candidates()
+
+    assert len(candidates) == 1
+    candidate = candidates[0]
+    assert candidate.current_title == "Senior Data Engineer"
+    assert candidate.city == "Jakarta"
+    assert candidate.education_level == "S1"
+    assert candidate.education_institution == "Universitas Indonesia"
+    assert candidate.skills == ["Python", "SQL"]
+
+
+def test_get_candidate_enriches_impala_result_with_skills_and_experience(monkeypatch):
+    settings = Settings(_env_file=None, data_mode="impala", impala_host="impala.example.com")
+    gateway = DataGateway(settings)
+    monkeypatch.setattr(
+        gateway,
+        "list_candidates",
+        lambda: [Candidate(candidate_id="CAND-1", name="Aditya Nugraha", company="BNS")],
+    )
+    monkeypatch.setattr(
+        gateway, "_impala_candidate_skill_proficiency", lambda candidate_id: {"Python": 90}
+    )
+    monkeypatch.setattr(
+        gateway,
+        "_impala_candidate_experiences",
+        lambda candidate_id: [
+            {
+                "employer": "Bank Nusantara",
+                "role_title": "Data Engineer",
+                "start_date": "2020-01",
+                "end_date": None,
+                "is_current": True,
+                "description": "Built streaming pipelines.",
+            }
+        ],
+    )
+
+    candidate = gateway.get_candidate("CAND-1")
+
+    assert candidate.skill_proficiency == {"Python": 90}
+    assert candidate.experiences[0]["employer"] == "Bank Nusantara"
 
 
 def test_policy_fallback_uses_supplied_policy_documents():

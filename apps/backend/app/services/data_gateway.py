@@ -43,6 +43,16 @@ class DataGateway:
     def get_candidate(self, candidate_id: str) -> Candidate:
         for candidate in self.list_candidates():
             if candidate.candidate_id == candidate_id:
+                if self.settings.data_mode == "impala":
+                    try:
+                        candidate.skill_proficiency = self._impala_candidate_skill_proficiency(candidate_id)
+                        candidate.experiences = self._impala_candidate_experiences(candidate_id)
+                    except Exception as exc:
+                        logger.warning(
+                            "Impala candidate detail unavailable: candidate_id=%s error_type=%s",
+                            candidate_id,
+                            type(exc).__name__,
+                        )
                 return candidate
         raise ValueError("Candidate not found")
 
@@ -268,7 +278,10 @@ class DataGateway:
         return connect(**kwargs)
 
     def _impala_candidates(self, company: str | None) -> list[Candidate]:
-        sql = f"SELECT candidate_id,name,company,years_experience,skills,summary FROM {self.settings.impala_candidate_table}"
+        sql = (
+            "SELECT candidate_id,name,company,current_title,years_experience,city,"
+            f"education_level,education_institution,skills,summary FROM {self.settings.impala_candidate_table}"
+        )
         params: tuple = ()
         if company:
             sql += " WHERE lower(company)=lower(%s)"
@@ -278,7 +291,18 @@ class DataGateway:
             cur.execute(sql, params)
             rows = cur.fetchall()
         result = []
-        for candidate_id, name, company, years, skills, summary in rows:
+        for (
+            candidate_id,
+            name,
+            company,
+            current_title,
+            years,
+            city,
+            education_level,
+            education_institution,
+            skills,
+            summary,
+        ) in rows:
             if not name:
                 logger.warning(
                     "Skipping candidate row with missing name: candidate_id=%s", candidate_id
@@ -294,12 +318,45 @@ class DataGateway:
                     candidate_id=str(candidate_id),
                     name=name,
                     company=company,
+                    current_title=current_title,
                     years_experience=float(years or 0),
+                    city=city,
+                    education_level=education_level,
+                    education_institution=education_institution,
                     skills=parsed_skills,
                     summary=summary or "",
                 )
             )
         return result
+
+    def _impala_candidate_skill_proficiency(self, candidate_id: str) -> dict[str, int]:
+        sql = "SELECT skill_name,proficiency_score FROM danantara.candidate_skills WHERE candidate_id=%s"
+        with self._connect() as con:
+            cur = con.cursor()
+            cur.execute(sql, (candidate_id,))
+            rows = cur.fetchall()
+        return {name: int(score) for name, score in rows if name and score is not None}
+
+    def _impala_candidate_experiences(self, candidate_id: str) -> list[dict]:
+        sql = (
+            "SELECT employer,role_title,start_date,end_date,is_current,description "
+            "FROM danantara.candidate_experience WHERE candidate_id=%s ORDER BY experience_sequence"
+        )
+        with self._connect() as con:
+            cur = con.cursor()
+            cur.execute(sql, (candidate_id,))
+            rows = cur.fetchall()
+        return [
+            {
+                "employer": employer,
+                "role_title": role_title,
+                "start_date": start_date,
+                "end_date": end_date,
+                "is_current": bool(is_current),
+                "description": description,
+            }
+            for employer, role_title, start_date, end_date, is_current, description in rows
+        ]
 
     def _impala_positions(self) -> list[Position]:
         sql = f"SELECT position_id,title,entity,required_skills,preferred_skills,min_years_experience FROM {self.settings.impala_position_table}"

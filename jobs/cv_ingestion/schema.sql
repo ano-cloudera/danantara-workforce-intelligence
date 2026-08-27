@@ -67,7 +67,11 @@ SELECT
   master.candidate_id,
   master.full_name AS name,
   master.entity AS company,
+  master.current_title,
   master.years_experience,
+  master.city,
+  master.education_level,
+  master.education_institution,
   GROUP_CONCAT(skills.skill_name, ',') AS skills,
   master.professional_summary AS summary
 FROM danantara.candidate_master master
@@ -77,5 +81,9 @@ GROUP BY
   master.candidate_id,
   master.full_name,
   master.entity,
+  master.current_title,
   master.years_experience,
+  master.city,
+  master.education_level,
+  master.education_institution,
   master.professional_summary;
