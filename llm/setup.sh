@@ -19,6 +19,16 @@ fi
 
 "$VENV_DIR/bin/python" -m pip --isolated install --no-user --upgrade pip uv
 "$VENV_DIR/bin/uv" pip install --python "$VENV_DIR/bin/python" -r requirements.txt
+
+# ray[default] pulls in opencensus for the dashboard agent's metrics
+# exporter. opencensus's protobuf-generated stubs require protobuf>=5.26,
+# which conflicts with the protobuf<5 pin Ray Serve itself needs
+# (ray-project/ray#54849). Uninstalling opencensus cleanly (a real
+# ModuleNotFoundError, not a broken import) makes Ray's dashboard agent
+# fall back to minimal mode and skip metrics export instead of crashing
+# the whole raylet.
+"$VENV_DIR/bin/python" -m pip uninstall -y --no-input opencensus opencensus-context || true
+
 "$VENV_DIR/bin/python" -m pip check
 
 echo "Setup complete. Activate with: source $VENV_DIR/bin/activate"
