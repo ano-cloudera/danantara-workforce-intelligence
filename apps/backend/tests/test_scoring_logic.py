@@ -71,6 +71,25 @@ def test_skills_keywords_boost_score_without_shrinking_skill_denominator():
     assert keyword in [k.lower() for k in boosted_item["keyword_matches"]]
 
 
+def test_get_position_by_title_raises_when_ambiguous_across_entities():
+    gateway = DataGateway(Settings(_env_file=None, data_mode="demo"))
+
+    try:
+        gateway.get_position(title="Senior Data Engineer")
+        assert False, "expected ValueError for an ambiguous title"
+    except ValueError as exc:
+        assert "BNS" in str(exc) and "ENP" in str(exc)
+
+
+def test_get_position_by_title_and_entity_resolves_uniquely():
+    gateway = DataGateway(Settings(_env_file=None, data_mode="demo"))
+
+    position = gateway.get_position(title="Senior Data Engineer", entity="ENP")
+
+    assert position.position_id == "REQ-ENP-002"
+    assert position.entity == "ENP"
+
+
 def test_impala_connection_uses_configured_http_transport(monkeypatch):
     captured = {}
     dbapi = ModuleType("impala.dbapi")

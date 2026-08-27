@@ -175,12 +175,9 @@ function renderRecentMatches() {
   refreshIcons();
 }
 
-function positionLabel(position) {
-  return position.entity ? `${position.title} — ${position.entity}` : position.title;
-}
-
 function populateFilters() {
-  const positionOptions = state.positions.map(position => `<option value="${escapeHtml(position.position_id)}">${escapeHtml(positionLabel(position))}</option>`).join("");
+  const positionTitles = [...new Set(state.positions.map(position => position.title))];
+  const positionOptions = positionTitles.map(title => `<option value="${escapeHtml(title)}">${escapeHtml(title)}</option>`).join("");
   $("#position").innerHTML = positionOptions || "<option value=''>No positions available</option>";
   $("#candidate-position").innerHTML = state.positions.map(position => `<option value="${escapeHtml(position.title)}">${escapeHtml(position.title)}</option>`).join("") || "<option value=''>No positions available</option>";
   const talentEntities = [...new Set(state.candidates.map(candidate => candidate.company).filter(Boolean))].sort();
@@ -244,15 +241,24 @@ function renderTalent(matches) {
 }
 
 async function runTalentMatch() {
-  const button = $("#run-match");
   const container = $("#talent-results");
+  const selectedTitle = $("#position").value;
+  const selectedCompany = $("#talent-company").value;
+  const matchingEntities = [...new Set(
+    state.positions.filter(position => position.title === selectedTitle).map(position => position.entity).filter(Boolean)
+  )];
+  if (matchingEntities.length > 1 && !selectedCompany) {
+    notify(`"${selectedTitle}" exists in multiple entities (${matchingEntities.join(", ")}). Select a Company/Entity first.`, "error");
+    return;
+  }
+  const button = $("#run-match");
   button.disabled = true;
   button.innerHTML = `${icon("send")} Matching...`;
   container.innerHTML = `<div class="card empty-state"><div class="skeleton wide"></div><p>Running governed candidate scoring...</p></div>`;
   try {
     const data = await api.post("talent/match", {
-      position_id: $("#position").value || null,
-      company: $("#talent-company").value || null,
+      position_title: selectedTitle || null,
+      company: selectedCompany || null,
       skills_keywords: $("#skills").value.split(",").map(item => item.trim()).filter(Boolean),
       top_n: 5,
     });

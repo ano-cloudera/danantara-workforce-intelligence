@@ -219,14 +219,27 @@ class DataGateway:
             "total": sum(min(len(values), limit) for values in groups.values()),
         }
 
-    def get_position(self, position_id: str | None = None, title: str | None = None) -> Position:
+    def get_position(
+        self, position_id: str | None = None, title: str | None = None, entity: str | None = None
+    ) -> Position:
         positions = self.list_positions()
         for p in positions:
             if position_id and p.position_id == position_id:
                 return p
-            if title and p.title.lower() == title.lower():
-                return p
         if title:
+            matches = [p for p in positions if p.title.lower() == title.lower()]
+            if entity:
+                matches = [p for p in matches if (p.entity or "").lower() == entity.lower()]
+            if len(matches) == 1:
+                return matches[0]
+            if len(matches) > 1:
+                entities = sorted({p.entity for p in matches if p.entity})
+                raise ValueError(
+                    f'"{title}" exists in multiple entities ({", ".join(entities)}); '
+                    "specify an entity to disambiguate"
+                )
+            if matches:
+                return matches[0]
             return Position(
                 position_id="CUSTOM", title=title, required_skills=[], preferred_skills=[]
             )

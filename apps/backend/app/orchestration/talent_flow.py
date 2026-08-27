@@ -24,7 +24,7 @@ class TalentMatchingFlow(Flow[TalentState]):
     @start()
     def load_and_score(self):
         req = TalentMatchRequest(**self.state.request)
-        position = self.data_gateway.get_position(req.position_id, req.position_title)
+        position = self.data_gateway.get_position(req.position_id, req.position_title, req.company)
         keywords = [k.lower().strip() for k in req.skills_keywords if k.strip()]
         candidates = self.data_gateway.list_candidates(req.company)
         required = {s.lower(): s for s in position.required_skills}
