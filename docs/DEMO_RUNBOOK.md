@@ -32,6 +32,9 @@ Before demonstrating a newly uploaded CV, run the scheduled ingestion Job once w
 `CV_JOB_MAX_OBJECTS=1`. Confirm a `cv-ingestion-completed` event, the Iceberg audit row, and the
 candidate point in `QDRANT_CANDIDATE_COLLECTION`; then refresh the backend candidate endpoint.
 
+For the governed CAI path, verify `S3_ACCESS_MODE=datalake`, `s3a://` CV URIs, a completed IDBroker
+mapping sync, the scoped Ranger `cm_s3` policy, and the Spark 3 runtime add-on before the dry-run.
+
 1. Confirm all four Applications received `CDSW_APP_PORT` and bind to `127.0.0.1`.
 2. Confirm no fixed exposed port is configured in CAI Application variables.
 3. Verify `BACKEND_BASE_URL`, `QDRANT_BASE_URL`, and `OBSERVABILITY_BASE_URL` use the Application

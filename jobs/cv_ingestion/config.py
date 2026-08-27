@@ -18,6 +18,9 @@ def _bool(name: str, default: bool) -> bool:
 
 @dataclass(frozen=True)
 class JobSettings:
+    storage_access_mode: str
+    hadoop_fs_command: str
+    storage_command_timeout_seconds: float
     aws_region: str
     input_uri: str
     processed_uri: str
@@ -51,6 +54,11 @@ class JobSettings:
     @classmethod
     def from_env(cls) -> "JobSettings":
         settings = cls(
+            storage_access_mode=os.getenv("S3_ACCESS_MODE", "boto3").strip().lower(),
+            hadoop_fs_command=os.getenv("HADOOP_FS_COMMAND", "hadoop fs").strip(),
+            storage_command_timeout_seconds=float(
+                os.getenv("S3_COMMAND_TIMEOUT_SECONDS", "120")
+            ),
             aws_region=os.getenv("AWS_REGION", "ap-southeast-3"),
             input_uri=_required("S3_CV_INPUT_URI"),
             processed_uri=_required("S3_CV_PROCESSED_URI"),
@@ -95,14 +103,22 @@ class JobSettings:
         return settings
 
     def validate(self) -> None:
+        if self.storage_access_mode not in {"boto3", "datalake"}:
+            raise ValueError("S3_ACCESS_MODE must be boto3 or datalake")
+        if not self.hadoop_fs_command:
+            raise ValueError("HADOOP_FS_COMMAND must not be empty")
+        if self.storage_command_timeout_seconds <= 0:
+            raise ValueError("S3_COMMAND_TIMEOUT_SECONDS must be positive")
         for name, uri in (
             ("S3_CV_INPUT_URI", self.input_uri),
             ("S3_CV_PROCESSED_URI", self.processed_uri),
             ("S3_CV_FAILED_URI", self.failed_uri),
         ):
             parsed = urlsplit(uri)
-            if parsed.scheme != "s3" or not parsed.netloc:
-                raise ValueError(f"{name} must be an s3:// URI")
+            allowed_schemes = {"s3"} if self.storage_access_mode == "boto3" else {"s3", "s3a"}
+            if parsed.scheme not in allowed_schemes or not parsed.netloc:
+                expected = "s3://" if self.storage_access_mode == "boto3" else "s3a:// or s3://"
+                raise ValueError(f"{name} must be an {expected} URI")
         if self.max_objects < 1 or self.max_objects > 1000:
             raise ValueError("CV_JOB_MAX_OBJECTS must be between 1 and 1000")
         if self.gemini_embed_dim < 1:
@@ -114,3 +130,8 @@ class JobSettings:
     def split_s3_uri(uri: str) -> tuple[str, str]:
         parsed = urlsplit(uri)
         return parsed.netloc, parsed.path.lstrip("/")
+
+    @staticmethod
+    def as_s3a_uri(uri: str) -> str:
+        parsed = urlsplit(uri)
+        return f"s3a://{parsed.netloc}/{parsed.path.lstrip('/')}"

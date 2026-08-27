@@ -42,6 +42,9 @@ architecture:
   structured_data: cloudera-data-warehouse-impala
   transformation: cloudera-data-engineering
   cai_cv_ingestion_fallback: jobs/cv_ingestion/run_cai_job.py
+  cai_cv_storage_access:
+    governed: idbroker-ranger-s3a
+    local_fallback: boto3
   dashboard: cloudera-data-visualization
   frontend_experience: responsive-six-page-enterprise-shell
   frontend_icons: lucide-react-named-imports
@@ -62,6 +65,7 @@ locked_decisions:
   - BMAD is used selectively; existing BMAD artifacts do not force all changes through BMAD.
   - Policy conversation and feedback are Application state; policy documents and structured HR data remain governed sources.
   - The scheduled CAI CV ingestion Job is a PoC fallback, not a fifth Application or a replacement for NiFi/CDE.
+  - The CAI CV Job uses governed Hadoop/S3A access in Workbench; boto3 is only a local or scoped-role fallback.
 pending_environment_tasks:
   - configure Gemini credentials
   - create CAI application URLs
@@ -70,5 +74,5 @@ pending_environment_tasks:
   - configure CDW Impala credentials
   - configure NiFi ingestion URL
   - configure optional Langfuse
-  - validate Ranger policies
+  - validate the synchronized Ranger/IDBroker CV policy with a CAI S3A dry-run
   - validate non-interactive CDW authentication and CAI CV ingestion Job dry-run

@@ -48,6 +48,9 @@
   is completed. It uses S3 URI plus ETag idempotency, writes Iceberg through Impala, indexes only a
   sanitized professional projection in `QDRANT_CANDIDATE_COLLECTION`, and emits PII-free pipeline
   events. It is not a fifth Application and does not replace NiFi/CDE as the target architecture.
+- The CAI CV Job supports a governed `datalake` storage mode through Hadoop/S3A so IDBroker and
+  Ranger remain authoritative. Direct `boto3` access is retained only as a local or explicitly
+  scoped workload-role fallback.
 
 ## Environment-specific tasks still required
 
@@ -64,7 +67,8 @@
 - [ ] Configure NiFi webhook/landing integration and change `INGEST_MODE=nifi` if required.
 - [ ] Configure optional Langfuse credentials if enterprise LLM tracing is required.
 - [ ] Replace demo candidate/policy data with customer-provided PoC data.
-- [ ] Validate Ranger permissions for the service/user identities used by the PoC.
+- [x] Create and synchronize the scoped Ranger/IDBroker mapping for CAI CV prefixes.
+- [ ] Validate the CAI CV dry-run through the governed S3A adapter.
 
 ## Next implementation sequence
 

@@ -156,6 +156,11 @@ The optional PoC CV ingestion fallback runs as a scheduled Workbench **Job**, no
 Application. Use `jobs/cv_ingestion/run_cai_job.py`; see `jobs/cv_ingestion/README.md` for its S3,
 Iceberg/Impala, Qdrant and observability configuration.
 
+In Cloudera AI, set `S3_ACCESS_MODE=datalake`, use `s3a://` CV prefixes, and enable the Spark 3
+runtime add-on so object access follows the synchronized IDBroker mapping and Ranger `cm_s3`
+policy. `S3_ACCESS_MODE=boto3` remains available for local development or a separately scoped AWS
+workload role.
+
 Detailed settings are in `docs/CLOUDERA_AI_DEPLOYMENT.md`.
 
 ### CAI port and service URL standard

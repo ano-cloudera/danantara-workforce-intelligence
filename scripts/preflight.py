@@ -46,6 +46,7 @@ inter_app_url_vars = (
 )
 missing_inter_app_urls = [name for name in inter_app_url_vars if f"{name}=" not in env_example]
 cv_job_vars = (
+    "S3_ACCESS_MODE",
     "S3_CV_INPUT_URI",
     "S3_CV_PROCESSED_URI",
     "S3_CV_FAILED_URI",

@@ -13,7 +13,7 @@ from jobs.cv_ingestion.adapters import (  # noqa: E402
     GeminiExtractor,
     ObservabilityAdapter,
     QdrantAdapter,
-    S3Adapter,
+    build_storage_adapter,
 )
 from jobs.cv_ingestion.config import JobSettings  # noqa: E402
 from jobs.cv_ingestion.impala_repository import ImpalaRepository  # noqa: E402
@@ -29,7 +29,7 @@ def main() -> int:
     settings = JobSettings.from_env()
     pipeline = CvIngestionPipeline(
         settings,
-        S3Adapter(settings),
+        build_storage_adapter(settings),
         GeminiExtractor(settings),
         ImpalaRepository(settings),
         QdrantAdapter(settings),

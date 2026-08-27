@@ -4,6 +4,8 @@ import hashlib
 import io
 import json
 import logging
+import shlex
+import subprocess
 import time
 import uuid
 from datetime import datetime, timezone
@@ -60,6 +62,85 @@ class S3Adapter:
 
     def delete(self, item: S3Object) -> None:
         self.client.delete_object(Bucket=item.bucket, Key=item.key)
+
+
+class DataLakeS3AAdapter:
+    """Use the CAI Hadoop filesystem so S3A access is governed by IDBroker/Ranger."""
+
+    def __init__(self, settings: JobSettings, runner=None):
+        self.settings = settings
+        self.command = shlex.split(settings.hadoop_fs_command)
+        self.runner = runner or subprocess.run
+
+    def _execute(self, *arguments: str) -> bytes:
+        completed = self.runner(
+            [*self.command, *arguments],
+            check=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            timeout=self.settings.storage_command_timeout_seconds,
+        )
+        return completed.stdout
+
+    @staticmethod
+    def _fingerprint(path: str, size: int, modified_date: str, modified_time: str) -> str:
+        value = f"{path}\0{size}\0{modified_date}\0{modified_time}".encode()
+        return hashlib.sha256(value).hexdigest()
+
+    def list_pdf_objects(self) -> list[S3Object]:
+        uri = self.settings.as_s3a_uri(self.settings.input_uri)
+        try:
+            output = self._execute("-ls", "-R", uri).decode("utf-8", errors="replace")
+        except subprocess.CalledProcessError as exc:
+            stderr = (exc.stderr or b"").decode("utf-8", errors="replace")
+            if "No such file or directory" in stderr or "does not exist" in stderr:
+                return []
+            raise
+
+        objects: list[S3Object] = []
+        for line in output.splitlines():
+            fields = line.split(None, 7)
+            if len(fields) != 8 or fields[0].startswith("d"):
+                continue
+            size = int(fields[4])
+            path = fields[7]
+            if not path.lower().endswith(".pdf"):
+                continue
+            bucket, key = self.settings.split_s3_uri(path)
+            objects.append(
+                S3Object(
+                    bucket=bucket,
+                    key=key,
+                    etag=self._fingerprint(path, size, fields[5], fields[6]),
+                    size=size,
+                )
+            )
+            if len(objects) >= self.settings.max_objects:
+                break
+        return objects
+
+    def read(self, item: S3Object) -> bytes:
+        return self._execute("-cat", self.settings.as_s3a_uri(item.uri))
+
+    def copy_to(self, item: S3Object, destination_uri: str) -> S3Object:
+        destination_bucket, destination_prefix = self.settings.split_s3_uri(destination_uri)
+        destination_key = f"{destination_prefix.rstrip('/')}/{item.key.rsplit('/', 1)[-1]}"
+        destination_directory = self.settings.as_s3a_uri(destination_uri).rstrip("/")
+        destination_path = self.settings.as_s3a_uri(
+            f"s3://{destination_bucket}/{destination_key}"
+        )
+        self._execute("-mkdir", "-p", destination_directory)
+        self._execute("-cp", "-f", self.settings.as_s3a_uri(item.uri), destination_path)
+        return S3Object(destination_bucket, destination_key, item.etag, item.size)
+
+    def delete(self, item: S3Object) -> None:
+        self._execute("-rm", "-f", self.settings.as_s3a_uri(item.uri))
+
+
+def build_storage_adapter(settings: JobSettings):
+    if settings.storage_access_mode == "datalake":
+        return DataLakeS3AAdapter(settings)
+    return S3Adapter(settings)
 
 
 class GeminiExtractor:

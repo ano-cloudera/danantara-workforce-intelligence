@@ -19,6 +19,8 @@ and emits sanitized operational events to the observability Application.
 ## Acceptance criteria
 
 - S3 input, processed and failed prefixes are configurable.
+- Storage access is selectable: `datalake` uses the CAI Hadoop/S3A path governed by
+  IDBroker/Ranger, while `boto3` remains the local-development fallback.
 - An S3 URI plus ETag is the idempotency key; completed objects are skipped.
 - Candidate master, skill, experience and ingestion-audit records are written to Iceberg tables
   through configurable Impala connectivity.
@@ -33,8 +35,9 @@ and emits sanitized operational events to the observability Application.
 
 1. Add an independent `jobs/cv_ingestion` package with configuration, adapters and orchestration.
 2. Add Iceberg DDL and a CAI Job entrypoint.
-3. Document Job environment variables and Workbench scheduling.
-4. Add fake-adapter tests and repository preflight coverage.
+3. Add a governed S3A adapter without removing the boto3 fallback.
+4. Document Job environment variables and Workbench scheduling.
+5. Add fake-adapter tests and repository preflight coverage.
 
 ## Verification
 

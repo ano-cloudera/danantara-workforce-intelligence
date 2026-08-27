@@ -1,5 +1,7 @@
+import subprocess
 from types import SimpleNamespace
 
+from jobs.cv_ingestion.adapters import DataLakeS3AAdapter
 from jobs.cv_ingestion.models import CandidateProfile, Experience, S3Object, Skill
 from jobs.cv_ingestion.pipeline import CvIngestionPipeline
 
@@ -146,3 +148,81 @@ def test_qdrant_projection_excludes_direct_contact_details_and_name():
     assert "+621234567" not in text
     assert "Data Engineer" in text
     assert "Python" in text
+
+
+def datalake_settings():
+    return SimpleNamespace(
+        hadoop_fs_command="hadoop fs",
+        storage_command_timeout_seconds=120,
+        input_uri="s3a://bucket/data/cv-collect/",
+        max_objects=2,
+        as_s3a_uri=lambda uri: uri.replace("s3://", "s3a://", 1),
+        split_s3_uri=lambda uri: (
+            uri.split("://", 1)[1].split("/", 1)[0],
+            uri.split("://", 1)[1].split("/", 1)[1],
+        ),
+    )
+
+
+def test_datalake_adapter_lists_and_reads_with_hadoop_s3a():
+    calls = []
+
+    def runner(command, **kwargs):
+        calls.append(command)
+        if "-ls" in command:
+            stdout = (
+                b"-rw-r--r-- 1 user group 12 2026-08-27 10:00 "
+                b"s3a://bucket/data/cv-collect/candidate.pdf\n"
+                b"-rw-r--r-- 1 user group 4 2026-08-27 10:00 "
+                b"s3a://bucket/data/cv-collect/ignore.txt\n"
+            )
+        else:
+            stdout = b"candidate cv"
+        return subprocess.CompletedProcess(command, 0, stdout=stdout, stderr=b"")
+
+    adapter = DataLakeS3AAdapter(datalake_settings(), runner=runner)
+    objects = adapter.list_pdf_objects()
+
+    assert len(objects) == 1
+    assert objects[0].uri == "s3://bucket/data/cv-collect/candidate.pdf"
+    assert adapter.read(objects[0]) == b"candidate cv"
+    assert calls[0] == [
+        "hadoop",
+        "fs",
+        "-ls",
+        "-R",
+        "s3a://bucket/data/cv-collect/",
+    ]
+
+
+def test_datalake_adapter_archives_and_deletes_with_hadoop_s3a():
+    calls = []
+
+    def runner(command, **kwargs):
+        calls.append(command)
+        return subprocess.CompletedProcess(command, 0, stdout=b"", stderr=b"")
+
+    adapter = DataLakeS3AAdapter(datalake_settings(), runner=runner)
+    item = S3Object("bucket", "data/cv-collect/candidate.pdf", "fingerprint", 12)
+    copied = adapter.copy_to(item, "s3a://bucket/data/cv-processed/")
+    adapter.delete(item)
+
+    assert copied.uri == "s3://bucket/data/cv-processed/candidate.pdf"
+    assert calls == [
+        ["hadoop", "fs", "-mkdir", "-p", "s3a://bucket/data/cv-processed"],
+        [
+            "hadoop",
+            "fs",
+            "-cp",
+            "-f",
+            "s3a://bucket/data/cv-collect/candidate.pdf",
+            "s3a://bucket/data/cv-processed/candidate.pdf",
+        ],
+        [
+            "hadoop",
+            "fs",
+            "-rm",
+            "-f",
+            "s3a://bucket/data/cv-collect/candidate.pdf",
+        ],
+    ]
