@@ -106,8 +106,13 @@
   populates it yet — see `config/data-contracts.md`.
 
 - `danantara.recruitment_pipeline` and `danantara.v_recruitment_pipeline_api` have been created in the
-  target CDW/Impala database and seeded with 3 PoC rows (2026-08-27). Dashboard summary path is
-  ready to validate live once the backend is restarted with `DATA_MODE=impala`.
+  target CDW/Impala database and seeded with 3 PoC rows (2026-08-27). `GET /dashboard/summary` has
+  been validated live against real Impala data in CAI: correct stage/salary-compliance/match-score
+  aggregation, 24 real candidates from `v_candidates_api`, no fallback to the demo fixture.
+- Stray non-CV rows (filenames like `README.md`/`manifest.csv` with all other fields NULL) were found
+  in `danantara.candidate_master` and manually deleted; not caused by the CV ingestion job, which has
+  always filtered to `.pdf` only. `_impala_candidates`/`_impala_positions` now skip (and log) any row
+  with a missing required field instead of crashing the whole dashboard endpoint (commit `9b26d26`).
 - Cloudera Data Visualization is intended to read the same governed views (`v_recruitment_pipeline_api`,
   `v_candidates_api`, `curated_job_positions`) as the in-app dashboard — one shared source of truth,
   no separate CDV-only schema. Deferred until frontend QA below is complete.

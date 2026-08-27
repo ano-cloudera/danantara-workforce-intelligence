@@ -98,7 +98,9 @@ completed_environment_tasks:
   - validated Ranger policy prefixes and the CAI policy ingestion Job from schema init through real run (Qdrant + Impala writes confirmed in CAI, 2026-08-27)
   - validated /api/v1/policy/query (with and without entity filters) and governed citation download against real ingested documents in CAI (2026-08-27)
   - implemented Impala-backed dashboard/summary data path with demo-fixture fallback (2026-08-27)
-  - created and seeded danantara.recruitment_pipeline + v_recruitment_pipeline_api in the target CDW with 3 PoC rows (2026-08-27); live validation via GET /dashboard/summary after backend restart still pending
+  - created and seeded danantara.recruitment_pipeline + v_recruitment_pipeline_api in the target CDW with 3 PoC rows (2026-08-27)
+  - validated GET /dashboard/summary live in CAI against real Impala data (24 candidates, correct stage/salary-compliance/match-score aggregation, no demo-fixture fallback) (2026-08-27)
+  - deleted stray non-CV rows (README.md, manifest.csv) from candidate_master and hardened _impala_candidates/_impala_positions to skip rows with missing required fields instead of crashing (2026-08-27)
 next_backlog:
   - validate frontend candidate form and PDF uploads end-to-end
   - full frontend QA pass confirming every page/action actually succeeds against the live backend, before CDV or NiFi/CDE work
