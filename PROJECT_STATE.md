@@ -54,6 +54,8 @@
 - CV ingestion normalizes the final entity once before any sink write. An explicit extracted entity
   is preserved; when absent, identifiers such as `CAND-BNS-*` and `CAND-ENP-*` provide the
   deterministic fallback used by both Impala and Qdrant.
+- Backend Impala connectivity uses the same configurable HTTP transport and `cliservice` path as
+  the CAI ingestion Job, allowing CDW port 443 without embedding customer endpoints.
 
 ## Environment-specific tasks still required
 

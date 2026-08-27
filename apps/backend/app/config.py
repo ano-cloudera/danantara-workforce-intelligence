@@ -54,6 +54,8 @@ class Settings(BaseSettings):
     impala_user: str | None = None
     impala_password: str | None = None
     impala_use_ssl: bool = True
+    impala_transport_mode: Literal["binary", "http"] = "http"
+    impala_http_path: str = "cliservice"
     impala_candidate_table: str = "curated_candidate_profiles"
     impala_position_table: str = "curated_job_positions"
 

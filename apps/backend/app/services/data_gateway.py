@@ -189,15 +189,19 @@ class DataGateway:
 
         if not self.settings.impala_host:
             raise RuntimeError("IMPALA_HOST is required when DATA_MODE=impala")
-        return connect(
-            host=self.settings.impala_host,
-            port=self.settings.impala_port,
-            database=self.settings.impala_database,
-            auth_mechanism=self.settings.impala_auth_mechanism,
-            user=self.settings.impala_user,
-            password=self.settings.impala_password,
-            use_ssl=self.settings.impala_use_ssl,
-        )
+        kwargs = {
+            "host": self.settings.impala_host,
+            "port": self.settings.impala_port,
+            "database": self.settings.impala_database,
+            "auth_mechanism": self.settings.impala_auth_mechanism,
+            "user": self.settings.impala_user,
+            "password": self.settings.impala_password,
+            "use_ssl": self.settings.impala_use_ssl,
+        }
+        if self.settings.impala_transport_mode == "http":
+            kwargs["use_http_transport"] = True
+            kwargs["http_path"] = self.settings.impala_http_path
+        return connect(**kwargs)
 
     def _impala_candidates(self, company: str | None) -> list[Candidate]:
         sql = f"SELECT candidate_id,name,company,years_experience,skills,summary FROM {self.settings.impala_candidate_table}"

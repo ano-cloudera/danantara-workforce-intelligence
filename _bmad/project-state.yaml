@@ -67,6 +67,7 @@ locked_decisions:
   - The scheduled CAI CV ingestion Job is a PoC fallback, not a fifth Application or a replacement for NiFi/CDE.
   - The CAI CV Job uses governed Hadoop/S3A access in Workbench; boto3 is only a local or scoped-role fallback.
   - CV entity normalization is shared across Impala and Qdrant; explicit values win and CAND entity codes are the deterministic fallback.
+  - Backend and CAI Job Impala clients share configurable HTTP transport and HTTP path settings for CDW port 443.
 pending_environment_tasks:
   - configure Gemini credentials
   - create CAI application URLs
