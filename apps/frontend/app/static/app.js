@@ -401,7 +401,7 @@ function resetPolicyChat() {
   state.policySessionId = null;
   state.policyRequestId = null;
   state.policySources = [];
-  $("#policy-conversation").innerHTML = `<div class="policy-welcome"><span class="stat-icon purple">${icon("book-open-check", "stat")}</span><h2>Hi, I'm Policy Intelligence</h2><p>I answer workforce-policy questions grounded in the Group policy, PKB, and salary framework documents supplied for this PoC — every answer cites the source section it came from, and I flag anything that needs human review before you act on it.</p><p class="policy-welcome-hint">Pick a source filter above, then ask a question.</p></div>`;
+  $("#policy-conversation").innerHTML = `<div class="policy-welcome"><span class="stat-icon purple">${icon("book-open-check", "stat")}</span><h2>Hi, I'm Policy Intelligence</h2><p>I answer workforce policy questions using the Group policy, PKB, and salary documents supplied for this PoC, and I cite the source for every answer.</p><p class="policy-welcome-hint">Pick a source filter above, then ask a question.</p></div>`;
   renderPolicySources([]);
   refreshIcons();
 }

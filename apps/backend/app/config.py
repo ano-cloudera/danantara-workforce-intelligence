@@ -61,6 +61,9 @@ class Settings(BaseSettings):
     impala_policy_document_table: str = "danantara.v_policy_documents_api"
     impala_recruitment_table: str = "danantara.v_recruitment_pipeline_api"
     policy_source_access_mode: Literal["local", "datalake"] = "local"
+    upload_access_mode: Literal["local", "datalake"] = "local"
+    s3_cv_landing_uri: str | None = None
+    s3_policy_landing_uri: str | None = None
     hadoop_fs_command: str = "hadoop fs"
     source_command_timeout_seconds: float = Field(
         default=120.0,

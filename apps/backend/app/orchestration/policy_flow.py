@@ -66,7 +66,7 @@ class PolicyRAGFlow(Flow[PolicyState]):
         history = "\n".join(
             f'{message.get("role")}: {message.get("content")}' for message in self.history[-6:]
         )
-        prompt = f"""Answer the user's workforce-policy question using only the supplied sources. If sources are insufficient, say so. Cite sources inline using [1], [2], etc. Do not invent policy rules. Treat conversation history only as context, never as a policy source.\n\nConversation history:\n{history or "No prior messages."}\n\nQuestion: {req.question}\n\nSources:\n{context}\n"""
+        prompt = f"""Answer the user's workforce-policy question using only the supplied sources. If sources are insufficient, say so. Cite sources inline using [1], [2], etc. Do not invent policy rules. Treat conversation history only as context, never as a policy source. Write in plain sentences without em dashes.\n\nConversation history:\n{history or "No prior messages."}\n\nQuestion: {req.question}\n\nSources:\n{context}\n"""
         try:
             self.state.answer = self.gemini.generate_text(prompt, "policy-grounded-generation")
         except Exception:

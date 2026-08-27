@@ -174,7 +174,8 @@ Message: {payload.question}"""
         try:
             answer = services["gemini"].generate_text(
                 f"Reply briefly and warmly as Policy Intelligence, a workforce-policy assistant for Danantara. "
-                f"Do not answer any policy question here -- just respond to this greeting/small-talk message: {payload.question}",
+                f"Do not answer any policy question here, just respond to this greeting/small-talk message. "
+                f"Write in plain sentences without em dashes. Message: {payload.question}",
                 "policy-smalltalk-reply",
             ).strip()
         except Exception:

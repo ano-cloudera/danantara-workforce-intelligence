@@ -99,7 +99,7 @@ class TalentMatchingFlow(Flow[TalentState]):
         if not scored:
             self.state.final = []
             return []
-        prompt = f"""You are an HR talent analyst. Explain the following deterministic candidate ranking without changing any scores. Be concise, evidence-based and explicitly mention important skill gaps. Return JSON array with candidate_id and reasoning only.\nPosition: {json.dumps(self.state.position)}\nCandidates: {json.dumps(scored)}\n"""
+        prompt = f"""You are an HR talent analyst. Explain the following deterministic candidate ranking without changing any scores. Be concise, evidence-based and explicitly mention important skill gaps. Write in plain sentences without em dashes. Return JSON array with candidate_id and reasoning only.\nPosition: {json.dumps(self.state.position)}\nCandidates: {json.dumps(scored)}\n"""
         try:
             rows = self.gemini.generate_json(prompt, "talent-reasoning")
             reason_map = {str(x.get("candidate_id")): str(x.get("reasoning", "")) for x in rows if isinstance(x, dict)} if isinstance(rows, list) else {}

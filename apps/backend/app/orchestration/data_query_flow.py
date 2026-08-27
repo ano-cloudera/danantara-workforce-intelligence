@@ -144,7 +144,7 @@ Question: {self.state.question}"""
         if not result or not result.get("summary"):
             self.state.answer = ""
             return ""
-        prompt = f"""You are a workforce-data assistant. In one or two short sentences, summarize this query result for an HR user. Do not invent numbers beyond what is given.\nQuestion: {self.state.question}\nResult: {json.dumps(result["summary"], default=str)}"""
+        prompt = f"""You are a workforce-data assistant. In one or two short sentences, summarize this query result for an HR user. Do not invent numbers beyond what is given. Write in plain sentences without em dashes.\nQuestion: {self.state.question}\nResult: {json.dumps(result["summary"], default=str)}"""
         try:
             self.state.answer = self.gemini.generate_text(prompt, "data-query-narration").strip()
         except Exception:
