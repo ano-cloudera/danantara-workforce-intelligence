@@ -158,3 +158,28 @@ def test_candidates_by_month_falls_back_to_empty_on_impala_error(monkeypatch):
     monkeypatch.setattr(gateway, "_connect", broken_connect)
 
     assert gateway.candidates_by_month() == []
+
+
+def test_policy_query_response_kind_defaults_to_grounded():
+    from app.models import GuardrailResult, PolicyQueryResponse
+
+    response = PolicyQueryResponse(
+        request_id="r1", session_id="s1", answer="answer", sources=[],
+        guardrail=GuardrailResult(allowed=True, reasons=[]),
+    )
+
+    assert response.response_kind == "grounded"
+
+
+def test_policy_query_response_accepts_conversational_kind_with_no_chart_or_sources():
+    from app.models import GuardrailResult, PolicyQueryResponse
+
+    response = PolicyQueryResponse(
+        request_id="r1", session_id="s1", answer="Hello!", sources=[],
+        guardrail=GuardrailResult(allowed=True, reasons=[]),
+        response_kind="conversational",
+    )
+
+    assert response.response_kind == "conversational"
+    assert response.chart is None
+    assert response.sources == []

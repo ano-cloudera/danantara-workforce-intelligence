@@ -310,9 +310,15 @@ function appendPolicyMessage(role, content, data = null) {
   } else {
     const sources = data?.sources || [];
     const chart = data?.chart;
+    const responseKind = data?.response_kind || "grounded";
+    const badge = responseKind === "conversational"
+      ? `<span class="badge">Assistant</span>`
+      : responseKind === "data"
+        ? `<span class="badge success">Live data</span>`
+        : `<span class="badge success">Grounded response</span>`;
     const citationLinks = sources.map((source, index) => `<a href="#citation-${index + 1}" class="citation-chip">[${index + 1}] ${escapeHtml(source.entity || "Source")}</a>`).join("");
     const chartBlock = chart?.items?.length ? `<div class="message-chart"><h4>${escapeHtml(chart.title)}</h4><div class="bar-chart">${bars(chart.items)}</div></div>` : "";
-    const citationsBlock = (sources.length || !chart) ? `<div class="message-citations">${citationLinks || "<span class='muted'>No citations returned</span>"}</div>` : "";
+    const citationsBlock = responseKind === "grounded" ? `<div class="message-citations">${citationLinks || "<span class='muted'>No citations returned</span>"}</div>` : "";
     const suggestions = (data?.suggested_questions || []).map(question => `<button type="button" class="follow-up" data-question="${escapeHtml(question)}">${escapeHtml(question)}</button>`).join("");
     const actions = data?.request_id ? `<div class="message-actions">
         <button type="button" data-action="copy" aria-label="Copy answer">${icon("copy")} Copy</button>
@@ -322,7 +328,7 @@ function appendPolicyMessage(role, content, data = null) {
       </div>` : "";
     article.dataset.requestId = data?.request_id || "";
     row.innerHTML = `<span class="chat-avatar assistant">${icon("book-open-check")}</span>`;
-    article.innerHTML = `<div class="message-label">Policy Intelligence <span class="badge success">Grounded response</span></div>
+    article.innerHTML = `<div class="message-label">Policy Intelligence ${badge}</div>
       <div class="message-body answer-text">${escapeHtml(content)}</div>
       ${chartBlock}
       ${citationsBlock}
@@ -554,11 +560,6 @@ function bindEvents() {
   $("#candidate-form").onsubmit = submitCandidate;
   $("#upload-focus").onclick = () => $("#upload-form").scrollIntoView({ behavior: "smooth", block: "center" });
   $("#candidate-focus").onclick = () => $("#candidate-registration").scrollIntoView({ behavior: "smooth", block: "center" });
-  $("#open-cdv").onclick = () => {
-    const url = window.APP_CONFIG?.cdvDashboardUrl;
-    if (url) window.open(url, "_blank", "noopener");
-    else notify("Set CDV_DASHBOARD_URL in the frontend Application settings.", "error");
-  };
   $("#reset-display").onclick = () => {
     $$(".preference-row input").forEach(input => input.checked = true);
     notify("Display preferences reset for this browser session.");

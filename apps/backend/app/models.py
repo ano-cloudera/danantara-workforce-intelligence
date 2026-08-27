@@ -131,6 +131,7 @@ class PolicyQueryResponse(BaseModel):
     message_id: str | None = None
     suggested_questions: list[str] = Field(default_factory=list)
     chart: ChartData | None = None
+    response_kind: Literal["grounded", "data", "conversational"] = "grounded"
 
 
 class PolicyExportRequest(BaseModel):

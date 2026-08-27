@@ -158,6 +158,43 @@ def build_router(services: dict, settings: Settings) -> APIRouter:
             message_id=message_id,
             suggested_questions=[],
             chart=ChartData(**chart) if chart else None,
+            response_kind="data",
+        )
+
+    def _try_small_talk(payload: PolicyQueryRequest, sid: str, request_id: str) -> PolicyQueryResponse | None:
+        prompt = f"""Classify whether the following message is a greeting or small-talk that does NOT require looking up any workforce-policy document (e.g. "hello", "thanks", "what can you help with"), or a genuine question that needs a policy or data answer. Return JSON only: {{"is_small_talk": true or false}}.
+
+Message: {payload.question}"""
+        try:
+            result = services["gemini"].generate_json(prompt, "policy-smalltalk-classify")
+            if not isinstance(result, dict) or not result.get("is_small_talk"):
+                return None
+        except Exception:
+            return None
+        try:
+            answer = services["gemini"].generate_text(
+                f"Reply briefly and warmly as Policy Intelligence, a workforce-policy assistant for Danantara. "
+                f"Do not answer any policy question here -- just respond to this greeting/small-talk message: {payload.question}",
+                "policy-smalltalk-reply",
+            ).strip()
+        except Exception:
+            answer = "Hello! I can help answer questions about workforce policies, salary bands, and recruitment rules -- what would you like to know?"
+        if not answer:
+            return None
+        message_id = services["store"].add_policy_message(
+            sid, "assistant", answer, request_id=request_id, sources=[]
+        )
+        return PolicyQueryResponse(
+            request_id=request_id,
+            session_id=sid,
+            answer=answer,
+            sources=[],
+            citations=[],
+            guardrail=services["guardrails"].validate_policy_output(answer, 1),
+            human_review_required=False,
+            message_id=message_id,
+            suggested_questions=[],
+            response_kind="conversational",
         )
 
     def execute_policy_query(payload: PolicyQueryRequest, uid: str) -> PolicyQueryResponse:
@@ -175,6 +212,10 @@ def build_router(services: dict, settings: Settings) -> APIRouter:
             )
         history = services["store"].list_policy_messages(sid)[-8:]
         services["store"].add_policy_message(sid, "user", payload.question, request_id=request_id)
+
+        small_talk_response = _try_small_talk(payload, sid, request_id)
+        if small_talk_response:
+            return small_talk_response
 
         data_response = _try_data_query(payload, sid, request_id)
         if data_response:
