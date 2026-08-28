@@ -461,6 +461,12 @@ function renderSettings() {
     ["Qdrant", config.services?.qdrant_healthy ? "Healthy" : "Unavailable"],
   ];
   $("#runtime-config").innerHTML = values.map(([label, value]) => `<div><span>${escapeHtml(label)}</span><strong>${escapeHtml(value || "Not available")}</strong></div>`).join("");
+  const observabilityRow = $("#observability-status");
+  if (observabilityRow) {
+    const configured = config.services?.observability_configured;
+    observabilityRow.querySelector("strong").textContent = configured ? "Configured" : "Not configured";
+    observabilityRow.querySelector("strong").className = configured ? "success-text" : "";
+  }
 }
 
 function showInline(selector, message, type) {
@@ -573,15 +579,6 @@ function bindEvents() {
   $("#candidate-form").onsubmit = submitCandidate;
   $("#upload-focus").onclick = () => $("#upload-form").scrollIntoView({ behavior: "smooth", block: "center" });
   $("#candidate-focus").onclick = () => $("#candidate-registration").scrollIntoView({ behavior: "smooth", block: "center" });
-  $("#reset-display").onclick = () => {
-    $$(".preference-row input").forEach(input => input.checked = true);
-    notify("Display preferences reset for this browser session.");
-  };
-  $$(".settings-tabs button").forEach(button => button.onclick = () => {
-    $$(".settings-tabs button").forEach(item => item.classList.remove("active"));
-    button.classList.add("active");
-    notify("This is a PoC display filter; settings are not persisted.");
-  });
   $("#mobile-search").onclick = openGlobalSearch;
   $("#search-close").onclick = closeGlobalSearch;
   $("#global-search").addEventListener("input", event => {
