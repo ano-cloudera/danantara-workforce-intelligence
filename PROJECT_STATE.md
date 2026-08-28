@@ -1,9 +1,12 @@
 # Project State
 
-**State:** Scaffold complete, environment validation pending  
-**Target readiness:** 95% PoC-ready  
-**Primary runtime:** Cloudera AI Workbench Applications  
+**State:** Backend feature-complete and validated live in CAI for CV/policy ingestion, Talent
+Intelligence, Policy Intelligence (RAG + whitelisted data-query tool), Dashboard, Settings, and
+governed Data Sources upload. Frontend QA pass in progress; CDV and NiFi/CDE connection still open.
+**Target readiness:** 95% PoC-ready
+**Primary runtime:** Cloudera AI Workbench Applications
 **Last architectural decision:** Use custom CrewAI Flow backend as the main runtime, with Agent Studio retained only as a capability showcase.
+**Last updated:** 2026-08-28, from `origin/main` @ `4f2cc86` (~35 commits since the previous update below).
 
 ## Locked decisions
 
@@ -63,28 +66,66 @@
   Application.
 - Dynamic policy metadata is served from `danantara.v_policy_documents_api` in Impala mode.
   Citation downloads use governed Hadoop/S3A access and do not expose source S3 URIs publicly.
+- The Data Sources upload form can write directly to the governed S3A CV/policy landing prefixes
+  (`UPLOAD_ACCESS_MODE=datalake`, `S3_CV_LANDING_URI`, `S3_POLICY_LANDING_URI`) via `hadoop fs -put`,
+  the same governed-access pattern as the ingestion Jobs, instead of writing to the backend's local
+  filesystem and indexing straight to Qdrant. Local mode remains the default and is unaffected.
+- Policy Intelligence chat routes every question through two lightweight Gemini classifiers before
+  the RAG flow: one for small talk/greetings (answered directly, no retrieval, no citations, no
+  guardrail-mandated sources) and one for a small set of whitelisted structured data-query tools
+  (`candidate_count`, `candidates_over_time`, `recruitment_stage_breakdown`,
+  `open_positions_summary`) that Gemini can only select by ID, never by writing SQL — the chosen
+  query still runs a hardcoded Impala query. Both fall through to the normal PolicyRAGFlow path if
+  classification is inconclusive, so ordinary policy questions are unaffected.
+- Guardrails now also block chat requests for an individual's personal contact/compensation details
+  (email, phone, salary of a named person) in English and Indonesian, deliberately scoped to leave
+  public salary-band/policy questions ("salary range for grade G3") allowed. This is a second layer
+  on top of DataGateway already never selecting PII columns (email/phone/source_cv_s3_uri) into any
+  query result.
+- AI-generated chat/reasoning text is rendered through a small dependency-free markdown renderer
+  (bold/italic/bullet/numbered lists -> HTML) instead of being shown as escaped plain text with raw
+  `**`/`*` characters. The PDF export strips the same markdown tokens instead, since that renderer
+  has no font styling to express emphasis with.
+- Policy Intelligence's entity Source filters are optional, not required: an empty selection means
+  "search every entity," matching what `PolicyRAGFlow.retrieve()` already did server-side. Requiring
+  at least one checked entity was stricter than necessary and caused newly ingested documents whose
+  entity isn't pre-checked by default to silently disappear from answers.
 
 ## Environment-specific tasks still required
 
-- [ ] Set `GEMINI_API_KEY` or Vertex AI settings.
-- [ ] Create the four CAI Applications and capture their URLs.
-- [ ] Set `BACKEND_BASE_URL` in frontend application variables.
-- [ ] Set `QDRANT_BASE_URL`, shared Qdrant API key and the three collection variables in backend/NiFi.
-- [ ] Set `OBSERVABILITY_BASE_URL` in backend Application variables.
-- [ ] Confirm each CAI Application receives `CDSW_APP_PORT`; do not set a fixed exposed port.
-- [ ] Run `apps/backend/scripts/init_qdrant_collections.py` and verify all three collections.
+- [x] Set `GEMINI_API_KEY` (confirmed live via successful embeddings/generation in CAI runs).
+- [x] Create the four CAI Applications and capture their URLs (`danantara-qdrant`,
+  `danantara-backend`, `danantara-frontend`, `danantara-observability` all running).
+- [x] Set `BACKEND_BASE_URL` in frontend application variables (frontend successfully calls backend).
+- [x] Set `QDRANT_BASE_URL`, shared Qdrant API key and the three collection variables (Qdrant
+  health OK, policy/candidate collections indexed and queried live).
+- [x] Set `OBSERVABILITY_BASE_URL` in backend Application variables (pipeline/guardrail events
+  confirmed flowing in job/backend logs throughout this session).
+- [x] Confirm each CAI Application receives `CDSW_APP_PORT`.
+- [ ] Run `apps/backend/scripts/init_qdrant_collections.py` and verify all three collections
+  (candidate/policy collections confirmed working via job runs; NiFi collection not yet exercised).
 - [ ] Validate Qdrant binary download from the target CAI runtime, or upload binary manually.
-- [ ] Configure CDW Impala connection and change `DATA_MODE=impala`.
-- [ ] Validate non-interactive CDW authentication and execute the CAI CV ingestion Job dry-run.
+- [x] Configure CDW Impala connection and change `DATA_MODE=impala` (confirmed live: dashboard,
+  candidates, positions, recruitment pipeline all reading real Impala data).
+- [x] Validate non-interactive CDW authentication and execute the CAI CV ingestion Job dry-run
+  (CV job validated end-to-end previously; policy job re-validated again this session).
 - [ ] Configure NiFi webhook/landing integration and change `INGEST_MODE=nifi` if required.
 - [ ] Configure optional Langfuse credentials if enterprise LLM tracing is required.
 - [ ] Replace demo candidate/policy data with customer-provided PoC data.
 - [x] Create and synchronize the scoped Ranger/IDBroker mapping for CAI CV prefixes.
-- [ ] Validate the CAI CV dry-run through the governed S3A adapter.
+- [x] Validate the CAI CV dry-run through the governed S3A adapter.
 - [x] Create/synchronize Ranger access for the four policy prefixes and validate policy Job schema
   init, single-file dry-run, real run, and Qdrant/Impala writes end-to-end in CAI.
 - [x] Validate policy citation query (`/api/v1/policy/query`) and governed download against a real
   ingested document, including the backend's own Ranger/IDBroker read access.
+- [x] Wire the Data Sources upload form to governed S3A landing prefixes
+  (`UPLOAD_ACCESS_MODE=datalake`) so upload -> CAI Job -> Impala/Qdrant is one real, demoable loop.
+  Validated live in CAI: uploaded PDF landed in `cv-collect/`/`policy-collect/`, CV ingestion Job
+  picked it up, chunked/embedded/indexed it, and it was retrievable via Policy Intelligence chat.
+- [x] Validate Talent Match end-to-end in CAI, including the ambiguous-title/multi-entity merge path
+  and the keyword-boost scoring fix.
+- [x] Validate the whitelisted Policy Intelligence data-query tool (candidate count, candidates by
+  month, recruitment stage breakdown, open positions) live in CAI, including the inline chart.
 
 - The Gemini policy embedding call (`GeminiEmbedder.embed`) sends chunks to `embed_content`
   individually instead of batching them in one `batchEmbedContents` call. Batching could return
@@ -116,22 +157,33 @@
 - Cloudera Data Visualization is intended to read the same governed views (`v_recruitment_pipeline_api`,
   `v_candidates_api`, `curated_job_positions`) as the in-app dashboard — one shared source of truth,
   no separate CDV-only schema. Deferred until frontend QA below is complete.
-- Talent Intelligence QA in CAI found two issues, both fixed (commit `6d496d0`): (1) the free-text
-  "Skills / Keywords" box was merged verbatim into `position.required_skills`, so any keyword phrase
-  always showed as a false "Skill Gap" and inflated the scoring denominator, mechanically lowering
-  every match score — keywords are now a separate substring-matched boost (up to 10 pts) that never
-  touches required/matched/gap skills. (2) Two distinct positions sharing a title (e.g. "Senior Data
-  Engineer" for both BNS and ENP) looked like a duplicate in the position dropdown because it rendered
-  title only — `_impala_positions()` now selects `entity` and the dropdown label is `Title — Entity`.
-  Not yet re-validated live in CAI after this fix — do that before considering Talent Intelligence QA closed.
+- Talent Intelligence QA in CAI found two issues, both fixed and later re-validated live: (1) the
+  free-text "Skills / Keywords" box was merged verbatim into `position.required_skills`, so any
+  keyword phrase always showed as a false "Skill Gap" and inflated the scoring denominator,
+  mechanically lowering every match score — keywords are now a separate substring-matched boost (up
+  to 10 pts) that never touches required/matched/gap skills. (2) Two distinct positions sharing a
+  title (e.g. "Senior Data Engineer" for both BNS and ENP) looked like a duplicate in the position
+  dropdown — the dropdown now dedups by title, and picking an ambiguous title with no entity filter
+  merges results by scoring each candidate against their own entity's position variant, rather than
+  blocking the request or picking one arbitrarily (commit `b6738a5`; a follow-up fix in `ca4392c`
+  resolved a bare-500 response-shape bug this merge path introduced).
+- Settings page was simplified to three live/actionable cards (Runtime Configuration, Security &
+  Monitoring, Data Pipeline); removed three pieces of dead UI (category tabs, "Access & Roles",
+  "PoC Display Preferences") that didn't actually filter or persist anything.
+- Dashboard page's "PoC Sample Data" badge and "Open in Cloudera Data Visualization" button were
+  removed (CDV isn't configured yet, so the button always errored); will return once CDV is wired up.
 
 ## Next implementation sequence
 
-1. Validate frontend uploads for candidate forms and PDFs end-to-end.
-2. Full frontend QA pass: confirm every frontend page/action actually connects to and succeeds
-   against the live backend (not just renders) before moving on to CDV or NiFi/CDE.
-3. Connect NiFi/CDE pipeline and hand off the policy ingestion Job's data contract to that team.
-4. Connect Cloudera Data Visualization dashboard URL (build CDV dashboard against the shared views
-   above, then set `CDV_DASHBOARD_URL` on the frontend Application).
-5. Turn on optional Langfuse forwarding.
+1. Finish the frontend QA pass: Overview and Sources pages haven't had a dedicated live-data pass
+   yet this session (Talent, Policy, Dashboard, Data Sources, and Settings all have).
+2. Connect NiFi/CDE pipeline and hand off the policy ingestion Job's data contract to that team.
+3. Connect Cloudera Data Visualization: build a CDV dashboard against the shared governed views
+   (`v_recruitment_pipeline_api`, `v_candidates_api`, `curated_job_positions` — spec already drafted
+   this session), then set `CDV_DASHBOARD_URL` on the frontend Application and restore the Dashboard
+   page's "Open in CDV" entry point.
+4. Turn on optional Langfuse forwarding.
+5. Consider populating `candidate_master.proficiency_score` from CV extraction (currently always
+   NULL in real data, so the candidate detail modal always shows "Proficiency not assessed" — not a
+   bug, just unimplemented in the CV ingestion Job's extraction prompt).
 6. Execute full regression rehearsal and freeze configuration.

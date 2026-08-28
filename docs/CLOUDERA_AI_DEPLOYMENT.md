@@ -50,6 +50,20 @@ Minimum environment variables:
 - `OBSERVABILITY_BASE_URL=https://<observability-app-url>`
 - `OBSERVABILITY_API_KEY=<hidden>`
 
+For governed citation downloads and the Data Sources upload form (see below for both), the backend
+Application needs its own storage access configuration, separate from either ingestion Job's own
+`S3_ACCESS_MODE`:
+
+- `POLICY_SOURCE_ACCESS_MODE=datalake` plus Ranger read access to `policy-processed/` and
+  `policy-review/` for the backend's own workload identity, or citation downloads 404 with
+  "Document source is unavailable" even though ingestion succeeded.
+- `UPLOAD_ACCESS_MODE=datalake` plus `S3_CV_LANDING_URI=s3a://<bucket>/data/cv-collect/` and
+  `S3_POLICY_LANDING_URI=s3a://<bucket>/data/policy-collect/` to make the Data Sources upload form
+  write directly into the same governed landing prefixes the ingestion Jobs already read from,
+  instead of the backend's local filesystem. Requires Ranger write access to both prefixes for the
+  backend's workload identity. Leave unset (`local`, the default) to keep the old local-write +
+  direct-Qdrant-index behavior.
+
 Start with `DATA_MODE=demo`. Change to `DATA_MODE=impala` only after CDW connectivity is validated.
 The backend uses Qdrant REST over `httpx` as the production CAI transport; it does not depend on
 the Qdrant Python SDK transport across Istio/Envoy. Existing `QDRANT_CHECK_COMPATIBILITY` values are
@@ -144,7 +158,8 @@ four-Application topology and is a fallback for the target NiFi/CDE policy flow.
 4. Run with `POLICY_JOB_DRY_RUN=true` and `POLICY_JOB_MAX_OBJECTS=1`; verify extraction and safe
    observability events without any S3, Impala, or Qdrant mutation.
 5. Set dry-run to `false`, process one document, then validate the Iceberg audit/document rows,
-   Qdrant citation payload, Policy Intelligence query, View Metadata, and Download Source.
+   Qdrant citation payload, Policy Intelligence query, and the citation card's Download Source
+   action (the citation card no longer exposes a separate "View metadata" link/raw-JSON view).
 6. Raise the bounded batch limit to at most 20 and schedule it only after the single-file path is
    validated.
 
@@ -152,3 +167,25 @@ The backend Application needs `IMPALA_POLICY_DOCUMENT_TABLE=danantara.v_policy_d
 `POLICY_SOURCE_ACCESS_MODE=datalake` for dynamic metadata and governed source downloads. Files with
 uncertain metadata or prompt-injection patterns go to review without indexing; corrupt files go to
 failed; partial Impala/Qdrant failures leave the landing object retryable.
+
+## Data Sources upload -> governed landing prefixes
+
+The Data Sources page's upload form can write directly into the same governed S3A prefixes the
+CV/policy ingestion Jobs read from, so "upload from the UI, then run the Job" is a real, demoable
+loop end to end. This is opt-in on the backend Application:
+
+1. Set `UPLOAD_ACCESS_MODE=datalake`, `S3_CV_LANDING_URI=s3a://<bucket>/data/cv-collect/`, and
+   `S3_POLICY_LANDING_URI=s3a://<bucket>/data/policy-collect/` on the backend Application.
+2. Grant the backend's workload identity Ranger write access to both prefixes (this is separate
+   from, and in addition to, the read/write grants already given to the ingestion Jobs' identities).
+3. Upload one PDF from Data Sources with Document Type "Candidate CV" and confirm it lands in
+   `cv-collect/`; upload one with any other Document Type (Group HR Policy, PKB, Salary Policy, Job
+   Opening) and confirm it lands in `policy-collect/`.
+4. Trigger the matching ingestion Job manually and confirm the uploaded file is picked up, processed,
+   and becomes queryable through Talent Intelligence / Policy Intelligence.
+
+Leaving `UPLOAD_ACCESS_MODE` unset (`local`, the default) keeps the previous behavior: the file is
+written to the backend's local filesystem and, for PDFs, indexed directly into Qdrant from the
+backend itself, bypassing the ingestion Jobs' guardrails and Impala metadata/audit rows entirely.
+Only use `local` for isolated frontend testing, not for anything meant to demonstrate the governed
+ingestion path.
