@@ -362,7 +362,6 @@ async function runPolicy(event, suggestedQuestion = null) {
   const question = (suggestedQuestion || $("#policy-question").value).trim();
   const entities = selectedEntities();
   if (!question) return;
-  if (!entities.length) return notify("Select at least one entity.", "error");
   appendPolicyMessage("user", question);
   $("#policy-question").value = "";
   const loading = appendPolicyMessage("loading", "");
