@@ -5,7 +5,7 @@ from pypdf import PdfReader
 from app.config import Settings
 from app.services.data_gateway import DataGateway
 from app.services.gemini_service import GeminiService
-from app.services.pdf_export import build_policy_pdf
+from app.services.pdf_export import _strip_markdown, build_policy_pdf
 from app.services.policy_documents import load_policy_chunks
 from app.services.session_store import SessionStore
 
@@ -83,6 +83,24 @@ def test_policy_messages_persist_and_export_as_readable_pdf(tmp_path: Path):
     full_text = "".join(page.extract_text() or "" for page in reader.pages)
     assert "Compare annual leave" in full_text
     assert "BNS provides 16 days" in full_text
+
+
+def test_strip_markdown_removes_bold_italic_and_list_markers():
+    text = (
+        "* **Hari kerja biasa (*regular working day*):** 1.5x tarif per jam [1], "
+        "dengan persetujuan **Direct Manager**.\n"
+        "* Item kedua dengan _italic underscore_.\n"
+        "1. Item bernomor."
+    )
+
+    result = _strip_markdown(text)
+
+    assert "*" not in result
+    assert "_" not in result
+    assert "Hari kerja biasa (regular working day):" in result
+    assert "Direct Manager" in result
+    assert "italic underscore" in result
+    assert "Item bernomor" in result
 
 
 def test_missing_gemini_credentials_degrade_without_startup_failure():

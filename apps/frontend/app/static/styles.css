@@ -183,7 +183,10 @@ textarea { min-height: 70px; resize: vertical; }
 .chip { padding: 3px 7px; border: 1px solid #b7ddc4; border-radius: 5px; color: #176b41; background: #edf9f1; font-size: 10px; }
 .chip.gap { border-color: #f2c88e; color: #9a5708; background: #fff7eb; }
 .reasoning { align-self: stretch; padding-left: 14px; border-left: 1px solid var(--line); }
-.reasoning p { margin-bottom: 8px; font-size: 11px; }
+.reasoning-text p { margin: 0 0 8px; font-size: 11px; }
+.reasoning-text ul, .reasoning-text ol { margin: 0 0 8px; padding-left: 16px; font-size: 11px; }
+.reasoning-text li { margin-bottom: 3px; }
+.reasoning-text strong { font-weight: 700; }
 .explanation { position: sticky; top: calc(var(--topbar) + 20px); padding: 18px; }
 .explanation h2 { margin-bottom: 18px; }
 .explain-item { display: flex; gap: 10px; margin-bottom: 17px; }
@@ -232,7 +235,13 @@ legend { margin-bottom: 6px; color: #344054; font-size: 12px; font-weight: 650; 
 .message-label .badge { font-size: 9px; padding: 2px 7px; }
 .message-body { padding: 12px 15px; border: 1px solid var(--line); border-radius: 14px 14px 14px 4px; background: #fff; box-shadow: 0 1px 2px rgba(16,24,40,.04); white-space: pre-wrap; line-height: 1.6; }
 .chat-row.user-row .message-body { border-radius: 14px 14px 4px 14px; border-color: var(--line-strong); color: var(--ink); background: #fff; box-shadow: 0 1px 2px rgba(16,24,40,.06); }
-.answer-text { line-height: 1.65; color: var(--ink); }
+.answer-text { line-height: 1.65; color: var(--ink); white-space: normal; }
+.answer-text p { margin: 0 0 10px; }
+.answer-text p:last-child { margin-bottom: 0; }
+.answer-text ul, .answer-text ol { margin: 0 0 10px; padding-left: 20px; }
+.answer-text ul:last-child, .answer-text ol:last-child { margin-bottom: 0; }
+.answer-text li { margin-bottom: 4px; }
+.answer-text strong { font-weight: 700; }
 .message-chart { padding: 12px 14px; border: 1px solid var(--line); border-radius: 10px; background: #fff; }
 .message-chart h4 { margin: 0 0 10px; font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; }
 .message-citations { display: flex; flex-wrap: wrap; gap: 6px; }

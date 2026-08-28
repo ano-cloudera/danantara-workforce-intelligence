@@ -26,6 +26,65 @@ function escapeHtml(value) {
     .replaceAll("'", "&#039;");
 }
 
+// Minimal, dependency-free markdown for AI-generated text: bold, italic,
+// bullet/numbered lists, and paragraphs. Input is HTML-escaped first, so
+// only the literal markdown tokens this function recognizes become tags --
+// no arbitrary HTML from the model output is ever rendered.
+function renderMarkdown(value) {
+  const escaped = escapeHtml(value);
+  const inline = text => text
+    .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
+    .replace(/(?<!\*)\*(?!\*)([^*\n]+?)\*(?!\*)/g, "<em>$1</em>")
+    .replace(/(?<!_)_(?!_)([^_\n]+?)_(?!_)/g, "<em>$1</em>");
+
+  const lines = escaped.split("\n");
+  const blocks = [];
+  let listBuffer = [];
+  let listType = null;
+  let paragraphBuffer = [];
+
+  const flushList = () => {
+    if (listBuffer.length) {
+      const tag = listType === "ol" ? "ol" : "ul";
+      blocks.push(`<${tag}>${listBuffer.map(item => `<li>${inline(item)}</li>`).join("")}</${tag}>`);
+      listBuffer = [];
+      listType = null;
+    }
+  };
+  const flushParagraph = () => {
+    if (paragraphBuffer.length) {
+      blocks.push(`<p>${inline(paragraphBuffer.join(" "))}</p>`);
+      paragraphBuffer = [];
+    }
+  };
+
+  for (const rawLine of lines) {
+    const line = rawLine.trim();
+    const bulletMatch = line.match(/^[*-]\s+(.*)$/);
+    const numberedMatch = line.match(/^\d+[.)]\s+(.*)$/);
+    if (bulletMatch) {
+      flushParagraph();
+      if (listType !== "ul") flushList();
+      listType = "ul";
+      listBuffer.push(bulletMatch[1]);
+    } else if (numberedMatch) {
+      flushParagraph();
+      if (listType !== "ol") flushList();
+      listType = "ol";
+      listBuffer.push(numberedMatch[1]);
+    } else if (!line) {
+      flushList();
+      flushParagraph();
+    } else {
+      flushList();
+      paragraphBuffer.push(line);
+    }
+  }
+  flushList();
+  flushParagraph();
+  return blocks.join("");
+}
+
 function icon(name, context = "button", className = "") {
   return `<span data-icon="${escapeHtml(name)}" data-context="${context}"${className ? ` data-icon-class="${escapeHtml(className)}"` : ""}></span>`;
 }
@@ -231,7 +290,7 @@ function renderTalent(matches) {
       <div class="rank-score"><span class="rank-ribbon">${index + 1}</span><span class="score-ring">${escapeHtml(match.match_score)}</span><small>Match Score</small></div>
       <div class="candidate-identity"><span class="candidate-avatar">${escapeHtml(initials)}</span><div><h3>${escapeHtml(candidate.name)}</h3><p>${escapeHtml(candidate.summary || "Profile summary not available")}</p><span class="candidate-meta">${icon("briefcase")} ${escapeHtml(candidate.company || "Company not available")} · ${escapeHtml(candidate.years_experience)} years</span></div></div>
       <div class="skill-column"><strong>Matched Skills</strong>${chips(match.matched_skills)}<strong>Skill Gaps</strong>${chips(match.skill_gaps, true)}</div>
-      <div class="reasoning"><strong>AI Reasoning Summary</strong><p>${escapeHtml(match.reasoning || "Reasoning not available")}</p><span class="badge warning">Human review required</span> <button class="text-button candidate-details" data-candidate="${escapeHtml(candidate.candidate_id)}">View Details ${icon("arrow-right")}</button></div>
+      <div class="reasoning"><strong>AI Reasoning Summary</strong><div class="reasoning-text">${renderMarkdown(match.reasoning || "Reasoning not available")}</div><span class="badge warning">Human review required</span> <button class="text-button candidate-details" data-candidate="${escapeHtml(candidate.candidate_id)}">View Details ${icon("arrow-right")}</button></div>
     </article>`;
   }).join("");
   $$(".candidate-details").forEach(button => button.onclick = () => {
@@ -329,7 +388,7 @@ function appendPolicyMessage(role, content, data = null) {
     article.dataset.requestId = data?.request_id || "";
     row.innerHTML = `<span class="chat-avatar assistant">${icon("book-open-check")}</span>`;
     article.innerHTML = `<div class="message-label">Policy Intelligence ${badge}</div>
-      <div class="message-body answer-text">${escapeHtml(content)}</div>
+      <div class="message-body answer-text">${renderMarkdown(content)}</div>
       ${chartBlock}
       ${citationsBlock}
       ${actions}

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import re
 import textwrap
 
 
@@ -7,9 +8,21 @@ def _pdf_escape(value: str) -> str:
     return value.replace("\\", "\\\\").replace("(", "\\(").replace(")", "\\)")
 
 
+def _strip_markdown(text: str) -> str:
+    """Strip list markers and bold/italic tokens for a plain-text PDF; this
+    renderer has no font styling, so leaving them in would just show up as
+    literal asterisks/underscores rather than structure or emphasis."""
+    text = re.sub(r"(?m)^\s*[*-]\s+", "", text)
+    text = re.sub(r"(?m)^\s*\d+[.)]\s+", "", text)
+    text = re.sub(r"\*\*(.+?)\*\*", r"\1", text)
+    text = re.sub(r"(?<!\*)\*([^*\n]+?)\*(?!\*)", r"\1", text)
+    text = re.sub(r"(?<!_)_([^_\n]+?)_(?!_)", r"\1", text)
+    return text
+
+
 def _message_lines(role: str, content: str, sources: list[dict]) -> list[str]:
     speaker = "You" if role == "user" else "Policy Intelligence"
-    lines = [f"{speaker}:", content]
+    lines = [f"{speaker}:", _strip_markdown(content)]
     for index, source in enumerate(sources, start=1):
         location = f'page {source.get("page")}' if source.get("page") else "section unavailable"
         lines.append(
