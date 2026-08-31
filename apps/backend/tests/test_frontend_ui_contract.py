@@ -267,9 +267,9 @@ def test_frontend_uses_official_logo_and_professional_action_icons():
     styles = (STATIC / "styles.css").read_text()
     frontend_server = (ROOT / "apps/frontend/app/main.py").read_text()
 
-    assert (ROOT / "assets/logo.webp").is_file()
-    assert 'href="/assets/logo.webp"' in html
-    assert html.count('src="/assets/logo.webp"') == 2
+    assert (ROOT / "assets/cloudera-logo.png").is_file()
+    assert 'href="/assets/cloudera-logo.png"' in html
+    assert html.count('src="/assets/cloudera-logo.png"') == 2
     assert 'app.mount("/assets"' in frontend_server
     assert "sparkles" not in html.lower()
     assert 'icon("sparkles")' not in javascript

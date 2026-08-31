@@ -14,7 +14,7 @@ BACKEND = configured_backend or (None if os.getenv("CDSW_APP_PORT") else "http:/
 DEMO_USER = os.getenv("DEMO_USER", "demo.hr@danantara.local")
 CDV_URL = os.getenv("CDV_DASHBOARD_URL", "")
 
-app = FastAPI(title="Danantara Workforce Intelligence Frontend")
+app = FastAPI(title="Cloudera Workforce Intelligence Frontend")
 app.mount("/static", StaticFiles(directory=STATIC), name="static")
 app.mount("/assets", StaticFiles(directory=ASSETS), name="assets")
 
@@ -37,7 +37,7 @@ def index():
 
 @app.get("/favicon.ico", include_in_schema=False)
 def favicon():
-    return FileResponse(ASSETS / "logo.webp", media_type="image/webp")
+    return FileResponse(ASSETS / "cloudera-logo.png", media_type="image/png")
 
 
 @app.api_route("/api-proxy/{path:path}", methods=["GET", "POST", "PUT", "PATCH", "DELETE"])
