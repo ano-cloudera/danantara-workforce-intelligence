@@ -111,6 +111,13 @@ locked_decisions:
     previously required at least one checked entity, which was stricter than the backend needs and
     caused newly ingested documents (entity not pre-checked by default) to silently vanish from
     answers until the user noticed.
+  - The CDW/Impala virtual warehouse was deleted and recreated with a new coordinator host
+    (coordinator-se-indo-impala.dw-se-indo-cdp-env.a465-9q4k.cloudera.site); the danantara database
+    and all tables/views/data survived unchanged. IMPALA_HOST must track the new host and
+    IMPALA_AUTH_MECHANISM must be the exact uppercase string LDAP (impyla only accepts
+    NOSASL/PLAIN/GSSAPI/LDAP/JWT; a lowercase "ldap" silently breaks every Impala-backed endpoint).
+    Reverified end-to-end (/health, /dashboard/summary, POST /talent/match) after the fix
+    (2026-08-31).
 pending_environment_tasks:
   - configure optional Langfuse
   - replace demo candidate/policy data with customer-provided PoC data

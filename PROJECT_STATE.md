@@ -155,6 +155,18 @@ deployed or executed runtime path.
   target CDW/Impala database and seeded with 3 PoC rows (2026-08-27). `GET /dashboard/summary` has
   been validated live against real Impala data in CAI: correct stage/salary-compliance/match-score
   aggregation, 24 real candidates from `v_candidates_api`, no fallback to the demo fixture.
+- The target CDW/Impala virtual warehouse was deleted and recreated (2026-08-31) with a new
+  coordinator host (`coordinator-se-indo-impala.dw-se-indo-cdp-env.a465-9q4k.cloudera.site`,
+  replacing the earlier `coordinator-se-indo-cdp-env-impala...` host). The underlying `danantara`
+  database, all tables/views, and their data survived the warehouse recreation unchanged (confirmed
+  via Hue and direct Impala query: `v_candidates_api` 28 rows, `curated_job_positions` 3,
+  `v_recruitment_pipeline_api` 3, `v_policy_documents_api` 5). `IMPALA_HOST` must be updated to the
+  new coordinator host wherever it's configured (backend Application env vars in CAI, and local
+  `.env` for dev); `IMPALA_AUTH_MECHANISM` must be the exact uppercase string `LDAP` (impyla's
+  `auth_mechanism` parameter only accepts `NOSASL`/`PLAIN`/`GSSAPI`/`LDAP`/`JWT` — a lowercase
+  `ldap` does not match and silently breaks every Impala-backed endpoint). After updating both, the
+  backend was reverified end-to-end against the new warehouse: `/health`, `/dashboard/summary`, and
+  `POST /talent/match` (full Gemini-scored match run) all returned correct live data.
 - Stray non-CV rows (filenames like `README.md`/`manifest.csv` with all other fields NULL) were found
   in `danantara.candidate_master` and manually deleted; not caused by the CV ingestion job, which has
   always filtered to `.pdf` only. `_impala_candidates`/`_impala_positions` now skip (and log) any row
