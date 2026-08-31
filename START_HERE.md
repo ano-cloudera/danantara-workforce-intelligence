@@ -1,6 +1,6 @@
-# START HERE: Danantara Workforce Intelligence PoC
+# START HERE: Cloudera Workforce Intelligence PoC
 
-This repository is a BMAD-structured, Cloudera AI-ready starter project for the **AI-Powered Talent Screening & Workforce Intelligence Platform** PoC.
+This repository is a BMAD-structured, Cloudera AI-ready starter project for the **AI-Powered Talent Screening & Workforce Intelligence Platform** PoC. The product is branded as **Cloudera Workforce Intelligence** in the UI (`README.md`/internal docs may still refer to the original working name, Danantara, since that remains the underlying customer/PoC codename).
 
 ## What this project is
 
@@ -83,4 +83,12 @@ Default models are configurable and start with the models already validated in t
 
 ## 95% ready means
 
-The code, configuration, demo fallbacks, application entrypoints, skills, BMAD artifacts, API contracts, UI shell, tests and deployment instructions are included. The remaining environment-specific work is limited to providing secrets, assigning Cloudera application URLs, validating connectivity to CDW/NiFi, and confirming the Qdrant runtime download in the target Workbench.
+The code, configuration, demo fallbacks, application entrypoints, skills, BMAD artifacts, API contracts, UI shell, tests and deployment instructions are included. All four CAI Applications (frontend, backend, qdrant, observability) are deployed and environment-configured, Qdrant collections/runtime are validated, and the NiFi landing/`INGEST_MODE=nifi` path is wired up — see `PROJECT_STATE.md` for the current checklist. Remaining work is primarily Cloudera Data Visualization wiring and final regression rehearsal.
+
+## Agent Studio artifact
+
+`agent studio/` at the repo root is a Cloudera Agent Studio workflow export (a hierarchical
+Manager -> Talent Intelligence / Policy Intelligence / Governance Validation multi-agent workflow,
+plus each specialist's custom tool source). It documents the same three capabilities as a
+capability showcase for Cloudera Agent Studio and is not a deployed or executed runtime path — the
+CrewAI Flow backend under `apps/backend/` remains the primary, validated runtime for this PoC.

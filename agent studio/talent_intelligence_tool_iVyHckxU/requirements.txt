@@ -1,0 +1,6 @@
+# https://pip.pypa.io/en/stable/reference/requirements-file-format/
+pydantic>=2.0,<3
+impyla>=0.19,<1
+thrift>=0.16
+thrift-sasl>=0.4.3
+pure-sasl>=0.6.2

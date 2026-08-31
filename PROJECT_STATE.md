@@ -2,11 +2,16 @@
 
 **State:** Backend feature-complete and validated live in CAI for CV/policy ingestion, Talent
 Intelligence, Policy Intelligence (RAG + whitelisted data-query tool), Dashboard, Settings, and
-governed Data Sources upload. Frontend QA pass in progress; CDV and NiFi/CDE connection still open.
+governed Data Sources upload. All four CAI Applications are deployed, environment-configured, and
+confirmed running end-to-end, including Qdrant collection init/binary runtime and the NiFi
+webhook/`INGEST_MODE=nifi` landing path. Frontend QA pass in progress; CDV connection still open.
 **Target readiness:** 95% PoC-ready
 **Primary runtime:** Cloudera AI Workbench Applications
-**Last architectural decision:** Use custom CrewAI Flow backend as the main runtime, with Agent Studio retained only as a capability showcase.
-**Last updated:** 2026-08-28, from `origin/main` @ `4f2cc86` (~35 commits since the previous update below).
+**Last architectural decision:** Use custom CrewAI Flow backend as the main runtime. A Cloudera Agent
+Studio workflow export (`agent studio/`) is retained purely as documentation/showcase of the same
+three capabilities (Talent, Policy, Governance) built as Agent Studio tool templates — it is not a
+deployed or executed runtime path.
+**Last updated:** 2026-08-31, from `origin/main` @ `d3ed8bf` (Cloudera rebrand + responsive-CSS commits since the previous update below).
 
 ## Locked decisions
 
@@ -102,14 +107,14 @@ governed Data Sources upload. Frontend QA pass in progress; CDV and NiFi/CDE con
 - [x] Set `OBSERVABILITY_BASE_URL` in backend Application variables (pipeline/guardrail events
   confirmed flowing in job/backend logs throughout this session).
 - [x] Confirm each CAI Application receives `CDSW_APP_PORT`.
-- [ ] Run `apps/backend/scripts/init_qdrant_collections.py` and verify all three collections
-  (candidate/policy collections confirmed working via job runs; NiFi collection not yet exercised).
-- [ ] Validate Qdrant binary download from the target CAI runtime, or upload binary manually.
+- [x] Run `apps/backend/scripts/init_qdrant_collections.py` and verify all three collections
+  (candidate, policy, and NiFi collections all confirmed present and queryable in the target Qdrant Application).
+- [x] Validate Qdrant binary download from the target CAI runtime.
 - [x] Configure CDW Impala connection and change `DATA_MODE=impala` (confirmed live: dashboard,
   candidates, positions, recruitment pipeline all reading real Impala data).
 - [x] Validate non-interactive CDW authentication and execute the CAI CV ingestion Job dry-run
   (CV job validated end-to-end previously; policy job re-validated again this session).
-- [ ] Configure NiFi webhook/landing integration and change `INGEST_MODE=nifi` if required.
+- [x] Configure NiFi webhook/landing integration and change `INGEST_MODE=nifi`.
 - [ ] Configure optional Langfuse credentials if enterprise LLM tracing is required.
 - [ ] Replace demo candidate/policy data with customer-provided PoC data.
 - [x] Create and synchronize the scoped Ranger/IDBroker mapping for CAI CV prefixes.
@@ -172,18 +177,38 @@ governed Data Sources upload. Frontend QA pass in progress; CDV and NiFi/CDE con
   "PoC Display Preferences") that didn't actually filter or persist anything.
 - Dashboard page's "PoC Sample Data" badge and "Open in Cloudera Data Visualization" button were
   removed (CDV isn't configured yet, so the button always errored); will return once CDV is wired up.
+- The frontend was rebranded from "Danantara Workforce Intelligence" to "Cloudera Workforce
+  Intelligence" (official `assets/cloudera-logo.png` mark, header/title/favicon updates) in two
+  passes (commits `0b55f8b`, `d3ed8bf`). The design-token hierarchy was revised so Cloudera
+  purple/violet drives selection/active state (sidebar, tabs, filters, focus, secondary buttons)
+  while Cloudera orange is reserved for primary CTAs, notifications, and ranking emphasis only;
+  navy stays for headings/structure and semantic colors (green/amber/red) are unchanged. The same
+  pass fixed a class of responsive-overflow bugs at high browser zoom by replacing bare `1fr`/`auto`
+  grid tracks (which carry an implicit `min-width: auto` that blocks shrinking) with
+  `minmax(0, ...)` across the topbar and page grids; verified with no horizontal overflow across
+  1366x768/1440x900/1920x1080 and 80/100/125/150% zoom on all six pages. Visual/CSS only — no
+  backend, API, or business-logic changes.
+- Added `agent studio/` at the repo root: a Cloudera Agent Studio workflow export
+  (`workflow_template.json`) plus three custom Agent Studio tool templates
+  (`talent_intelligence_tool`, `policy_intelligence_tool`, `governance_tools`) with their own
+  `tool.py`/`requirements.txt`. This is documentation/showcase of the same three capabilities
+  (Talent Intelligence over Impala, Policy Intelligence over Qdrant/Gemini, Governance Validation
+  over Atlas/Ranger) expressed as an Agent Studio hierarchical multi-agent workflow — it is not a
+  deployed or executed runtime path and does not change the CrewAI backend, which remains the
+  primary, validated runtime. `.venv*` inside these tool folders is git-ignored per the existing
+  root `.gitignore` pattern.
 
 ## Next implementation sequence
 
 1. Finish the frontend QA pass: Overview and Sources pages haven't had a dedicated live-data pass
-   yet this session (Talent, Policy, Dashboard, Data Sources, and Settings all have).
-2. Connect NiFi/CDE pipeline and hand off the policy ingestion Job's data contract to that team.
-3. Connect Cloudera Data Visualization: build a CDV dashboard against the shared governed views
+   yet this session (Talent, Policy, Dashboard, Data Sources, and Settings all have); also re-verify
+   the Cloudera rebrand/color hierarchy and responsive layout against live (non-demo) data volumes.
+2. Connect Cloudera Data Visualization: build a CDV dashboard against the shared governed views
    (`v_recruitment_pipeline_api`, `v_candidates_api`, `curated_job_positions` — spec already drafted
    this session), then set `CDV_DASHBOARD_URL` on the frontend Application and restore the Dashboard
    page's "Open in CDV" entry point.
-4. Turn on optional Langfuse forwarding.
-5. Consider populating `candidate_master.proficiency_score` from CV extraction (currently always
+3. Turn on optional Langfuse forwarding.
+4. Consider populating `candidate_master.proficiency_score` from CV extraction (currently always
    NULL in real data, so the candidate detail modal always shows "Proficiency not assessed" — not a
    bug, just unimplemented in the CV ingestion Job's extraction prompt).
-6. Execute full regression rehearsal and freeze configuration.
+5. Execute full regression rehearsal and freeze configuration.

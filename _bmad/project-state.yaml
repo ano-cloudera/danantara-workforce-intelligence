@@ -1,5 +1,5 @@
 project:
-  name: Danantara Workforce Intelligence PoC
+  name: Cloudera Workforce Intelligence PoC (codename Danantara)
   phase: implementation-ready
   readiness_percent: 95
   runtime: Cloudera AI Workbench Applications
@@ -55,7 +55,16 @@ architecture:
   guardrails: builtin-with-guardrails-ai-extension
   observability: local-gateway-with-optional-langfuse
 locked_decisions:
-  - Agent Studio is showcase-only for this PoC runtime.
+  - Agent Studio is showcase-only for this PoC runtime; the agent-studio/ workflow export and its
+    three tool templates (talent_intelligence_tool, policy_intelligence_tool, governance_tools)
+    document the same capabilities as an Agent Studio hierarchical workflow but are not deployed or
+    executed — the CrewAI Flow backend remains the primary runtime.
+  - The frontend is rebranded as Cloudera Workforce Intelligence (official cloudera-logo.png mark).
+    The design-token hierarchy has purple/violet driving selection/active state (sidebar, tabs,
+    filters, focus, secondary buttons) and orange reserved for primary CTAs, notifications, and
+    ranking emphasis only; navy stays for headings/structure. Responsive grid tracks use
+    minmax(0, ...) instead of bare 1fr/auto to avoid overflow at high browser zoom (commits
+    0b55f8b, d3ed8bf). Visual/CSS only, no backend or business-logic change.
   - No LangChain in baseline.
   - SQLite is not enterprise system-of-record.
   - Gemini text and embeddings are configurable.
@@ -103,13 +112,18 @@ locked_decisions:
     caused newly ingested documents (entity not pre-checked by default) to silently vanish from
     answers until the user noticed.
 pending_environment_tasks:
-  - configure NiFi ingestion URL
   - configure optional Langfuse
   - replace demo candidate/policy data with customer-provided PoC data
   - populate candidate_master.proficiency_score from CV extraction (currently always NULL in real
     data; candidate detail modal correctly shows "Proficiency not assessed" rather than a fabricated
     score, but the underlying extraction step was never implemented)
 completed_environment_tasks:
+  - deployed and environment-configured all four CAI Applications (frontend, backend, qdrant,
+    observability), confirmed running end-to-end (2026-08-31)
+  - ran init_qdrant_collections.py and verified all three collections (candidate, policy, nifi)
+    present and queryable in the target Qdrant Application (2026-08-31)
+  - validated Qdrant binary download/runtime in the target CAI Workbench (2026-08-31)
+  - configured NiFi webhook/landing integration and set INGEST_MODE=nifi (2026-08-31)
   - validated Ranger policy prefixes and the CAI policy ingestion Job from schema init through real run (Qdrant + Impala writes confirmed in CAI, 2026-08-27)
   - validated /api/v1/policy/query (with and without entity filters) and governed citation download against real ingested documents in CAI (2026-08-27)
   - implemented Impala-backed dashboard/summary data path with demo-fixture fallback (2026-08-27)
@@ -121,8 +135,7 @@ completed_environment_tasks:
   - validated the whitelisted Policy Intelligence data-query tool live in CAI, including the inline chart for candidate/position aggregates (2026-08-28)
   - simplified Settings to three live/actionable cards, removing dead tabs/checkboxes that never filtered or persisted anything (2026-08-28)
 next_backlog:
-  - finish frontend QA: Overview and Sources pages haven't had a dedicated live-data pass this session
+  - finish frontend QA: Overview and Sources pages haven't had a dedicated live-data pass this session; re-verify the Cloudera rebrand/color hierarchy and responsive layout against live (non-demo) data volumes
   - build a Cloudera Data Visualization dashboard against the shared governed views (v_recruitment_pipeline_api, v_candidates_api, curated_job_positions), then set CDV_DASHBOARD_URL and restore the Dashboard page's "Open in CDV" entry point
-  - connect NiFi/CDE pipeline and hand off the policy ingestion Job's data contract to that team
   - turn on optional Langfuse forwarding
   - run full PoC regression rehearsal
